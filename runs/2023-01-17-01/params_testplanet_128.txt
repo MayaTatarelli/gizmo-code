@@ -1,0 +1,81 @@
+InitCondFile        ../ICs/gasgrain_2d_64_unifmu   % see ICs folder and make_IC file to compare different ICs
+TimeMax                      200.    % final time for simulation in code units (1/Omega)
+TimeBetSnapshot               1.0     % time between snapshots in code units (1/Omega)
+%
+Grain_Size_Min                0.08    % minimum grain 'alpha' parameter (1.6*"tau" parameter)
+Grain_Size_Max                0.08    % maximum grain 'alpha' parameter [set=min for single-species]
+Grain_Spawn_Time_PerParticle  9.398     % time between grain 'spawn' per-spawner:
+                                      %  default = (1/N1D)*(BoxSize/Pressure_Gradient_Accel)*((1+tau^2)/tau), to give <mu>~0.01
+                                      %  where N1D is the resolution of the box side-length along the x (R) direction [e.g. 64, 128, etc]
+%
+Pressure_Bump_Width           1.0     % width of pressure bump in units of H=cs/Omega (default~1)
+BoxSize                       6.0     % box size in code units: must match IC setup, default=6xPressure_Bump_Width
+Pressure_Bump_Amplitude       0.0     % fractional maximum amplitude of pressure bump (=(Pmax-P0)/P0, default ~1)
+Pressure_Gradient_Accel       0.1     % 2x gas acceleration parameter : 2Pi ~ 2*eta*(vK/cs) (default~0.1, so Pi=0.05)
+Planet_Mass		      0.5     % Mplanet/Mthermal
+Planet_X		      1.0
+Planet_Y		      3.0
+Planet_Z		      0.0
+Smoothing_Length	      0.1
+%
+DesNumNgb                      20     % 20 for 2d, 32 for 3d
+%
+% -- these parameters below shouldn't need to be changed -- %
+Dust_to_Gas_Mass_Ratio             1.0    % rescales dust/gas mass: keep fixed at 1, since this is set in IC
+Grain_Size_Spectrum_Powerlaw       0.5    % set to determine power-law grain size distribution (dmu/dR_d~R_d^X)
+Vertical_Grain_Accel               0.0    % vertical radiative accel in code units (cs^2/Lbox)
+Vertical_Gravity_Strength          0.0    % vertical gravity in code units: = L_box/H_gravity_scale_length
+Grain_Charge_Parameter             1.e-8  % dimensionless charge (3*q_grain/[4pi*c*R_grain^2*sqrt(rho_box)])
+BiniX                              2.7    % perp B = 1 / sqrt[initial plasma beta] = vA/cs
+BiniY                              0.3    % parallel B = 1 / sqrt[initial plasma beta] = vA/cs
+Vertical_Grain_Accel_Angle         0      % angle (in deg) between grain accel and grav accel
+OutputDir                          output
+RestartFile                        restart
+SnapshotFileBase                   snapshot
+OutputListFilename                 output_times.txt
+ICFormat                           3
+SnapFormat                         3
+TimeLimitCPU                       9999100000
+CpuTimeBetRestartFile              3500
+ResubmitOn                         0
+ResubmitCommand                    my-scriptfile
+MaxMemSize                         2600
+PartAllocFactor                    50
+BufferSize                         100
+TimeBegin                          0
+ComovingIntegrationOn              0
+Omega0                             0
+OmegaLambda                        0
+OmegaBaryon                        0
+HubbleParam                        1
+OutputListOn                       0
+TimeOfFirstSnapshot                0
+TimeBetStatistics                  1
+NumFilesPerSnapshot                1
+NumFilesWrittenInParallel          1
+MaxSizeTimestep                    1.e-0   %5.e-4
+MinSizeTimestep                    1.e-12 %1.e-10
+TreeDomainUpdateFrequency          0.5
+UnitMagneticField_in_gauss         3.5449077018110318
+UnitLength_in_cm                   1
+UnitMass_in_g                      1
+UnitVelocity_in_cm_per_s           1
+GravityConstantInternal            1
+MaxHsml                            1.0e10
+MinGasHsmlFractional               0
+SofteningGas                       0.001
+SofteningHalo                      0.001
+SofteningDisk                      0.001
+SofteningBulge                     0.001
+SofteningStars                     0.001
+SofteningBndry                     0.001
+SofteningGasMaxPhys                0.001
+SofteningHaloMaxPhys               0.001
+SofteningDiskMaxPhys               0.001
+SofteningBulgeMaxPhys              0.001
+SofteningStarsMaxPhys              0.001
+SofteningBndryMaxPhys              0.001
+InitGasTemp                        0
+MinGasTemp                         0
+Grain_Internal_Density             1
+BiniZ                              0

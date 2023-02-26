@@ -1,0 +1,10 @@
+#!/bin/bash
+#SBATCH --account=rrg-evelee
+#SBATCH -J planetring 
+#SBATCH --time=24:00:00
+#SBATCH --mem-per-cpu=7G
+#SBATCH --ntasks=64
+#SBATCH --mail-user=maya.tatarelli@mail.mcgill.ca
+#SBATCH --mail-type=ALL
+EXECUTABLE="/home/mtatar/projects/def-evelee/gizmo_code/code_planet/GIZMO"
+mpirun ${EXECUTABLE} params_testplanet_128.txt 1>gizmo.out 2>gizmo.err
