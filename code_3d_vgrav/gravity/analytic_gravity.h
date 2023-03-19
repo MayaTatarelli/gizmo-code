@@ -120,13 +120,25 @@ void GravAccel_ShearingSheet()
         }
         if(P[i].Type==0) 
         {
-            double p0=All.Pressure_Bump_Amplitude, s0=All.Pressure_Bump_Width, dx=P[i].Pos[0]-boxHalf_X;
+            //double p0=All.Pressure_Bump_Amplitude, s0=All.Pressure_Bump_Width, dx=P[i].Pos[0]-boxHalf_X;
             //P[i].GravAccel[0] += -p0 * dx/(s0*s0)*exp(-dx*dx/(2.*s0*s0)) / SphP[i].Density;
-            P[i].GravAccel[0] += -p0 * dx/(s0*s0)*exp(-dx*dx/(2.*s0*s0)) / (1. + p0*exp(-dx*dx/(2.*s0*s0)));
+            //P[i].GravAccel[0] += -p0 * dx/(s0*s0)*exp(-dx*dx/(2.*s0*s0)) / (1. + p0*exp(-dx*dx/(2.*s0*s0)));
 	    //EJL (May 3rd 2020):not self-consistent to divide perturbing term by the full pressure but not so for the unperturbed part.
-            //P[i].GravAccel[0] += -p0 * dx/(s0*s0)*exp(-dx*dx/(2.*s0*s0)); 
+            //P[i].GravAccel[0] += -p0 * dx/(s0*s0)*exp(-dx*dx/(2.*s0*s0));
 	    P[i].GravAccel[0] += All.Pressure_Gradient_Accel;
         }
+        double q=All.Planet_Mass;
+        double p_dx=P[i].Pos[0]-All.Planet_X;
+        double p_dx=P[i].Pos[1]-All.Planet_Y; //< Why not this?
+        // double p_dy=P[i].Pos[BOX_SHEARING_PHI_COORDINATE]-boxHalf_Y; // original -- forgot to update?
+        double p_dz=P[i].Pos[2]-All.Planet_Z; // TO DO: confirm this later
+        // double p_dz=P[i].Pos[2]-boxHalf_Z; // TO DO: Confirm this later
+        double rs = All.Smoothing_Length;
+        double PlanetPot = -All.G * q / sqrt(p_dx*p_dx + p_dy * p_dy + p_dz * p_dz + rs * rs);
+        //printf("\n Planet grav potential = %g\n", PlanetPot);
+        //printf("\n dx = %g  dy = %g  dz = %g\n", p_dx, p_dy, p_dz);
+        P[i].GravAccel[0] += 3 * PlanetPot*p_dx/(p_dx*p_dx + p_dy * p_dy + p_dz * p_dz + rs * rs);
+        P[i].GravAccel[BOX_SHEARING_PHI_COORDINATE] += 3 * PlanetPot*p_dy/(p_dx*p_dx + p_dy * p_dy + p_dz * p_dz + rs * rs);
         if(P[i].ID == 0)
         {
             P[i].GravAccel[0] = 0;

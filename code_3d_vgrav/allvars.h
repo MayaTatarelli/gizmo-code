@@ -1720,6 +1720,11 @@ extern struct global_data_all_processes
     double Pressure_Bump_Width;
     double Pressure_Gradient_Accel;
     double Grain_Spawn_Time_PerParticle;
+    double Planet_Mass;
+    double Planet_X;
+    double Planet_Y;
+    double Planet_Z;
+    double Smoothing_Length;
 #endif
 #ifdef GRAIN_RDI_TESTPROBLEM
 #if(NUMDIMS==3)

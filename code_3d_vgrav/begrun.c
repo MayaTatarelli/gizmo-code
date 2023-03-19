@@ -1010,6 +1010,26 @@ void read_parameter_file(char *fname)
         strcpy(tag[nt],"Grain_Spawn_Time_PerParticle");
         addr[nt] = &All.Grain_Spawn_Time_PerParticle;
         id[nt++] = REAL;
+
+	strcpy(tag[nt],"Planet_Mass");
+	addr[nt] = &All.Planet_Mass;
+	id[nt++] = REAL;
+
+	strcpy(tag[nt],"Planet_X");
+	addr[nt] = &All.Planet_X;
+	id[nt++] = REAL;
+
+        strcpy(tag[nt],"Planet_Y");
+	addr[nt] = &All.Planet_Y;
+	id[nt++] = REAL;
+
+        strcpy(tag[nt],"Planet_Z");
+	addr[nt] = &All.Planet_Z;
+	id[nt++] = REAL;
+
+	strcpy(tag[nt],"Smoothing_Length");
+	addr[nt] = &All.Smoothing_Length;
+	id[nt++] = REAL;
 #endif
 
 #ifdef GRAIN_RDI_TESTPROBLEM
