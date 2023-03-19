@@ -398,7 +398,7 @@ def makeIC_stratified(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
     z0=1.e-10; iter=0; dz=0.; shift=0.;
     while(z0 < Lbox_z):
         print(iter,z0,dz)
-        rho=np.exp(-z0)
+        rho=np.exp(-z0) #check exponent for disk
         dz=((Lbox_xy**(DIMS-1.)) / (rho*Nbase))**(1./(1.*DIMS)); N_1D=np.around(Lbox_xy/dz).astype('int');
         x0=np.arange(0.,1.,1./N_1D) + shift;
         while(x0.max() > 1.): x0[(x0 > 1.)]-=1.;
@@ -477,5 +477,6 @@ def makeIC_stratified(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
     p.create_dataset("Masses",data=(0.*xv_d+m_target_gas/(1.*Ngrains_Ngas)))
     file.close()
 
-makeIC_box_uniform_gas(DIMS=2, N_1D=128, fname='gasgrain_2d_128_unifmu.hdf5', BoxSize=6.)
-
+makeIC_box_uniform_gas(DIMS=3, N_1D=128, fname='gasgrain_3d_128_unifmu.hdf5', BoxSize=6.)
+makeIC_stratified(DIMS=3, Nbase=1.0e4, Ngrains_Ngas=1,
+        fname='stratbox_3d_N100.hdf5', Lbox_xy=6., Lbox_z=2., rho_target=1.)

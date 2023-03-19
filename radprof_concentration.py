@@ -155,12 +155,12 @@ def plt_Pprof_maya(i, outputdir, profdir, ngrid=200, Bump_wd=1, Bump_amp=1., Box
     ax.semilogy(plotpos, P_gas[:,100], label='Simulation') #np.nansum(P_gas, axis=1)
     ax.semilogy(plotpos, Pexp, label='Expected')
     # ax.set_ylim((1.0e-2,1.0e2))
-    ax.set_ylabel("$P/P_0$") # confirm this
+    ax.set_ylabel("$P$") # confirm this, is it P/P_0 or just P
     ax.set_xlabel("$x/H$") # confirm this
     ax.set_title(r'%i$\Omega^{-1}$'%i)
     ax.legend(loc='best')
-    pl.savefig(profdir+'Pgas_profile_%04i.png'%i)
-    pl.savefig(profdir+'Pgas_profile_%04i.pdf'%i)
+    #pl.savefig(profdir+'Pgas_profile_%04i.png'%i)
+    pl.savefig(profdir+'Pgas_profile_mass_0_5_%04i.pdf'%i)
     pl.close()
     P_File.close()
 

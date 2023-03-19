@@ -47,6 +47,28 @@ def plot_streamlines(
 #     imdir='./runs/2023-02-23/streamplots/',
 #     ptype='PartType0')
 
+#Plotting runs with mass param set to 0.5
+plotpts_w_gas(snum=1,sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-02/output/',imdir='./runs/2023-03-07-02/',alpha=0.08, forsavedfigure=True,cmap='hot',vmin=-1.2,vmax=3.2)
+plt_Pprof_maya(i=1, outputdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-02/output/', profdir='./runs/2023-03-07-02/')
+plotpts_w_gas(snum=100,sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-02/output/',imdir='./runs/2023-03-07-02/',alpha=0.08, forsavedfigure=True,cmap='hot',vmin=-1.2,vmax=3.2)
+plt_Pprof_maya(i=100, outputdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-02/output/', profdir='./runs/2023-03-07-02/')
+plotpts_w_gas(snum=200,sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-02/output/',imdir='./runs/2023-03-07-02/',alpha=0.08, forsavedfigure=True,cmap='hot',vmin=-1.2,vmax=3.2)
+plt_Pprof_maya(i=200, outputdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-02/output/', profdir='./runs/2023-03-07-02/')
+
+#Plotting runs with mass param set to 1.5
+# plotpts_w_gas(snum=1,sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-01/output/',imdir='./runs/2023-03-07-01/',alpha=0.08, forsavedfigure=True,cmap='hot',vmin=-1.2,vmax=3.2)
+# plotpts_w_gas(snum=10,sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-01/output/',imdir='./runs/2023-03-07-01/',alpha=0.08, forsavedfigure=True,cmap='hot',vmin=-1.2,vmax=3.2)
+# plotpts_w_gas(snum=20,sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-01/output/',imdir='./runs/2023-03-07-01/',alpha=0.08, forsavedfigure=True,cmap='hot',vmin=-1.2,vmax=3.2)
+# plotpts_w_gas(snum=100,sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-01/output/',imdir='./runs/2023-03-07-01/',alpha=0.08, forsavedfigure=True,cmap='hot',vmin=-1.2,vmax=3.2)
+# plotpts_w_gas(snum=200,sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-01/output/',imdir='./runs/2023-03-07-01/',alpha=0.08, forsavedfigure=True,cmap='hot',vmin=-1.2,vmax=3.2)
+# plt_Pprof_maya(i=1, outputdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-01/output/', profdir='./runs/2023-03-07-01/')
+# plt_Pprof_maya(i=10, outputdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-01/output/', profdir='./runs/2023-03-07-01/')
+# plt_Pprof_maya(i=20, outputdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-01/output/', profdir='./runs/2023-03-07-01/')
+# plt_Pprof_maya(i=100, outputdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-01/output/', profdir='./runs/2023-03-07-01/')
+# plt_Pprof_maya(i=200, outputdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-03-07-01/output/', profdir='./runs/2023-03-07-01/')
+exit()
+
+#Plotting runs with mass param set to 0.5
 plotpts_w_gas(snum=100,sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-02-24/output/',imdir='./runs/2023-02-24/run_no_dust/',alpha=0.08, forsavedfigure=True,cmap='hot',vmin=-1.2,vmax=3.2)
 plt_Pprof_maya(i=100, outputdir='/Users/mayascomputer/Codes/gizmo_code/runs/2023-02-24/output/', profdir='./runs/2023-02-24/run_no_dust/')
 exit()
