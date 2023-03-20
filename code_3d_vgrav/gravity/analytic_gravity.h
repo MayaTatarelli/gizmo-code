@@ -129,7 +129,7 @@ void GravAccel_ShearingSheet()
         }
         double q=All.Planet_Mass;
         double p_dx=P[i].Pos[0]-All.Planet_X;
-        double p_dx=P[i].Pos[1]-All.Planet_Y; //< Why not this?
+        double p_dy=P[i].Pos[1]-All.Planet_Y; //< Why not this?
         // double p_dy=P[i].Pos[BOX_SHEARING_PHI_COORDINATE]-boxHalf_Y; // original -- forgot to update?
         double p_dz=P[i].Pos[2]-All.Planet_Z; // TO DO: confirm this later
         // double p_dz=P[i].Pos[2]-boxHalf_Z; // TO DO: Confirm this later
