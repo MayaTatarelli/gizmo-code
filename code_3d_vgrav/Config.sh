@@ -2,7 +2,7 @@
 PEBBLE_ACCRETION_TESTPROBLEM # special flags/custom code just for this problem (search for it to find what may need to be modified)
 #HYDRO_FIX_MESH_MOTION=4 # this fixes the gas cells on shearing orbits: allows more like a 'regular grid': better in low-density regions but less resolution at high-rho
 BOX_SPATIAL_DIMENSION=3 # (optional: set=2,1 for 2D,1D box)
-BOX_LONG_Z=2./5. #For LBox_xy=6 and LBox_z=2 -> 1./3. # (z direction only H wide) (if shearing box is 6H, then 1/3 = 2, so 1H above and below)
+BOX_LONG_Z=1./3. #2./5. #For LBox_xy=6 and LBox_z=2 -> 1./3. # (z direction only H wide) (if shearing box is 6H, then 1/3 = 2, so 1H above and below)
 BOX_SHEARING=4 # shearing box boundaries: 1=r-z sheet (r,z,phi coordinates), 2=r-phi sheet (r,phi,z), 3=r-phi-z box, 4=as 3, with vertical gravity
 EOS_GAMMA=(1.001) # eos (setting exactly=1 causes division by zero, so for 1->1.00001; for adiabatic set =7./4.)
 EOS_ENFORCE_ADIABAT=(1.0) # enforce EOS even in shocks/viscosity (cool back to isotherm/barytrope; disable to allow entropy evolution)
