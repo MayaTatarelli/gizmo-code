@@ -139,7 +139,9 @@ void GravAccel_ShearingSheet()
         //printf("\n dx = %g  dy = %g  dz = %g\n", p_dx, p_dy, p_dz);
         P[i].GravAccel[0] += 3 * PlanetPot*p_dx/(p_dx*p_dx + p_dy * p_dy + p_dz * p_dz + rs * rs);
         P[i].GravAccel[BOX_SHEARING_PHI_COORDINATE] += 3 * PlanetPot*p_dy/(p_dx*p_dx + p_dy * p_dy + p_dz * p_dz + rs * rs);
-        if(P[i].ID == 0)
+        P[i].GravAccel[2] += 3 * PlanetPot*p_dz/(p_dx*p_dx + p_dy * p_dy + p_dz * p_dz + rs * rs);
+
+        if(P[i].ID == 0) //For ghost particles -- I think?
         {
             P[i].GravAccel[0] = 0;
             P[i].Vel[0] = 0;
