@@ -127,6 +127,8 @@ void GravAccel_ShearingSheet()
 	    //P[i].GravAccel[0] += -p0 * dx/(s0*s0)*exp(-dx*dx/(2.*s0*s0)); 
 	    P[i].GravAccel[0] += All.Pressure_Gradient_Accel;
 
+        //Temporarily commenting out to check initial conditions (verify for myself)
+        /*
 	    double q=All.Planet_Mass, p_dx=P[i].Pos[0]-All.Planet_X, p_dy=P[i].Pos[BOX_SHEARING_PHI_COORDINATE]-boxHalf_Y;
 	    double rs = All.Smoothing_Length;
 	    double PlanetPot = -All.G * q / sqrt(p_dx*p_dx + p_dy * p_dy + rs * rs);
@@ -134,7 +136,9 @@ void GravAccel_ShearingSheet()
 	    //printf("\n dx = %g  dy = %g  dz = %g\n", p_dx, p_dy, p_dz);
 	    P[i].GravAccel[0] += 3 * PlanetPot*p_dx/(p_dx*p_dx + p_dy * p_dy + rs * rs);
 	    P[i].GravAccel[BOX_SHEARING_PHI_COORDINATE] += 3 * PlanetPot*p_dy/(p_dx*p_dx + p_dy * p_dy + rs * rs);
+        */
         }
+
         if(P[i].ID == 0)
         {
             P[i].GravAccel[0] = 0;
