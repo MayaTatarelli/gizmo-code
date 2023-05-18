@@ -127,6 +127,7 @@ void GravAccel_ShearingSheet()
 	    //P[i].GravAccel[0] += -p0 * dx/(s0*s0)*exp(-dx*dx/(2.*s0*s0)); 
 	    P[i].GravAccel[0] += All.Pressure_Gradient_Accel;
 
+        printf("\n I MADE IT HERE! \n");
         //Temporarily commenting out to check initial conditions (verify for myself)
         /*
 	    double q=All.Planet_Mass, p_dx=P[i].Pos[0]-All.Planet_X, p_dy=P[i].Pos[BOX_SHEARING_PHI_COORDINATE]-boxHalf_Y;
