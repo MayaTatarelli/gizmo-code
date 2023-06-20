@@ -118,6 +118,7 @@ void GravAccel_ShearingSheet()
             P[i].Vel[0]=P[i].Vel[1]=P[i].Vel[2]=0; P[i].Vel[0] = v0 * 2.*tau_s; // radial drift
             P[i].Vel[BOX_SHEARING_PHI_COORDINATE] = v_K + v0; // azimuthal drift relative to keplerian frame
         }
+	//printf("\n If see this without gravity/analytic_gravity.h in Makefile then you're good!!\n");
         if(P[i].Type==0) 
         {
             //double p0=All.Pressure_Bump_Amplitude, s0=All.Pressure_Bump_Width, dx=P[i].Pos[0]-boxHalf_X;
@@ -140,7 +141,8 @@ void GravAccel_ShearingSheet()
         P[i].GravAccel[0] += 3 * PlanetPot*p_dx/(p_dx*p_dx + p_dy * p_dy + p_dz * p_dz + rs * rs);
         P[i].GravAccel[BOX_SHEARING_PHI_COORDINATE] += 3 * PlanetPot*p_dy/(p_dx*p_dx + p_dy * p_dy + p_dz * p_dz + rs * rs);
         P[i].GravAccel[2] += 3 * PlanetPot*p_dz/(p_dx*p_dx + p_dy * p_dy + p_dz * p_dz + rs * rs);
-
+	//printf("\n HERE 1! \n");
+/*
         //Adding damping term for radial boundaries
         double inner_boundary = 0.05*boxSize_X;
         double outer_boundary = boxSize_X-inner_boundary;
@@ -148,9 +150,9 @@ void GravAccel_ShearingSheet()
         printf("\n Outer Boundary = %g\n", outer_boundary);
 
         if (P[i].Pos[0]<=inner_boundary || P[i].Pos[0]>=outer_boundary){
-
-            if (P[i].Pos[0]<=inner_boundary) {double bracket_term = M_PI_2*abs(P[i].Pos[0] - inner_boundary);}
-            else {double bracket_term = M_PI_2*abs(P[i].Pos[0] - outer_boundary);}
+	    double bracket_term;
+            if (P[i].Pos[0]<=inner_boundary) {bracket_term = M_PI_2*abs(P[i].Pos[0] - inner_boundary);}
+            else {bracket_term = M_PI_2*abs(P[i].Pos[0] - outer_boundary);}
 
             double vel_phi_initial = -(P[i].Pos[0]-boxHalf_X) * BOX_SHEARING_Q*BOX_SHEARING_OMEGA_BOX_CENTER;
             if(P[i].Type==0){
@@ -161,7 +163,7 @@ void GravAccel_ShearingSheet()
             P[i].GravAccel[1] = (vel_phi_initial-P[i].Vel[1])*pow(sin(bracket_term),2);
             P[i].GravAccel[2] = (0.-P[i].Vel[2])*pow(sin(bracket_term),2);
         }
-
+*/
         if(P[i].ID == 0) //For ghost particles -- I think?
         {
             P[i].GravAccel[0] = 0;
