@@ -1,4 +1,3 @@
-#
 PEBBLE_ACCRETION_TESTPROBLEM # special flags/custom code just for this problem (search for it to find what may need to be modified)
 #HYDRO_FIX_MESH_MOTION=4 # this fixes the gas cells on shearing orbits: allows more like a 'regular grid': better in low-density regions but less resolution at high-rho
 BOX_SPATIAL_DIMENSION=2 # (optional: set=2,1 for 2D,1D box)

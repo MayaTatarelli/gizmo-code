@@ -3,11 +3,13 @@ void output_compile_time_options(void)
 {
 printf(
 "        PEBBLE_ACCRETION_TESTPROBLEM\n"
+"        BOX_SPATIAL_DIMENSION=3\n"
 "        BOX_LONG_Z=1./3.\n"
 "        BOX_SHEARING=4\n"
 "        EOS_GAMMA=(1.001)\n"
 "        EOS_ENFORCE_ADIABAT=(1.0)\n"
 "        BOX_PERIODIC\n"
+"        BOX_OUTFLOW_Z\n"
 "        HYDRO_MESHLESS_FINITE_MASS\n"
 "        SELFGRAVITY_OFF\n"
 "        GRAIN_FLUID\n"
@@ -18,3 +20,4 @@ printf(
 "        BOX_SHEARING_Q=(3./2.)\n"
 "\n");
 }
+
