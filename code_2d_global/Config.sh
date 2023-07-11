@@ -17,7 +17,7 @@
 # BOX_SHEARING_Q=(3./2.) # shearing box q=-dlnOmega/dlnr; will default to 3/2 (Keplerian) if not set
 # #
 
-HYDRO_MESHLESS_FINITE_MASS
+HYDRO_MESHLESS_FINITE_VOLUME
 BOX_SPATIAL_DIMENSION=2  
 SELFGRAVITY_OFF  
 GRAVITY_ANALYTIC  
