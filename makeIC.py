@@ -1,11 +1,12 @@
 import numpy as np
 import h5py as h5py
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 import matplotlib.pylab as pylab
 import scipy.special
 import pdb
-
+import matplotlib.pyplot as plt
+import random
 
 def makeIC_box(DIMS=2, N_1D=64, fname='gasgrain_2d_64.hdf5', Pressure_Bump_Amplitude=1.0, Pressure_Bump_Width=1., BoxSize=6., forcedEOS=False):
 
@@ -388,7 +389,477 @@ def makeIC_box_unifmu(DIMS=2, N_1D=64, fname='gasgrain_2d_64_unifmu.hdf5',
         p.create_dataset("Masses",data=(0.*xv_d+dustgas_massratio*m_target_gas/(1.*Ngrains_Ngas)))
     file.close()
 
+def makeIC_keplerian_disk_2d_old_1(Nbase=1.0e4, fname='keplerian_disk_2d.hdf5', p=0., r_in=0.1, r_out=2., rho_target=1.):
+    #Note: even though the disk only starts at r=0.1, the Nbase refers to the center of the disk (so N < Nbase at the start of the actual disk)
+    DIMS=2
+    G=1.0; M=1.0;
 
+    rv_g=np.zeros(0);phiv_g=np.zeros(0);
+    rv_d=np.zeros(0);phiv_d=np.zeros(0);
+
+    phi_disk=2.*np.pi
+    r0=r_in; iter=0; dr=0.; shift=0.;
+    while(r0 < r_out):
+        #Here rho is the surface density of the disk in the radial direction
+        rho=surf_rho_profile(r=r0,p=p) #TODO: need radial distribution of the disk density
+        dr=((phi_disk**(DIMS-1.)) / (rho*Nbase))**(1./(1.*DIMS))
+        N_1D=np.around(phi_disk/dr).astype('int');
+        phi0=np.arange(0.,phi_disk,1./N_1D) + shift;
+        while(phi0.max() > phi_disk): phi0[(phi0 > phi_disk)]-=phi_disk;
+        while(phi0.min() < 0.): phi0[(phi0 < 0.)]+=phi_disk;
+
+        phi=phi0; r=r0+dr/2.+np.zeros(phi.size);
+        phiv_g = np.append(phiv_g,phi)
+        rv_g = np.append(rv_g,r)
+        r0 += dr; iter += 1;
+        shift += dr/2.;
+
+    Ngas=phiv_g.size
+    m_target_gas = (phi_disk/(p+2.))*(surf_rho_profile(r=r_out,p=p+2.)-surf_rho_profile(r=r_in,p=p+2.))/ (1.*Ngas) #TODO: fix the exp term to be for a disk and think about inner radius of disk being removed
+    #m_target_gas = (surf_rho_profile(r=r_in,p=p)-surf_rho_profile(r=r_out,p=p))*(phi_disk**(DIMS-1))*rho_target / (1.*Ngas) #TODO: fix the exp term to be for a disk and think about inner radius of disk being removed
+    m_target_gas_test = (1.-surf_rho_profile(r=r_out,p=p))*(phi_disk**(DIMS-1))*rho_target / (1.*Ngas) #TODO: fix the exp term to be for a disk and think about inner radius of disk being removed
+
+    #Convert polar coordinates to cartesian:
+    # xv_g = rv_g*np.cos(phiv_g)+r_out
+    # yv_g = rv_g*np.sin(phiv_g)+r_out
+
+    #TEMPORARILY MAKING COORDS THE SAME AS PHIL'S
+    xv_g = rv_g*np.cos(phiv_g)+4.
+    yv_g = rv_g*np.sin(phiv_g)+4.
+
+    zv_g=0.*yv_g
+
+    print(Ngas,m_target_gas, m_target_gas_test)
+
+    #Velocity components
+    kep_velocity_x = -np.sqrt(G*M/rv_g)*np.sin(phiv_g)
+    kep_velocity_y = np.sqrt(G*M/rv_g)*np.cos(phiv_g)
+    kep_velocity_z = 0.*kep_velocity_y
+
+    file = h5py.File(fname,'w')
+    npart = np.array([Ngas,0,0,0,0,0]) # we have gas we will set for type 3 here, zero for all others (including particles bc there is only gas)
+    h = file.create_group("Header");
+    h.attrs['NumPart_ThisFile'] = npart; # npart set as above - this in general should be the same as NumPart_Total, it only differs
+    h.attrs['NumPart_Total'] = npart; # npart set as above
+    h.attrs['NumPart_Total_HighWord'] = 0*npart; # this will be set automatically in-code (for GIZMO, at least)
+    h.attrs['MassTable'] = np.zeros(6); # these can be set if all particles will have constant masses for the entire run. however since
+    h.attrs['Time'] = 0.0;  # initial time
+    h.attrs['Redshift'] = 0.0; # initial redshift
+    #h.attrs['BoxSize'] = 1.0; # box size #TODO: Check if its okay to just remove this
+    h.attrs['NumFilesPerSnapshot'] = 1; # number of files for multi-part snapshots
+    h.attrs['Omega0'] = 1.0; # z=0 Omega_matter
+    h.attrs['OmegaLambda'] = 0.0; # z=0 Omega_Lambda
+    h.attrs['HubbleParam'] = 1.0; # z=0 hubble parameter (small 'h'=H/100 km/s/Mpc)
+    h.attrs['Flag_Sfr'] = 0; # flag indicating whether star formation is on or off
+    h.attrs['Flag_Cooling'] = 0; # flag indicating whether cooling is on or off
+    h.attrs['Flag_StellarAge'] = 0; # flag indicating whether stellar ages are to be saved
+    h.attrs['Flag_Metals'] = 0; # flag indicating whether metallicity are to be saved
+    h.attrs['Flag_Feedback'] = 0; # flag indicating whether some parts of springel-hernquist model are active
+    h.attrs['Flag_DoublePrecision'] = 0; # flag indicating whether ICs are in single/double precision
+    h.attrs['Flag_IC_Info'] = 0; # flag indicating extra options for ICs
+
+    # start with particle type zero. first (assuming we have any gas particles) create the group
+    p = file.create_group("PartType0")
+    q=np.zeros((Ngas,3)); q[:,0]=xv_g; q[:,1]=yv_g; q[:,2]=zv_g;
+    vels = np.zeros((Ngas,3)); vels[:,0]=kep_velocity_x; vels[:,1]=kep_velocity_y; vels[:,2]=kep_velocity_z;
+    p.create_dataset("Coordinates",data=q)
+    #p.create_dataset("Velocities",data=np.zeros((Ngas,3)))
+    p.create_dataset("Velocities",data=vels)
+    p.create_dataset("ParticleIDs",data=np.arange(1,Ngas+1))
+    p.create_dataset("Masses",data=(0.*xv_g+m_target_gas))
+    p.create_dataset("InternalEnergy",data=(0.*xv_g+1.))
+    file.close()
+
+    exit()
+
+    plt.plot(xv_g,yv_g, marker = '.', markersize=0.5, linestyle='None')
+    plt.show()
+
+    fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+    ax.scatter(phiv_g, rv_g, s=1.)
+    ax.set_rmax(2)
+    ax.set_rticks([0.1,0.5, 1, 1.5, 2])  # Less radial ticks
+    ax.set_rlabel_position(-22.5)  # Move radial labels away from plotted line
+    ax.grid(True)
+
+    #ax.set_title("A line plot on a polar axis", va='bottom')
+    plt.show()
+    return;
+
+######################################################################################################################################################
+def makeIC_keplerian_disk_2d_old_2(N_1D_base=128, fname='keplerian_disk_2d.hdf5', p=0., r_in=0.1, r_out=2., rho_target=1., m_target_gas=2e-4):
+
+    DIMS=2
+    G=1.0; M=1.0; #in code units
+
+    all_dr=np.zeros(0); all_rho=np.zeros(0); all_N_1D=np.zeros(0); all_r=np.zeros(0);
+
+    rv_g=np.zeros(0);phiv_g=np.zeros(0);
+    rv_d=np.zeros(0);phiv_d=np.zeros(0);
+
+    phi_disk=2.*np.pi
+
+    #bc the disk does not start at the center but at r_in, so we want rho=1 at r_in, same for N_1D
+    rho0 = rho_target/surf_rho_profile(r=r_in,p=p)
+    # N_1D_0 = N_1D_base/surf_rho_profile(r=r_in,p=p+1)
+    # dist_bw_particles = phi_disk*r_in/N_1D_base
+    dr = N_1D_base*m_target_gas/(phi_disk*r_in*rho_target)
+    print(dr);
+
+    r_cur=r_in; iter=0; shift=0.; #dr=0.;
+    while(r_cur < r_out):
+        #Here rho is the surface density of the disk in the radial direction
+        rho_cur=rho0*surf_rho_profile(r=r_cur,p=p) #Constant if p=0, otherwise p=-1 or p=-3/2
+        # N_1D_cur = N_1D_0*surf_rho_profile(r=r_cur,p=p+1)
+        N_1D_cur = phi_disk*r_cur*rho_cur*dr/m_target_gas
+        #print(N_1D_cur);
+        phi_cur=np.arange(0.,phi_disk,phi_disk/N_1D_cur) #+ shift #TMP add of shift
+        # dr = N_1D_cur*m_target_gas/(phi_disk*r_cur*rho_cur)
+
+        #TMP add f while loops here
+        # while(phi_cur.max() > phi_disk): phi_cur[(phi_cur > phi_disk)]-=phi_disk;
+        # while(phi_cur.min() < 0.): phi_cur[(phi_cur < 0.)]+=phi_disk;
+        # print(phi_cur);
+
+        all_dr = np.append(all_dr,dr); all_rho = np.append(all_rho,rho_cur); all_N_1D = np.append(all_N_1D,N_1D_cur); all_r=np.append(all_r,r_cur);
+
+        #Add phi,r coords of new ring of particles
+        phi=phi_cur; r=r_cur+np.zeros(phi.size);
+        phiv_g = np.append(phiv_g,phi)
+        rv_g = np.append(rv_g,r)
+        r_cur += dr; iter += 1;
+        # shift += dr/2.; #TMP
+
+    #FOR TESTING:
+    # print(all_rho); print(all_N_1D); print(all_N_1D/all_r); print(1./all_dr); print(all_r**p);
+################################################################################
+        # dr=((phi_disk**(DIMS-1.)) / (rho*Nbase))**(1./(1.*DIMS))
+        # N_1D=np.around(phi_disk/dr).astype('int');
+        # phi0=np.arange(0.,phi_disk,1./N_1D) + shift;
+        # while(phi0.max() > phi_disk): phi0[(phi0 > phi_disk)]-=phi_disk;
+        # while(phi0.min() < 0.): phi0[(phi0 < 0.)]+=phi_disk;
+
+        # phi=phi0; r=r_cur+dr/2.+np.zeros(phi.size);
+        # phiv_g = np.append(phiv_g,phi)
+        # rv_g = np.append(rv_g,r)
+        # r_cur += dr; iter += 1;
+        # shift += dr/2.;
+################################################################################
+
+    Ngas=phiv_g.size
+    # m_target_gas = (phi_disk/(p+2.))*(surf_rho_profile(r=r_out,p=p+2.)-surf_rho_profile(r=r_in,p=p+2.))/ (1.*Ngas) #TODO: fix the exp term to be for a disk and think about inner radius of disk being removed
+    # #m_target_gas = (surf_rho_profile(r=r_in,p=p)-surf_rho_profile(r=r_out,p=p))*(phi_disk**(DIMS-1))*rho_target / (1.*Ngas) #TODO: fix the exp term to be for a disk and think about inner radius of disk being removed
+    # m_target_gas_test = (1.-surf_rho_profile(r=r_out,p=p))*(phi_disk**(DIMS-1))*rho_target / (1.*Ngas) #TODO: fix the exp term to be for a disk and think about inner radius of disk being removed
+
+    #Convert polar coordinates to cartesian:
+    xv_g = rv_g*np.cos(phiv_g)+r_out
+    yv_g = rv_g*np.sin(phiv_g)+r_out
+
+    #TEMPORARILY MAKING COORDS THE SAME AS PHIL'S
+    # xv_g = rv_g*np.cos(phiv_g)+4.
+    # yv_g = rv_g*np.sin(phiv_g)+4.
+
+    zv_g=0.*yv_g
+
+    # print(rv_g[0:int(all_N_1D[0])+1])
+    # print(phiv_g[0:int(all_N_1D[0])+1])
+
+    #Velocity components
+    kep_velocity_x = -np.sqrt(G*M/rv_g)*np.sin(phiv_g)
+    kep_velocity_y = np.sqrt(G*M/rv_g)*np.cos(phiv_g)
+    kep_velocity_z = 0.*kep_velocity_y
+
+    kep_velocity_mag = np.sqrt(kep_velocity_x**2 + kep_velocity_y**2)
+
+    print(xv_g[0:int(all_N_1D[0])+1])
+    print(yv_g[0:int(all_N_1D[0])+1])
+
+    print(kep_velocity_x[0:int(all_N_1D[0])+1])
+    print(kep_velocity_y[0:int(all_N_1D[0])+1])
+    #print(kep_velocity_mag[0:int(all_N_1D[0])+1])
+    # exit()
+    file = h5py.File(fname,'w')
+    npart = np.array([Ngas,0,0,0,0,0]) # we have gas we will set for type 3 here, zero for all others (including particles bc there is only gas)
+    h = file.create_group("Header");
+    h.attrs['NumPart_ThisFile'] = npart; # npart set as above - this in general should be the same as NumPart_Total, it only differs
+    h.attrs['NumPart_Total'] = npart; # npart set as above
+    h.attrs['NumPart_Total_HighWord'] = 0*npart; # this will be set automatically in-code (for GIZMO, at least)
+    h.attrs['MassTable'] = np.zeros(6); # these can be set if all particles will have constant masses for the entire run. however since
+    h.attrs['Time'] = 0.0;  # initial time
+    h.attrs['Redshift'] = 0.0; # initial redshift
+    h.attrs['BoxSize'] = 8.0; # box size #TODO: Check if its okay to just remove this
+    h.attrs['NumFilesPerSnapshot'] = 1; # number of files for multi-part snapshots
+    h.attrs['Omega0'] = 0.0; # z=0 Omega_matter
+    h.attrs['OmegaLambda'] = 0.0; # z=0 Omega_Lambda
+    h.attrs['HubbleParam'] = 1.0; # z=0 hubble parameter (small 'h'=H/100 km/s/Mpc)
+    h.attrs['Flag_Sfr'] = 0; # flag indicating whether star formation is on or off
+    h.attrs['Flag_Cooling'] = 0; # flag indicating whether cooling is on or off
+    h.attrs['Flag_StellarAge'] = 0; # flag indicating whether stellar ages are to be saved
+    h.attrs['Flag_Metals'] = 0; # flag indicating whether metallicity are to be saved
+    h.attrs['Flag_Feedback'] = 0; # flag indicating whether some parts of springel-hernquist model are active
+    h.attrs['Flag_DoublePrecision'] = 0; # flag indicating whether ICs are in single/double precision
+    h.attrs['Flag_IC_Info'] = 0; # flag indicating extra options for ICs
+
+    # start with particle type zero. first (assuming we have any gas particles) create the group
+    p = file.create_group("PartType0")
+    q=np.zeros((Ngas,3)); q[:,0]=xv_g; q[:,1]=yv_g; q[:,2]=zv_g;
+    vels = np.zeros((Ngas,3)); vels[:,0]=kep_velocity_x; vels[:,1]=kep_velocity_y; vels[:,2]=kep_velocity_z;
+    p.create_dataset("Coordinates",data=q)
+    #p.create_dataset("Velocities",data=np.zeros((Ngas,3)))
+    p.create_dataset("Velocities",data=vels)
+    p.create_dataset("ParticleIDs",data=np.arange(1,Ngas+1))
+    p.create_dataset("Masses",data=(0.*xv_g+m_target_gas))
+    p.create_dataset("InternalEnergy",data=(0.*xv_g+9.e-5))
+    file.close()
+
+    exit()
+
+    #For testing purposes (remove exit command above to use)
+
+    #Plot using Cartesian coords
+    plt.plot(xv_g,yv_g, marker = '.', markersize=0.5, linestyle='None')
+    plt.show()
+
+    #Plot using polar coords
+    fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+    ax.scatter(phiv_g, rv_g, s=1.)
+    ax.set_rmax(2)
+    ax.set_rticks([0.1,0.5, 1, 1.5, 2])  # Less radial ticks
+    ax.set_rlabel_position(-22.5)  # Move radial labels away from plotted line
+    ax.grid(True)
+
+    #ax.set_title("A line plot on a polar axis", va='bottom')
+    plt.show()
+    return;
+
+######################################################################################################################################################
+
+def surf_rho_profile(r,p=0.):
+    return r**p
+
+def omega_kep(r):
+    return r**(-3./2.)
+
+def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamma=7/5, internal_energy=9.e-5,
+                                p=0., r_in=0.1, r_out=2., rho_target=1., m_target_gas=2e-4, include_dust=False):
+    #For testing
+    all_dr=np.zeros(0); all_rho=np.zeros(0); all_N_1D=np.zeros(0); all_r=np.zeros(0);
+
+    #Some initial calculations --ONLY INCLUDE ONCE USING TEMP GRADIENT
+    r_ref = 1.
+    c_s_ref = 0.05
+    internal_energy_ref = c_s_ref**2/(gamma-1.)
+    T_ref = c_s_ref**2
+    #Here, the reference point is r = 1
+    T_0 = T_ref*r_ref**0.5
+    print("T_0: ", T_0)
+
+    #bc the disk does not start at the center but at r_in, so we want rho=1 at r_in, same for N_1D
+    #Here, the reference point is r_in
+    rho0 = rho_target/surf_rho_profile(r=r_in,p=p) #TODO: decide what you want to value of rho, although maybe doesn't really matter
+    
+    #Variables to be set
+    DIMS=2
+    G=1.0; M=1.0; #in code units
+    phi_disk=2.*np.pi
+    dr_factor=dr_factor #for 10% of scale height
+    # c_s = np.sqrt((gamma-1)*internal_energy) #sound_speed (will be in loop when using TEMP GRADIENT)
+
+    #Initialize coord arrays for gas and dust particles (here in polar coords)
+    rv_g=np.zeros(0);phiv_g=np.zeros(0);
+    rv_d=np.zeros(0);phiv_d=np.zeros(0);
+    internal_energy_g = np.zeros(0);
+
+    print("dr factor: ", dr_factor)
+    print("Gamma: ", gamma)
+    print("Internal energy: ", internal_energy)
+    # print("Sound speed: ", c_s)
+    print("p: ", p)
+    print("Inner radius: ", r_in)
+    print("Outer radius: ", r_out)
+    print("Target density: ", rho_target)
+    print("Particle mass: ", m_target_gas)
+
+    r_cur=r_in; iter=0; dr=0.;
+    while(r_cur <= r_out):
+        #--ONLY INCLUDE ONCE USING TEMP GRADIENT
+        T_cur = T_0*r_cur**-0.5
+        c_s = T_cur**0.5
+        internal_energy_cur = c_s**2/(gamma-1.)
+
+        #Here rho is the surface density of the disk in the radial direction
+        rho_cur=rho0*surf_rho_profile(r=r_cur,p=p) #Constant if p=0, otherwise p=-1 or p=-3/2
+        dr = dr_factor*c_s/omega_kep(r_cur)
+        N_1D_cur = np.round(phi_disk*r_cur*rho_cur*dr/m_target_gas)
+        if (N_1D_cur<1.0):
+            r_cur += dr; iter += 1;
+            continue
+
+        phi_cur=np.arange(0.,phi_disk,phi_disk/N_1D_cur)
+        random.seed(iter); shift = random.randint(0, 11);
+        phi_cur = phi_cur + (shift*np.pi/6)
+
+        if(iter<100):
+            print("Phi: ", phi_cur)
+        #For testing
+        all_dr = np.append(all_dr,dr); all_rho = np.append(all_rho,rho_cur); all_N_1D = np.append(all_N_1D,N_1D_cur); all_r=np.append(all_r,r_cur);
+
+        #Add phi,r coords of new ring of particles
+        phi=phi_cur; r=r_cur+np.zeros(phi.size);
+        phiv_g = np.append(phiv_g,phi)
+        rv_g = np.append(rv_g,r)
+
+        #--ONLY INCLUDE ONCE USING TEMP GRADIENT
+        internal_energy=internal_energy_cur+np.zeros(phi.size)
+        internal_energy_g = np.append(internal_energy_g, internal_energy)
+
+        r_cur += dr; iter += 1;
+
+    print("iterations: ", iter)
+    print("dr: ", all_dr)
+    print("rho: ", all_rho)
+    print("N_1D: ", all_N_1D[0:500])
+    print("length of N_1D: ", len(all_N_1D))
+
+    Ngas=phiv_g.size
+
+    #Convert polar coordinates to cartesian:
+    xv_g = rv_g*np.cos(phiv_g)+r_out
+    yv_g = rv_g*np.sin(phiv_g)+r_out
+
+    #TEMPORARILY MAKING COORDS THE SAME AS PHIL'S
+    # xv_g = rv_g*np.cos(phiv_g)+4.
+    # yv_g = rv_g*np.sin(phiv_g)+4.
+
+    zv_g=0.*yv_g
+
+    print("x_min, x_max: ", np.min(xv_g), np.max(xv_g))
+    print("y_min, y_max: ", np.min(yv_g), np.max(yv_g))
+
+    if(include_dust):
+        print("Including Dust")
+        ok = np.where(rv_g==rv_g[-1])
+        phiv_d = phiv_g[ok]
+        rv_d = rv_g[-1] + 0.01 + np.zeros(phiv_d.size)
+        Ngrains = phiv_d.size
+        #Convert polar coordinates to cartesian:
+        xv_d = rv_d*np.cos(phiv_d)+r_out
+        yv_d = rv_d*np.sin(phiv_d)+r_out
+        zv_d=0.*yv_d
+
+    #Velocity components with keplerian angular velocity
+    # kep_velocity_x = -np.sqrt(G*M/rv_g)*np.sin(phiv_g)
+    # kep_velocity_y = np.sqrt(G*M/rv_g)*np.cos(phiv_g)
+    # kep_velocity_z = 0.*kep_velocity_y
+
+    #Velocity components with sub-keplerian angular velocity (only density gradient)
+    # kep_velocity_x = -np.sqrt(omega_kep(rv_g)**2 * rv_g**2 + (p-3/2)*c_s**2)*np.sin(phiv_g)
+    # kep_velocity_y = np.sqrt(omega_kep(rv_g)**2 * rv_g**2 + (p-3/2)*c_s**2)*np.cos(phiv_g)
+    # kep_velocity_z = 0.*kep_velocity_y
+
+
+    #Velocity components with sub-keplerian angular velocity (density gradient and TEMP GRADIENT)
+    kep_velocity_x = -np.sqrt(omega_kep(rv_g)**2 * rv_g**2 + (p-7/4)*T_0/rv_g**0.5) * np.sin(phiv_g)
+    kep_velocity_y = np.sqrt(omega_kep(rv_g)**2 * rv_g**2 + (p-7/4)*T_0/rv_g**0.5) * np.cos(phiv_g)
+    kep_velocity_z = 0.*kep_velocity_y
+
+    kep_velocity_mag = np.sqrt(kep_velocity_x**2 + kep_velocity_y**2)
+
+    #FOR TESTING:
+    v_phi_theoretical = np.sqrt(omega_kep(all_r)**2 * all_r**2 + (p-7/4)*T_0/all_r**0.5)
+    centrifugal_theoretical = v_phi_theoretical*v_phi_theoretical/all_r
+
+    phi_dot = (xv_g*kep_velocity_y - yv_g*kep_velocity_x) / (xv_g**2 + yv_g**2)
+    print(phi_dot)
+    phi_dot_by_radius = np.zeros(0)
+    count = int(0)
+    for i in range(len(all_N_1D)):
+        phi_dot_cur = np.sum(phi_dot[count:count+int(all_N_1D[i])])/all_N_1D[i]
+        # print(phi_dot_cur)
+        phi_dot_by_radius = np.append(phi_dot_by_radius,phi_dot_cur)
+        count+=int(all_N_1D[i])
+
+    centrifugal = phi_dot_by_radius*phi_dot_by_radius*all_r
+    grav = 1/(all_r*all_r)
+    plt.figure()
+    plt.plot(all_r, centrifugal_theoretical, marker='.', label='theoretical centrifugal')
+    # plt.plot(all_r, phi_dot_by_radius,  marker='.', label='IC phi_dot')
+    # plt.plot(all_r, centrifugal, marker='.', label='IC centrifugal')
+    plt.plot(all_r,grav,  marker='.', label='gravity')
+    plt.title("Direct from makeIC")
+    plt.xlabel('r')
+    plt.ylabel('radial accel')
+    plt.legend()
+    plt.show()
+    exit()
+    #END TESTING.
+
+    if(include_dust):
+        #Velocity components of the dust particles(keplerian in phi direction, but TODO: also need some radial drift)
+        kep_velocity_x_dust = -np.sqrt(G*M/rv_d)*np.sin(phiv_d)
+        kep_velocity_y_dust = np.sqrt(G*M/rv_d)*np.cos(phiv_d)
+
+        v_hw = 0. #TODO:set this
+        tau = 0. #TODO:set this
+        radial_velocity = 2*v_hw*tau/(tau**2+1.)
+        kep_velocity_x_dust += radial_velocity*np.cos(phiv_d)
+        kep_velocity_y_dust += radial_velocity*np.sin(phiv_d)
+        
+        kep_velocity_z_dust = 0.*kep_velocity_y_dust
+        print("Num dust particles: ", len(xv_d))
+
+    print("Num gas particles: ", len(xv_g))
+    # exit()
+    file = h5py.File(fname,'w')
+    if(include_dust):
+        npart = np.array([Ngas,0,0,Ngrains,0,0])
+    else:
+        npart = np.array([Ngas,0,0,0,0,0]) # we have gas we will set for type 3 here, zero for all others (including particles bc there is only gas)
+    h = file.create_group("Header");
+    h.attrs['NumPart_ThisFile'] = npart; # npart set as above - this in general should be the same as NumPart_Total, it only differs
+    h.attrs['NumPart_Total'] = npart; # npart set as above
+    h.attrs['NumPart_Total_HighWord'] = 0*npart; # this will be set automatically in-code (for GIZMO, at least)
+    h.attrs['MassTable'] = np.zeros(6); # these can be set if all particles will have constant masses for the entire run. however since
+    h.attrs['Time'] = 0.0;  # initial time
+    h.attrs['Redshift'] = 0.0; # initial redshift
+    h.attrs['BoxSize'] = 8.0; # box size #TODO: Check if its okay to just remove this
+    h.attrs['NumFilesPerSnapshot'] = 1; # number of files for multi-part snapshots
+    h.attrs['Omega0'] = 0.0; # z=0 Omega_matter
+    h.attrs['OmegaLambda'] = 0.0; # z=0 Omega_Lambda
+    h.attrs['HubbleParam'] = 1.0; # z=0 hubble parameter (small 'h'=H/100 km/s/Mpc)
+    h.attrs['Flag_Sfr'] = 0; # flag indicating whether star formation is on or off
+    h.attrs['Flag_Cooling'] = 0; # flag indicating whether cooling is on or off
+    h.attrs['Flag_StellarAge'] = 0; # flag indicating whether stellar ages are to be saved
+    h.attrs['Flag_Metals'] = 0; # flag indicating whether metallicity are to be saved
+    h.attrs['Flag_Feedback'] = 0; # flag indicating whether some parts of springel-hernquist model are active
+    h.attrs['Flag_DoublePrecision'] = 0; # flag indicating whether ICs are in single/double precision
+    h.attrs['Flag_IC_Info'] = 0; # flag indicating extra options for ICs
+
+    # start with particle type zero. first (assuming we have any gas particles) create the group
+    p = file.create_group("PartType0")
+    q=np.zeros((Ngas,3)); q[:,0]=xv_g; q[:,1]=yv_g; q[:,2]=zv_g;
+    vels = np.zeros((Ngas,3)); vels[:,0]=kep_velocity_x; vels[:,1]=kep_velocity_y; vels[:,2]=kep_velocity_z;
+    p.create_dataset("Coordinates",data=q)
+    p.create_dataset("Velocities",data=vels)
+    p.create_dataset("ParticleIDs",data=np.arange(1,Ngas+1))
+    p.create_dataset("Masses",data=(0.*xv_g+m_target_gas))
+    # p.create_dataset("InternalEnergy",data=(0.*xv_g+internal_energy))
+    #Use this once including TEMP GRADIENT
+    p.create_dataset("InternalEnergy",data=internal_energy_g)
+
+
+    if(include_dust):
+        p = file.create_group("PartType3")
+        q=np.zeros((Ngrains,3)); q[:,0]=xv_d; q[:,1]=yv_d; q[:,2]=zv_d;
+        vels = np.zeros((Ngrains,3)); vels[:,0]=kep_velocity_x_dust; vels[:,1]=kep_velocity_y_dust; vels[:,2]=kep_velocity_z_dust;
+        p.create_dataset("Coordinates",data=q)
+        p.create_dataset("Velocities",data=vels)
+        p.create_dataset("ParticleIDs",data=np.arange(Ngas+1,Ngrains+Ngas+1))
+        p.create_dataset("Masses",data=(0.*xv_g+0.1*m_target_gas))
+        # p.create_dataset("InternalEnergy",data=(0.*xv_g+internal_energy))
+
+    file.close()
+######################################################################################################################################################
 
 def makeIC_stratified(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
         fname='stratbox_2d_N100.hdf5', Lbox_xy=1., Lbox_z=20., rho_target=1.):
@@ -401,9 +872,11 @@ def makeIC_stratified(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
         rho=np.exp(-z0) #check exponent for disk
         dz=((Lbox_xy**(DIMS-1.)) / (rho*Nbase))**(1./(1.*DIMS)); N_1D=np.around(Lbox_xy/dz).astype('int');
         x0=np.arange(0.,1.,1./N_1D) + shift;
+        print(x0)
         while(x0.max() > 1.): x0[(x0 > 1.)]-=1.;
         while(x0.min() < 0.): x0[(x0 < 0.)]+=1.;
-            
+        print(x0)
+
         #x0+=0.5*(0.5-x0[-1]);
         N_1D_dust = np.round((1.*N_1D)*((1.*Ngrains_Ngas)**(1./(1.*DIMS)))).astype('int')
         x0d=np.arange(0.,1.,1./N_1D_dust) + shift + dz/2.;
@@ -424,6 +897,7 @@ def makeIC_stratified(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
         zv_d = np.append(zv_d,zd)
         z0 += dz; iter += 1;
         shift += dz/2.;
+
     if(DIMS<3):
         yv_d=1.*zv_d; zv_d=0.*zv_d;
         yv_g=1.*zv_g; zv_g=0.*zv_g;
@@ -477,6 +951,138 @@ def makeIC_stratified(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
     p.create_dataset("Masses",data=(0.*xv_d+m_target_gas/(1.*Ngrains_Ngas)))
     file.close()
 
-makeIC_box_uniform_gas(DIMS=3, N_1D=128, fname='gasgrain_3d_128_unifmu.hdf5', BoxSize=6.)
-makeIC_stratified(DIMS=3, Nbase=1.0e4, Ngrains_Ngas=1,
-        fname='stratbox_3d_N100.hdf5', Lbox_xy=6., Lbox_z=2., rho_target=1.)
+def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
+        fname='stratbox_2d_N100.hdf5', Lbox_xy=1., Lbox_z=20., rho_target=1.):
+
+    #For testing purposes:
+    N_1D_all = []
+    z0_all = []
+    dz_all = []
+    counter = 0.0;
+    z_up_all = []
+    z_low_all = []
+
+    xv_g=np.zeros(0);yv_g=np.zeros(0);zv_g=np.zeros(0);
+    z0=1.e-10; iter=0; dz=0.; shift=0.;
+    while(z0 < Lbox_z/2.): #here dividing box z length by two to get density porfile for just one side of midplane, then just copy for other half (above/below)
+        print(iter,z0,dz)
+        rho=np.exp(-z0**2) #check exponent for disk
+        #Testing dz and N_1D to determine problem with profile density
+        #dz=((Lbox_xy) / (rho*Nbase))**(1./(1.*DIMS)); #Tester
+        dz=((Lbox_xy**(DIMS-1.)) / (rho*Nbase))**(1./(1.*DIMS)); #Original
+        #N_1D=np.around(Lbox_xy**(DIMS-1.)/dz).astype('int'); print('N_1D: ' + str(N_1D)); counter+=N_1D**2; #Tester
+        N_1D=np.around(Lbox_xy/dz).astype('int'); print('N_1D: ' + str(N_1D)); counter+=N_1D**2; #Original
+        x0=np.arange(0.,1.,1./N_1D) + shift;
+        #print("Initial x0: ", x0)
+        while(x0.max() > 1.): x0[(x0 > 1.)]-=1.;
+        while(x0.min() < 0.): x0[(x0 < 0.)]+=1.;
+        #print("Final x0: ", x0)
+
+        #Save N_1D at each z0 value to plot later:
+        N_1D_all.append(N_1D)
+        z0_all.append(z0)
+        dz_all.append(dz)
+
+        #x0+=0.5*(0.5-x0[-1]);
+        if(DIMS==3):
+            x, y = np.meshgrid(x0,x0, sparse=False, indexing='xy'); x=x.flatten(); y=y.flatten();
+        else:
+            x=x0; y=0.*x;
+
+        z=z0+dz/2.+np.zeros(x.size); #Original
+        z_upper = z + (Lbox_z/2.); #for upper disk
+        z_lower = (Lbox_z/2.) - z; #for lower disk
+        z_lower[(z_lower < 0.)] = 1.e-10 #maybe do this a faster way because we know this is only a problem for the last iteration
+        
+        z_up_all.append(z_upper[0]); z_low_all.append(z_lower[0]);
+
+        #print(x.shape,y.shape,z.shape)
+        print(x.shape,y.shape,z_upper.shape,z_lower.shape)
+
+        #For upper disk (above midplane)
+        xv_g = np.append(xv_g,x)
+        yv_g = np.append(yv_g,y)
+        zv_g = np.append(zv_g,z_upper) #fix z for upper
+
+        #For lower disk (below midplane)
+        xv_g = np.append(xv_g,x)
+        yv_g = np.append(yv_g,y)
+        zv_g = np.append(zv_g,z_lower) #fix z for lower
+
+        z0 += dz; iter += 1;
+        shift += dz/2.;
+
+    print("##################Checking lower plane coords:################## ");
+    #print(z_lower[0], z[0], dz);
+    #print(dz_all);
+    print(z_up_all); print(z_low_all);
+
+    if(DIMS<3):
+        yv_g=1.*zv_g; zv_g=0.*zv_g;
+        
+    # make a regular 1D grid for particle locations (with N_1D elements and unit length)
+    Ngas=xv_g.size;
+    m_target_gas = (1.-np.exp(-Lbox_z))*(Lbox_xy**(DIMS-1))*rho_target / (1.*Ngas)
+    m_target_gas_test = (1.-np.exp(-Lbox_z**2))*(Lbox_xy**(DIMS-1))*rho_target / (1.*Ngas)
+
+    print("###########HERE#########")
+    print(Ngas,m_target_gas, m_target_gas_test)
+    print("###########DONE#########")
+
+    pylab.close('all')
+    #pylab.axis([0.,1.,0.,1.])
+    pylab.plot(xv_g,yv_g,marker='.',color='black',linestyle='',rasterized=True);
+
+    file = h5py.File(fname,'w')
+    npart = np.array([Ngas,0,0,0,0,0]) # we have gas and particles we will set for type 3 here, zero for all others
+    h = file.create_group("Header");
+    h.attrs['NumPart_ThisFile'] = npart; # npart set as above - this in general should be the same as NumPart_Total, it only differs
+    h.attrs['NumPart_Total'] = npart; # npart set as above
+    h.attrs['NumPart_Total_HighWord'] = 0*npart; # this will be set automatically in-code (for GIZMO, at least)
+    h.attrs['MassTable'] = np.zeros(6); # these can be set if all particles will have constant masses for the entire run. however since
+    h.attrs['Time'] = 0.0;  # initial time
+    h.attrs['Redshift'] = 0.0; # initial redshift
+    h.attrs['BoxSize'] = 1.0; # box size
+    h.attrs['NumFilesPerSnapshot'] = 1; # number of files for multi-part snapshots
+    h.attrs['Omega0'] = 1.0; # z=0 Omega_matter
+    h.attrs['OmegaLambda'] = 0.0; # z=0 Omega_Lambda
+    h.attrs['HubbleParam'] = 1.0; # z=0 hubble parameter (small 'h'=H/100 km/s/Mpc)
+    h.attrs['Flag_Sfr'] = 0; # flag indicating whether star formation is on or off
+    h.attrs['Flag_Cooling'] = 0; # flag indicating whether cooling is on or off
+    h.attrs['Flag_StellarAge'] = 0; # flag indicating whether stellar ages are to be saved
+    h.attrs['Flag_Metals'] = 0; # flag indicating whether metallicity are to be saved
+    h.attrs['Flag_Feedback'] = 0; # flag indicating whether some parts of springel-hernquist model are active
+    h.attrs['Flag_DoublePrecision'] = 0; # flag indicating whether ICs are in single/double precision
+    h.attrs['Flag_IC_Info'] = 0; # flag indicating extra options for ICs
+
+    # start with particle type zero. first (assuming we have any gas particles) create the group
+    p = file.create_group("PartType0")
+
+    #q=np.zeros((Ngas,3)); q[:,0]=xv_g; q[:,1]=yv_g; q[:,2]=zv_g; print(xv_g); print(yv_g); print(zv_g);
+    #n_part_gas = 128**3
+    #print(1 + (np.random.random(size=n_part_gas)-.5)*1e-3); exit();
+    q=np.zeros((Ngas,3)); 
+    q[:,0]=xv_g * (1 + (np.random.random(size=len(xv_g))-.5)*1e-3); 
+    q[:,1]=yv_g * (1 + (np.random.random(size=len(yv_g))-.5)*1e-3); 
+    q[:,2]=zv_g * (1 + (np.random.random(size=len(zv_g))-.5)*1e-3);
+
+    print(xv_g); print(q[:,0]);
+    print(yv_g); print(q[:,1]);
+    print(zv_g); print(q[:,2]);
+
+    p.create_dataset("Coordinates",data=q)
+    p.create_dataset("Velocities",data=np.zeros((Ngas,3)))
+    p.create_dataset("ParticleIDs",data=np.arange(1,Ngas+1))
+    p.create_dataset("Masses",data=(0.*xv_g+m_target_gas))
+    p.create_dataset("InternalEnergy",data=(0.*xv_g+1.))
+
+    print(len(np.arange(1,Ngas+1))); print(counter);
+    file.close()
+
+    #Save csv file of N_1D and z0:
+    N_1D_all = np.asarray(N_1D_all); z0_all = np.asarray(z0_all); z_up_all=np.asarray(z_up_all); z_low_all=np.asarray(z_low_all);
+    np.savetxt("density_IC_disk.csv", N_1D_all, delimiter=",")
+    np.savetxt("z0_IC_disk.csv", z0_all, delimiter=",")
+    np.savetxt("dz_IC_disk.csv", dz_all, delimiter=",")
+    np.savetxt("z_up_IC_disk.csv", z_up_all, delimiter=",")
+    np.savetxt("z_low_IC_disk.csv", z_low_all, delimiter=",")
