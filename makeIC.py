@@ -680,7 +680,7 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     print("Target density: ", rho_target)
     print("Particle mass: ", m_target_gas)
 
-    r_cur=r_in; iter=0; dr=0.;
+    r_cur=1.0*r_in; iter=0; dr=0.;
     while(r_cur <= r_out):
         #--ONLY INCLUDE ONCE USING TEMP GRADIENT
         T_cur = T_0*r_cur**-0.5
@@ -695,7 +695,9 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
             r_cur += dr; iter += 1;
             continue
 
-        phi_cur=np.arange(0.,phi_disk,phi_disk/N_1D_cur)
+        dphi_cur = phi_disk/N_1D_cur
+        phi_cur=np.arange(0.,phi_disk,dphi_cur)
+        
         random.seed(iter); shift = random.randint(0, 11);
         phi_cur = phi_cur + (shift*np.pi/6)
 
@@ -705,7 +707,7 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
         all_dr = np.append(all_dr,dr); all_rho = np.append(all_rho,rho_cur); all_N_1D = np.append(all_N_1D,N_1D_cur); all_r=np.append(all_r,r_cur);
 
         #Add phi,r coords of new ring of particles
-        phi=phi_cur; r=r_cur+np.zeros(phi.size);
+        phi=1.0*phi_cur; r=r_cur+np.zeros(phi.size);
         phiv_g = np.append(phiv_g,phi)
         rv_g = np.append(rv_g,r)
 
@@ -767,25 +769,31 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
 
     #FOR TESTING:
     v_phi_theoretical = np.sqrt(omega_kep(all_r)**2 * all_r**2 + (p-7/4)*T_0/all_r**0.5)
-    centrifugal_theoretical = v_phi_theoretical*v_phi_theoretical/all_r
 
-    phi_dot = (xv_g*kep_velocity_y - yv_g*kep_velocity_x) / (xv_g**2 + yv_g**2)
-    print(phi_dot)
+    centrifugal_theoretical = v_phi_theoretical*v_phi_theoretical/all_r
+    phi_dot = ((xv_g-r_out)*kep_velocity_y - (yv_g-r_out)*kep_velocity_x) / ((xv_g-r_out)**2 + (yv_g-r_out)**2)
+
     phi_dot_by_radius = np.zeros(0)
-    count = int(0)
-    for i in range(len(all_N_1D)):
-        phi_dot_cur = np.sum(phi_dot[count:count+int(all_N_1D[i])])/all_N_1D[i]
-        # print(phi_dot_cur)
+
+    for i in range(len(all_r)):
+        r_cur = all_r[i]
+        ok = np.where(rv_g == r_cur)
+        phi_dot_cur = np.average(phi_dot[ok])
         phi_dot_by_radius = np.append(phi_dot_by_radius,phi_dot_cur)
-        count+=int(all_N_1D[i])
 
     centrifugal = phi_dot_by_radius*phi_dot_by_radius*all_r
     grav = 1/(all_r*all_r)
+    sub_kep_diff_theoretical = grav - centrifugal_theoretical
+    sub_kep_diff_IC = grav - centrifugal
+    diff = centrifugal - centrifugal_theoretical
     plt.figure()
-    plt.plot(all_r, centrifugal_theoretical, marker='.', label='theoretical centrifugal')
+    # plt.plot(all_r, centrifugal_theoretical, marker='.', label='theoretical centrifugal')
     # plt.plot(all_r, phi_dot_by_radius,  marker='.', label='IC phi_dot')
     # plt.plot(all_r, centrifugal, marker='.', label='IC centrifugal')
-    plt.plot(all_r,grav,  marker='.', label='gravity')
+    # plt.plot(all_r,grav, label='gravity')
+    plt.plot(all_r, diff, marker='.', label='cent_IC - cent_thr')
+    # plt.plot(all_r, sub_kep_diff_theoretical, marker='.', label='kep - sub_kep theoretical')
+    # plt.plot(all_r, sub_kep_diff_IC, marker='.', label='kep - sub_kep IC')
     plt.title("Direct from makeIC")
     plt.xlabel('r')
     plt.ylabel('radial accel')
