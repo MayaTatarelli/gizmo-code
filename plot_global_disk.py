@@ -239,18 +239,89 @@ from global_disk import *
 # plot_velocity_streamlines(snum=10, sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2d_keplerian_test_runs/fixed_IE_IEPred_10H/output/', phil=False)
 # plot_velocity_streamlines(snum=50, sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2d_keplerian_test_runs/fixed_IE_IEPred_10H/output/', phil=False)
 
+
+#adding_outer_radii_press_force
+# plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force/output/', phil=False)
+# plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force/output/', phil=False)
+# plot_velocity_streamlines(snum=100, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force/output/', phil=False)
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force/output/', phil=False)
+
+#adding_outer_radii_press_force_rho_10
+# plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force_rho_10/output/', phil=False)
+# plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force_rho_10/output/', phil=False)
+# plot_velocity_streamlines(snum=100, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force_rho_10/output/', phil=False)
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force_rho_10/output/', phil=False)
+
+#adding_outer_radii_press_force_rho_20
+# plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force_rho_20/output/', phil=False)
+# plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force_rho_20/output/', phil=False)
+# plot_velocity_streamlines(snum=50, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force_rho_20/output/', phil=False)
+# plot_velocity_streamlines(snum=73, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force_rho_20/output/', phil=False)
+# exit()
+
+#adding_outer_radii_press_force_rho_30
+# plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force_rho_30/output/', phil=False)
+# plot_velocity_streamlines(snum=21, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force_rho_30/output/', phil=False)
+# exit()
+
+#adding_outer_radii_press_force_rho_40
+# plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force_rho_40/output/', phil=False)
+# plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force_rho_40/output/', phil=False)
+# plot_velocity_streamlines(snum=50, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force_rho_40/output/', phil=False)
+# plot_velocity_streamlines(snum=299, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_outer_radii_press_force_rho_40/output/', phil=False)
+
+# plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/resolution_test/res_test_5/', phil=False)
+# plot_velocity_streamlines(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/resolution_test/res_test_5/', phil=False)
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/resolution_test/res_test_4/', phil=False)
+
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
+plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
+# plot_velocity_streamlines(snum=751, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
+exit()
+
+
+#adding_viscosity - test_3
+plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_3/', phil=False)
+plot_velocity_streamlines(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_3/', phil=False)
+plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_3/', phil=False)
+plot_velocity_streamlines(snum=189, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_3/', phil=False)
+exit()
+
+#keplerian_ic_2d_rho_temp_gradient_mass_0_01
+plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
+plot_velocity_streamlines(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
+plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
+plot_velocity_streamlines(snum=100, sdir='/Users/mayatatare19i/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
+plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
+
+#adding_viscosity - test_1
+plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
+plot_velocity_streamlines(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
+plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
+plot_velocity_streamlines(snum=50, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
+plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
+
+
+
+#adding_viscosity - test_2
+# plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_2/', phil=False)
+# plot_velocity_streamlines(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_2/', phil=False)
+# plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_2/', phil=False)
+# plot_velocity_streamlines(snum=50, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_2/', phil=False)
+# plot_velocity_streamlines(snum=70, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_2/', phil=False)
+
 #Template for fixed_vphi run
-plot_value_profile(snum=0, sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_fix_vphi/output/',
-					val_to_plot='rho', dr_factor=0.1, p=-1.0, rho_target=5.0, H_factor=1.0,
-					plot_all=True, output_plot_dir='/Users/mayascomputer/Codes/gizmo_code/images_plots/keplerian_disk_tests/temp_profiles_for_diff_bound_cond/fixed_vphi/')
+# plot_value_profile(snum=0, sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_fix_vphi/output/',
+# 					val_to_plot='rho', dr_factor=0.1, p=-1.0, rho_target=5.0, H_factor=1.0,
+# 					plot_all=True, output_plot_dir='/Users/mayascomputer/Codes/gizmo_code/images_plots/keplerian_disk_tests/temp_profiles_for_diff_bound_cond/fixed_vphi/')
 
-plot_value_profile(snum=10, sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_fix_vphi/output/',
-					val_to_plot='rho', dr_factor=0.1, p=-1.0, rho_target=5.0, H_factor=1.0,
-					plot_all=True, output_plot_dir='/Users/mayascomputer/Codes/gizmo_code/images_plots/keplerian_disk_tests/temp_profiles_for_diff_bound_cond/fixed_vphi/')
+# plot_value_profile(snum=10, sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_fix_vphi/output/',
+# 					val_to_plot='rho', dr_factor=0.1, p=-1.0, rho_target=5.0, H_factor=1.0,
+# 					plot_all=True, output_plot_dir='/Users/mayascomputer/Codes/gizmo_code/images_plots/keplerian_disk_tests/temp_profiles_for_diff_bound_cond/fixed_vphi/')
 
-plot_value_profile(snum=50, sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_fix_vphi/output/',
-					val_to_plot='rho', dr_factor=0.1, p=-1.0, rho_target=5.0, H_factor=1.0,
-					plot_all=True, output_plot_dir='/Users/mayascomputer/Codes/gizmo_code/images_plots/keplerian_disk_tests/temp_profiles_for_diff_bound_cond/fixed_vphi/')
+# plot_value_profile(snum=50, sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_fix_vphi/output/',
+# 					val_to_plot='rho', dr_factor=0.1, p=-1.0, rho_target=5.0, H_factor=1.0,
+# 					plot_all=True, output_plot_dir='/Users/mayascomputer/Codes/gizmo_code/images_plots/keplerian_disk_tests/temp_profiles_for_diff_bound_cond/fixed_vphi/')
 
 # plot_velocity_streamlines(snum=0, sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_fix_vphi/output/', phil=False)
 # plot_velocity_streamlines(snum=10, sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_fix_vphi/output/', phil=False)

@@ -685,6 +685,10 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
         #--ONLY INCLUDE ONCE USING TEMP GRADIENT
         T_cur = T_0*r_cur**-0.5
         c_s = T_cur**0.5
+        print("r_cur: ", r_cur)
+        print("c_s(r_in): ", c_s)
+        print("H(r_in): ", c_s/omega_kep(r_cur))
+        # exit()
         internal_energy_cur = c_s**2/(gamma-1.)
 
         #Here rho is the surface density of the disk in the radial direction
@@ -778,6 +782,7 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     for i in range(len(all_r)):
         r_cur = all_r[i]
         ok = np.where(rv_g == r_cur)
+        print(len(ok[0]))
         phi_dot_cur = np.average(phi_dot[ok])
         phi_dot_by_radius = np.append(phi_dot_by_radius,phi_dot_cur)
 
@@ -799,7 +804,7 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     plt.ylabel('radial accel')
     plt.legend()
     plt.show()
-    exit()
+    # exit()
     #END TESTING.
 
     if(include_dust):
@@ -817,7 +822,7 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
         print("Num dust particles: ", len(xv_d))
 
     print("Num gas particles: ", len(xv_g))
-    # exit()
+    exit()
     file = h5py.File(fname,'w')
     if(include_dust):
         npart = np.array([Ngas,0,0,Ngrains,0,0])
@@ -1041,6 +1046,7 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
     #pylab.axis([0.,1.,0.,1.])
     pylab.plot(xv_g,yv_g,marker='.',color='black',linestyle='',rasterized=True);
 
+    exit()
     file = h5py.File(fname,'w')
     npart = np.array([Ngas,0,0,0,0,0]) # we have gas and particles we will set for type 3 here, zero for all others
     h = file.create_group("Header");
@@ -1084,9 +1090,9 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
     p.create_dataset("Masses",data=(0.*xv_g+m_target_gas))
     p.create_dataset("InternalEnergy",data=(0.*xv_g+1.))
 
-    print(len(np.arange(1,Ngas+1))); print(counter);
+    print(len(np.arange(1,Ngas+1))); print(counter); print(len(q));
     file.close()
-
+    exit()
     #Save csv file of N_1D and z0:
     N_1D_all = np.asarray(N_1D_all); z0_all = np.asarray(z0_all); z_up_all=np.asarray(z_up_all); z_low_all=np.asarray(z_low_all);
     np.savetxt("density_IC_disk.csv", N_1D_all, delimiter=",")
