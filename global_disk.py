@@ -73,7 +73,7 @@ def plot_velocity_streamlines(snum=0, sdir='./output/',
 	cmap='hot'
 	# dg = interpolate.griddata((x, y), density, (xg, yg), method='linear')#, fill_value=np.median(density));
 	# im = ax.imshow(dg, interpolation='bicubic', cmap=cmap, extent=(np.min(x), 1, np.min(y), 1,), zorder=1);
-	im =ax.scatter(xx, yy, marker='.', vmin=0., vmax=5e-3, c=density, cmap=cmap, zorder=3)
+	im =ax.scatter(xx, yy, marker='.', vmin=0., c=density, cmap=cmap, zorder=3)
 
 	# ax.streamplot(xg, yg, vxgrid, vygrid,linewidth=1.0, density = 4., zorder=3)
 	# ax.plot(x,y, marker = '.', markersize=1, linestyle='None')
@@ -231,12 +231,12 @@ def plot_value_profile(snum=0, sdir='./output/',
 		
 
 	if(val_to_plot=='vel_radial' or plot_all==True):
-		boundary = 0.2+H_factor*(0.05*0.2**(5./4.))
+		boundary = r_in+H_factor*(0.05*r_in**(5./4.))
 		plt.figure()
 		plt.plot(all_r, all_vel_radial, marker='.', linestyle='None', label='Azimuthally averaged radial velocity')
 		plt.axhline(y=0, color='k', linestyle='--')
 		if (use_fname == False):
-			boundary = 0.2+H_factor*(0.05*0.2**(5./4.))
+			boundary = r_in+H_factor*(0.05*r_in**(5./4.))
 			plt.axvline(x=boundary, color='k', linestyle='--')
 		plt.xlabel('r', size=13)
 		plt.ylabel('$V_{radial}$', size=13)
@@ -251,7 +251,7 @@ def plot_value_profile(snum=0, sdir='./output/',
 
 def get_radial_force_balance(snum=0, sdir='./output/', 
 						use_fname=False, fname='./ICs/keplerian_ic_2d_rho_temp_gradient.hdf5',
-						ptype='PartType0', p=0.0, temp_p=-0.5, to_plot='all', rho_target=5.0, subplot_title='test',
+						ptype='PartType0', r_in=0.2, p=0.0, temp_p=-0.5, to_plot='all', rho_target=5.0, subplot_title='test',
 						output_plot_dir='/Users/mayascomputer/Codes/gizmo_code/images_plots/keplerian_disk_tests/'):
 	if (use_fname == True):
 		print("Using filename for initial conditions file\n")
@@ -303,7 +303,7 @@ def get_radial_force_balance(snum=0, sdir='./output/',
 	#interpolate pressure to grid:
 	ngrid=1024
 	#Maybe change to min and max from actual particles
-	rg, phig = np.meshgrid(np.linspace(0.2,2,ngrid), np.linspace(0,2*np.pi,ngrid))
+	rg, phig = np.meshgrid(np.linspace(r_in,2,ngrid), np.linspace(0,2*np.pi,ngrid))
 	Pressure_grid = interpolate.griddata((r, phi), pressure, (rg, phig), method='cubic')
 	# print(Pressure_grid)
 	Density_grid = interpolate.griddata((r, phi), densitiesP, (rg, phig), method='cubic')
@@ -507,7 +507,8 @@ def get_radial_force_balance(snum=0, sdir='./output/',
 	# plt.show()
 
 def calculate_radial_accel(snum=0, sdir='./output/', use_fname=False, fname='./ICs/keplerian_ic_2d_rho_temp_gradient.hdf5',
-						ptype='PartType0', p=-1.0, temp_p=-0.5, rho_target=20.0, gamma = 7./5.,
+						ptype='PartType0', r_in=0.2, p=-1.0, temp_p=-0.5, rho_target=20.0, gamma = 7./5.,
+						plot_title='test',
 						output_plot_dir='/Users/mayascomputer/Codes/gizmo_code/images_plots/keplerian_disk_tests/'):
 	if (use_fname == True):
 		print("Using filename for initial conditions file\n")
@@ -570,7 +571,7 @@ def calculate_radial_accel(snum=0, sdir='./output/', use_fname=False, fname='./I
 	T_ref = c_s_ref**2
 	#Here, the reference point is r = 1
 	T_0 = T_ref*r_ref**(-temp_p)
-	r_in = 0.2; r_out = 2.001;
+	r_in = r_in; r_out = 2.001;
 	mult = 1e8
 	dr_factor = 0.1
 
@@ -610,11 +611,52 @@ def calculate_radial_accel(snum=0, sdir='./output/', use_fname=False, fname='./I
 	#Sum three accels
 	net_radial_accel = pressure_grad_accel_by_r + grav_accel_by_r + centrifugal_accel_by_r
 
-	#Plot accel vs r
-	plt.figure()
-	plt.plot(all_r, net_radial_accel)
-	plt.axhline(y=0, linestyle='--')
-	plt.show()
+	#Theoretical accelerations
+	theoretical_press_grad_accel = -(0.05**2) * (-11/4) * (all_r)**-1.5
+	theoretical_centrifugal_accel = -grav_accel_by_r - theoretical_press_grad_accel
+
+	#Plot individual accelerations vs r
+	if (use_fname == True):
+		subplot_title = plot_title + " (IC)"
+	else:
+		subplot_title = plot_title + " (Snapshot " + str(snum) + ")"
+
+	fig, axs = plt.subplots(3)
+	fig.suptitle(subplot_title)
+	axs[0].plot(all_r, pressure_grad_accel_by_r-theoretical_press_grad_accel, label='Pressure grad accel (Actual-Theoretical)')
+	axs[1].plot(all_r, centrifugal_accel_by_r-theoretical_centrifugal_accel, label='Centrifugal accel (Actual-Theoretical)')
+	axs[2].plot(all_r, net_radial_accel, label="Azimuthally averaged net accel")
+	
+	axs[0].axhline(y=0, color='k', linestyle='--')
+	axs[1].axhline(y=0, color='k', linestyle='--')
+	axs[2].axhline(y=0, color='k', linestyle='--')
+
+	plt.xlabel('r', size=13)
+	axs[0].set_ylabel('$a_{r,press}$', size=12)
+	axs[1].set_ylabel('$a_{r,cent}$', size=12)
+	axs[2].set_ylabel('$a_{r,net}$', size=12)
+
+	# axs[0].set_xlim([0.2,0.25])
+	# axs[1].set_xlim([0.2,0.25])
+	# axs[2].set_xlim([0.2,0.25])
+
+	# axs[0].set_ylim([-10,1])
+	# axs[1].set_ylim([-10,1])
+	# axs[2].set_ylim([-15,1])
+
+	axs[0].legend()
+	axs[1].legend()
+	axs[2].legend()
+	plt.savefig(output_plot_dir)
+	# plt.show()
+
+	# #Plot net accel vs r
+	# plt.figure()
+	# plt.plot(all_r, net_radial_accel)
+	# plt.axhline(y=0, linestyle='--')
+	# plt.xlabel('Radius', size=11)
+	# plt.ylabel('$a_r$', size=11)
+	# plt.show()
 
 def calculate_radial_vel(snum=0, sdir='./output/', 
 						use_fname=False, fname='./ICs/keplerian_ics.hdf5',
@@ -813,7 +855,7 @@ def get_phi(x,y):
 
 def get_value_profile(snum=0, sdir='./output/', 
 						use_fname=False, fname='./ICs/keplerian_ics.hdf5',
-						val_to_plot='rho', ptype='PartType0',
+						val_to_plot='rho', ptype='PartType0', r_in=0.2,
 						dr_factor=0.1, p=0.0, rho_target=1.0, temp_p=-0.5, plot_all=False):
 	if (use_fname == True):
 		print("Using filename for initial conditions file\n")
@@ -862,7 +904,7 @@ def get_value_profile(snum=0, sdir='./output/',
 	# all_rho_volume = np.zeros(0)
 
 	# r_in = np.min(r); r_out = np.max(r);
-	r_in = 0.2; r_out = 2.001;
+	r_in = r_in; r_out = 2.001;
 	mult = 1e8
 
 	#ADD BACK
@@ -944,6 +986,10 @@ def get_value_profile(snum=0, sdir='./output/',
 			return all_r, num_particles_at_r, all_temp
 		if(val_to_plot=='vel_radial'):
 			return all_r, num_particles_at_r, all_vel_radial
+		if(val_to_plot=='vel_phi'):
+			return all_r, num_particles_at_r, all_vel_phi
+		if(val_to_plot=='vel_both'):
+			return all_r, num_particles_at_r, all_vel_radial, all_vel_phi, v_phi_theoretical
 		if(val_to_plot=='centrifugal_accel'):
 			return all_r, num_particles_at_r, all_centrifugal_accel
 		if(val_to_plot=='resolution_test'):
@@ -980,6 +1026,30 @@ def calculate_avg_error(snum=0, sdir='./output/',
 	diff_velocity = (np.sum((v_phi - v_phi_theoretical)**2)/numP)**0.5
 
 	return numP, diff_density, diff_velocity
+
+def get_velocities(snum=0, sdir='./output/',
+					ptype='PartType0', dr_factor=0.1, p=0.0, rho_target=1.0, temp_p=-0.5):
+	
+	print("Using snapshot file\n")
+	P_File = load_snap(sdir, snum)
+
+	P = P_File[ptype]
+	Pc = np.array(P['Coordinates'])
+	x = Pc[:, 0] - 2.0
+	y = Pc[:, 1] - 2.0
+	vx = np.array(P['Velocities'][:, 0])
+	vy = np.array(P['Velocities'][:, 1])
+	phi_dot = ((x*vy) - (y*vx)) / (x**2 + y**2)
+	all_r = np.sqrt(x*x + y*y)
+	v_phi = phi_dot*all_r
+	v_radial = (x*vx + y*vy)/np.sqrt(x**2 + y**2)
+	numP = len(all_r)
+	r_in=0.2; r_out=2.0;
+
+	#Theoretical v_phi calculation
+	v_phi_theoretical = np.sqrt((all_r**(-3/2))**2 * all_r**2 + (-1.0-7/4)*0.0025/all_r**0.5)
+
+	return all_r, v_radial, v_phi, v_phi_theoretical
 
 # plot_gas_density(snum=0, sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2d_keplerian_test_runs/keplerian_ic_phil/output/')
 # plot_gas_density(snum=0, sdir='/Users/mayascomputer/Codes/gizmo_code/runs/2d_keplerian_test_runs/keplerian_disk_2d_updated_w_shift_phil_coords/output/', phil=False)

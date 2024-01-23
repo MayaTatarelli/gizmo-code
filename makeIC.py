@@ -822,7 +822,7 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
         print("Num dust particles: ", len(xv_d))
 
     print("Num gas particles: ", len(xv_g))
-    exit()
+    # exit()
     file = h5py.File(fname,'w')
     if(include_dust):
         npart = np.array([Ngas,0,0,Ngrains,0,0])

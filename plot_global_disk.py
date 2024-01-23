@@ -275,32 +275,59 @@ from global_disk import *
 # plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/resolution_test/res_test_4/', phil=False)
 
 # plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
-plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
 # plot_velocity_streamlines(snum=751, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
-exit()
+# exit()
 
 
 #adding_viscosity - test_3
-plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_3/', phil=False)
-plot_velocity_streamlines(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_3/', phil=False)
-plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_3/', phil=False)
-plot_velocity_streamlines(snum=189, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_3/', phil=False)
-exit()
+# plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_3/', phil=False)
+# plot_velocity_streamlines(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_3/', phil=False)
+# plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_3/', phil=False)
+# plot_velocity_streamlines(snum=189, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_3/', phil=False)
+# exit()
 
 #keplerian_ic_2d_rho_temp_gradient_mass_0_01
-plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
-plot_velocity_streamlines(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
-plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
-plot_velocity_streamlines(snum=100, sdir='/Users/mayatatare19i/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
-plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
+# plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
+# plot_velocity_streamlines(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
+# plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
+# plot_velocity_streamlines(snum=100, sdir='/Users/mayatatare19i/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/keplerian_ic_2d_rho_temp_gradient_mass_0_01/output/', phil=False)
 
 #adding_viscosity - test_1
-plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
-plot_velocity_streamlines(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
-plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
-plot_velocity_streamlines(snum=50, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
-plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
+# plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
+# plot_velocity_streamlines(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
+# plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
+# plot_velocity_streamlines(snum=50, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', phil=False)
 
+#damping_boundaries - test0
+# plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/damping_boundaries/test0/output/', phil=False)
+# plot_velocity_streamlines(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/damping_boundaries/test0/output/', phil=False)
+# plot_velocity_streamlines(snum=10, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/damping_boundaries/test0/output/', phil=False)
+# plot_velocity_streamlines(snum=50, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/damping_boundaries/test0/output/', phil=False)
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/damping_boundaries/test0/output/', phil=False)
+
+#test_boundary_cond
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/bndry_confining_press_grad/output/', phil=False)
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/no_bndry_cond/output/', phil=False)
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/bndry_confining/output/', phil=False)
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/bndry_press_grad/output/', phil=False)
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/bndry_confining_press_grad_large_inner/output/', phil=False)
+
+#smaller inner radius
+# plot_velocity_streamlines(snum=48, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/smaller_in_bndry/output/', phil=False)
+# plot_velocity_streamlines(snum=49, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/smaller_in_bndry/output/', phil=False)
+# plot_velocity_streamlines(snum=50, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/smaller_in_bndry/output/', phil=False)
+# plot_velocity_streamlines(snum=51, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/smaller_in_bndry/output/', phil=False)
+# plot_velocity_streamlines(snum=52, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/smaller_in_bndry/output/', phil=False)
+
+plot_velocity_streamlines(snum=195, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/smaller_in_bndry/output/', phil=False)
+plot_velocity_streamlines(snum=196, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/smaller_in_bndry/output/', phil=False)
+plot_velocity_streamlines(snum=197, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/smaller_in_bndry/output/', phil=False)
+plot_velocity_streamlines(snum=198, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/smaller_in_bndry/output/', phil=False)
+plot_velocity_streamlines(snum=199, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/smaller_in_bndry/output/', phil=False)
+plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/smaller_in_bndry/output/', phil=False)
 
 
 #adding_viscosity - test_2

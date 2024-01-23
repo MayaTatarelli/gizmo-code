@@ -23,13 +23,21 @@ import numpy as np
 # 						output_plot_dir='/Users/mayascomputer/Codes/gizmo_code/images_plots/keplerian_disk_tests/')
 
 #adding viscosity - test_1
-snums = np.array([0,1,200,402,620,751])
+# snums = np.array([0,1,200,402,620,751])
+# for i in range(len(snums)):
+# 	calculate_radial_accel(snum=snums[i], sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', 
+# 							use_fname=False, fname='./ICs/keplerian_ic_2d_rho_temp_gradient.hdf5',
+# 							ptype='PartType0', p=-1.0, temp_p=-0.5, rho_target=4.42e-3, gamma = 7./5.,
+# 							output_plot_dir='/Users/mayascomputer/Codes/gizmo_code/images_plots/keplerian_disk_tests/')
+
+
+#damping_boundaries - test0
+snums = np.array([0,1,10,100,200])
 for i in range(len(snums)):
-	calculate_radial_accel(snum=snums[i], sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_1/', 
+	calculate_radial_accel(snum=snums[i], sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/damping_boundaries/test0/output/', 
 							use_fname=False, fname='./ICs/keplerian_ic_2d_rho_temp_gradient.hdf5',
 							ptype='PartType0', p=-1.0, temp_p=-0.5, rho_target=4.42e-3, gamma = 7./5.,
 							output_plot_dir='/Users/mayascomputer/Codes/gizmo_code/images_plots/keplerian_disk_tests/')
-
 
 # calculate_radial_accel(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/resolution_test/res_test_4/', 
 # 						use_fname=True, fname='./ICs/keplerian_ic_2d_rho_temp_gradient_rho_20_4.hdf5',
