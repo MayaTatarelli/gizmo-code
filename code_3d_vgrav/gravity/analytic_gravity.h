@@ -142,7 +142,7 @@ void GravAccel_ShearingSheet()
         P[i].GravAccel[BOX_SHEARING_PHI_COORDINATE] += 3 * PlanetPot*p_dy/(p_dx*p_dx + p_dy * p_dy + p_dz * p_dz + rs * rs);
         P[i].GravAccel[2] += 3 * PlanetPot*p_dz/(p_dx*p_dx + p_dy * p_dy + p_dz * p_dz + rs * rs);
 	//printf("\n HERE 1! \n");
-/*
+
         //Adding damping term for radial boundaries
         double inner_boundary = 0.05*boxSize_X;
         double outer_boundary = boxSize_X-inner_boundary;
@@ -163,7 +163,7 @@ void GravAccel_ShearingSheet()
             P[i].GravAccel[1] = (vel_phi_initial-P[i].Vel[1])*pow(sin(bracket_term),2);
             P[i].GravAccel[2] = (0.-P[i].Vel[2])*pow(sin(bracket_term),2);
         }
-*/
+
         if(P[i].ID == 0) //For ghost particles -- I think?
         {
             P[i].GravAccel[0] = 0;
