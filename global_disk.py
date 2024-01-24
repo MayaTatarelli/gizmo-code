@@ -73,7 +73,7 @@ def plot_velocity_streamlines(snum=0, sdir='./output/',
 	cmap='hot'
 	# dg = interpolate.griddata((x, y), density, (xg, yg), method='linear')#, fill_value=np.median(density));
 	# im = ax.imshow(dg, interpolation='bicubic', cmap=cmap, extent=(np.min(x), 1, np.min(y), 1,), zorder=1);
-	im =ax.scatter(xx, yy, marker='.', vmin=0., c=density, cmap=cmap, zorder=3)
+	im =ax.scatter(xx, yy, marker='.', vmin=0., vmax=0.005, c=density, cmap=cmap, zorder=3)
 
 	# ax.streamplot(xg, yg, vxgrid, vygrid,linewidth=1.0, density = 4., zorder=3)
 	# ax.plot(x,y, marker = '.', markersize=1, linestyle='None')
