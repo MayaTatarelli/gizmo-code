@@ -309,13 +309,13 @@ from global_disk import *
 # plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/damping_boundaries/test0/output/', phil=False)
 
 #test_boundary_cond
-plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/remove_energy_switch/output/', phil=False)
-exit()
-plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/bndry_confining_press_grad/output/', phil=False)
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/remove_energy_switch/output/', phil=False)
+# exit()
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/bndry_confining_press_grad/output/', phil=False)
 
-# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/no_bndry_cond/output/', phil=False)
+plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/no_bndry_cond/output/', phil=False)
 # plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/bndry_confining/output/', phil=False)
-# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/bndry_press_grad/output/', phil=False)
+plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/bndry_press_grad/output/', phil=False)
 # plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/bndry_confining_press_grad_large_inner/output/', phil=False)
 
 #smaller inner radius
