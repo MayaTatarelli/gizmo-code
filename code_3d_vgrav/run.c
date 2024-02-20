@@ -116,6 +116,40 @@ void run(void)
         
         compute_hydro_densities_and_forces();	/* densities, gradients, & hydro-accels for synchronous particles */
         
+        //Adding damping for inner boundary condition here so that it is after hydro density and forces are computed.
+        //Modify through GracAccel here (not in PEBBLE_ACCRETION_TEST_CASE in analytic_gravity.h file)
+        //MayaT -- Feb 20 2024
+        
+        double inner_boundary = 0.05*boxSize_X;
+        double outer_boundary = boxSize_X-inner_boundary;
+        printf("\n Inner Boundary = %g\n", inner_boundary);
+        printf("\n Outer Boundary = %g\n", outer_boundary);
+
+        int i; for(i = FirstActiveParticle; i >= 0; i = NextActiveParticle[i])
+        {
+            if(P[i].Type==0){
+                //Adding damping term for inner radial boundaries
+                if (P[i].Pos[0]<=inner_boundary || P[i].Pos[0]>=outer_boundary){
+                double bracket_term;
+                    if (P[i].Pos[0]<=inner_boundary) {bracket_term = M_PI_2*abs(P[i].Pos[0] - inner_boundary);}
+                    else {bracket_term = M_PI_2*abs(P[i].Pos[0] - outer_boundary);}
+
+                    double vel_phi_initial = -(P[i].Pos[0]-boxHalf_X) * BOX_SHEARING_Q*BOX_SHEARING_OMEGA_BOX_CENTER;
+                    if(P[i].Type==0){
+                        vel_phi_initial -= All.Pressure_Gradient_Accel / (2. * BOX_SHEARING_OMEGA_BOX_CENTER);
+                    }
+
+                    double TotalAccel_x = (0.-P[i].Vel[0])*pow(sin(bracket_term),2);
+                    double TotalAccel_y = (vel_phi_initial-P[i].Vel[1])*pow(sin(bracket_term),2);
+                    double TotalAccel_z = (0.-P[i].Vel[2])*pow(sin(bracket_term),2);
+
+                    P[i].GravAccel[0] = TotalAccel_x - SphP[i].HydroAccel[0];
+                    P[i].GravAccel[1] = TotalAccel_y - SphP[i].HydroAccel[1];
+                    P[i].GravAccel[2] = TotalAccel_z - SphP[i].HydroAccel[2];
+                }
+            }
+        }
+
         do_second_halfstep_kick();	/* this does the half-step kick at the end of the timestep */
         
         calculate_non_standard_physics();	/* source terms are here treated in a strang-split fashion */

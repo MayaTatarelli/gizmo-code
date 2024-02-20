@@ -143,27 +143,6 @@ void GravAccel_ShearingSheet()
         P[i].GravAccel[2] += 3 * PlanetPot*p_dz/(p_dx*p_dx + p_dy * p_dy + p_dz * p_dz + rs * rs);
 	//printf("\n HERE 1! \n");
 
-        //Adding damping term for radial boundaries
-     //    double inner_boundary = 0.05*boxSize_X;
-     //    double outer_boundary = boxSize_X-inner_boundary;
-     //    printf("\n Inner Boundary = %g\n", inner_boundary);
-     //    printf("\n Outer Boundary = %g\n", outer_boundary);
-
-     //    if (P[i].Pos[0]<=inner_boundary || P[i].Pos[0]>=outer_boundary){
-	    // double bracket_term;
-     //        if (P[i].Pos[0]<=inner_boundary) {bracket_term = M_PI_2*abs(P[i].Pos[0] - inner_boundary);}
-     //        else {bracket_term = M_PI_2*abs(P[i].Pos[0] - outer_boundary);}
-
-     //        double vel_phi_initial = -(P[i].Pos[0]-boxHalf_X) * BOX_SHEARING_Q*BOX_SHEARING_OMEGA_BOX_CENTER;
-     //        if(P[i].Type==0){
-     //            vel_phi_initial -= All.Pressure_Gradient_Accel / (2. * BOX_SHEARING_OMEGA_BOX_CENTER);
-     //        }
-
-     //        P[i].GravAccel[0] = (0.-P[i].Vel[0])*pow(sin(bracket_term),2);
-     //        P[i].GravAccel[1] = (vel_phi_initial-P[i].Vel[1])*pow(sin(bracket_term),2);
-     //        P[i].GravAccel[2] = (0.-P[i].Vel[2])*pow(sin(bracket_term),2);
-     //    }
-
         if(P[i].ID == 0) //For ghost particles -- I think?
         {
             P[i].GravAccel[0] = 0;
