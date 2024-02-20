@@ -10,7 +10,7 @@ import math
 
 def plot_velocity_streamlines(snum=0, sdir='./output/', 
 								use_fname=False, fname='./ICs/keplerian_ics.hdf5',
-								ptype='PartType0', phil=True):
+								ptype='PartType0', phil=True, vmax=5e-3):
 	if (use_fname == True):
 		print("Using filename for initial conditions file\n")
 		print(fname)
@@ -26,7 +26,8 @@ def plot_velocity_streamlines(snum=0, sdir='./output/',
 	vx = np.array(P['Velocities'][:, 0])
 	vy = np.array(P['Velocities'][:, 1])
 	vz = np.array(P['Velocities'][:, 2])
-	
+	# print(len(Pc))
+	# exit()
 	#TEMPORARY
 	# ok = np.where(xx>2.95)
 	# ok = np.where(xx[ok]<5.05)
@@ -73,7 +74,7 @@ def plot_velocity_streamlines(snum=0, sdir='./output/',
 	cmap='hot'
 	# dg = interpolate.griddata((x, y), density, (xg, yg), method='linear')#, fill_value=np.median(density));
 	# im = ax.imshow(dg, interpolation='bicubic', cmap=cmap, extent=(np.min(x), 1, np.min(y), 1,), zorder=1);
-	im =ax.scatter(xx, yy, marker='.', vmin=0., c=density, cmap=cmap, zorder=3)
+	im =ax.scatter(xx, yy, marker='.', vmin=0., vmax=vmax, c=density, cmap=cmap, zorder=3)
 
 	# ax.streamplot(xg, yg, vxgrid, vygrid,linewidth=1.0, density = 4., zorder=3)
 	# ax.plot(x,y, marker = '.', markersize=1, linestyle='None')

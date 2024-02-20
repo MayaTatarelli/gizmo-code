@@ -76,7 +76,7 @@ def load_snap(sdir,snum,snapshot_name='snapshot',extension='.hdf5',four_char=0):
     file = h5py.File(fname,'r')
     return file
 
-def gas_rho_image(ax, snum=3, sdir='./output', vmin=0., vmax=0., ptype='PartType0',
+def gas_rho_image(ax, snum=3, sdir='./output', vmin=0., vmax=0., boxL_z=2, ptype='PartType0',
                   cmap='terrain', xmax=1., xz=0, yz=0, gas_val_toplot='rho', rhocut=-2.5, save='dummy',
                   zmed_set=-1.e10, quiet=False, zdir='z', zs=0., plot_zx=False, plot_zy=False):
     P_File = load_snap(sdir, snum);
@@ -252,21 +252,21 @@ def gas_rho_image(ax, snum=3, sdir='./output', vmin=0., vmax=0., ptype='PartType
         #print("Min/Max/Med Density: ", np.min(u[ok]), np.max(u[ok]), np.median(u[ok]))
         if (plot_zx):
             dg = interpolate.griddata((x[ok], z[ok]), u[ok], (xg, zg), method='linear', fill_value=np.median(u[ok]));
-            im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-3, 3, -1, 1),
+            im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-3, 3, -boxL_z/2., boxL_z/2.),
                        zorder=1);
         elif (plot_zy):
             dg = interpolate.griddata((y[ok], z[ok]), u[ok], (yg, zg), method='linear', fill_value=np.median(u[ok]));
-            im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-3, 3, -1, 1),
+            im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-3, 3, -boxL_z/2., boxL_z/2.),
                        zorder=1);
         else:
             dg = interpolate.griddata((x[ok], y[ok]), u[ok], (xg, yg), method='linear', fill_value=np.median(u[ok]));
 
             #For boxL=6
-            # im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-3, 3, -3, 3),
-            #            zorder=1);
-            #For boxL=10
-            im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-5, 5, -5, 5),
+            im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-3, 3, -3, 3),
                        zorder=1);
+            #For boxL=10
+            # im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-5, 5, -5, 5),
+            #            zorder=1);
 
         # im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(0, dmax[0], 0, dmax[1]),
         #                zorder=1);
@@ -292,7 +292,7 @@ def gas_rho_image(ax, snum=3, sdir='./output', vmin=0., vmax=0., ptype='PartType
         P_File.close();
         return;
 
-def plotpts_w_gas(snum=0, sdir='./output', ptype='PartType3', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+def plotpts_w_gas(snum=0, sdir='./output', ptype='PartType3', boxL_z=2, width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
                   vmin=0, vmax=0, forsavedfigure=False, gas_val_toplot='rho', ptype_im='PartType0',
                   zmed_set=-1.e10, cmap='terrain', imdir='./images/', xz=0, yz=0):
     pylab.close('all');
@@ -363,7 +363,7 @@ def plotpts_w_gas(snum=0, sdir='./output', ptype='PartType3', width=0.05, cut_du
 
         #pylab.subplot(1, 3, subplot)
         ok_r = (np.random.rand(x.size) < cut_dust)
-        gas_rho_image(ax, snum=snum, sdir=sdir, xmax=1., xz=xz, yz=yz, gas_val_toplot=gas_val_toplot, zmed_set=z0,
+        gas_rho_image(ax, snum=snum, sdir=sdir, boxL_z=boxL_z, xmax=1., xz=xz, yz=yz, gas_val_toplot=gas_val_toplot, zmed_set=z0,
                       vmin=vmin, vmax=vmax, quiet=quiet, cmap=cmap, ptype=ptype_im)
 
         if (forsavedfigure == True):
@@ -518,7 +518,7 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
         print('oK_R = ', ok_r)
         print(x[ok_r])
         print('HERE coord0 = ', coord0)
-        gas_rho_image(ax, snum=snum, sdir=sdir, xmax=1., xz=xz, yz=yz, gas_val_toplot=gas_val_toplot, zmed_set=coord0,
+        gas_rho_image(ax, snum=snum, sdir=sdir, boxL_z=boxL_z, xmax=1., xz=xz, yz=yz, gas_val_toplot=gas_val_toplot, zmed_set=coord0,
                       vmin=vmin, vmax=vmax, quiet=quiet, cmap=cmap, ptype=ptype_im, plot_zx=plot_zx, plot_zy=plot_zy)
 
         if (forsavedfigure == True):
@@ -569,19 +569,21 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
     #ax.set_yticklabels(fontsize=10)
 
     if plot_zx:
-        ax.set_title('Density Profile of Plane $y/H$ = %1.2f at Time = %i'%(zmed_set-3.0, snum), fontsize=12)
+        ax.set_title('Density Profile of Plane $y/H$ = %1.2f at Time = %i'%(coord0-3.0, snum), fontsize=12)
     elif plot_zy:
-        ax.set_title('Density Profile of Plane $x/H$ = %1.2f at Time = %i'%(zmed_set-3.0, snum), fontsize=12)
+        ax.set_title('Density Profile of Plane $x/H$ = %1.2f at Time = %i'%(coord0-3.0, snum), fontsize=12)
     else:
-        ax.set_title('Density Profile of Plane $z/H$ = %1.2f at Time = %i'%(zmed_set-(boxL_z/2.0), snum), fontsize=12)
+        ax.set_title('Density Profile of Plane $z/H$ = %1.2f at Time = %i'%(coord0-(boxL_z/2.0), snum), fontsize=12)
 
     #ax.set_title('Time = %i'%P_File['Header'].attrs['Time'])
 
     if (forsavedfigure == True):
         ext = '000' + str(snum);
+        print(snum)
         if (snum >= 10): ext = '00' + str(snum)
         if (snum >= 100): ext = '0' + str(snum)
         if (snum >= 1000): ext = str(snum)
+        print(ext)
         #pylab.savefig(imdir + 'im_' + ext + '.png', dpi=150, bbox_inches='tight', pad_inches=0)
         #pylab.savefig(imdir + 'im_mass_0_5_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0)
         pylab.savefig(imdir + 'im_density_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0.075)
@@ -639,7 +641,7 @@ def plot_vorticity_mag(snum=0, sdir='./output', partType='PartType0', zmed_set=-
 #------------------------------------------------------------------
 
 #To test changing z value being plotted
-def plotpts_w_gas_no_dust_diff_z(snum=0, sdir='./output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+def plotpts_w_gas_no_dust_diff_z(snum=0, sdir='./output', boxL_z=2, ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
                   vmin=0, vmax=0, forsavedfigure=False, gas_val_toplot='rho', ptype_im='PartType0',
                   zmed_set=-1.e10, cmap='terrain', imdir='./images/', xz=0, yz=0):
     pylab.close('all');
@@ -717,7 +719,7 @@ def plotpts_w_gas_no_dust_diff_z(snum=0, sdir='./output', ptype='PartType0', wid
         z0 = 1.99
         print('HERE z0 = ', z0)
 
-        gas_rho_image(ax, snum=snum, sdir=sdir, xmax=1., xz=xz, yz=yz, gas_val_toplot=gas_val_toplot, zmed_set=z0,
+        gas_rho_image(ax, snum=snum, sdir=sdir, boxL_z=boxL_z, xmax=1., xz=xz, yz=yz, gas_val_toplot=gas_val_toplot, zmed_set=z0,
                       vmin=vmin, vmax=vmax, quiet=quiet, cmap=cmap, ptype=ptype_im)
 
         if (forsavedfigure == True):
