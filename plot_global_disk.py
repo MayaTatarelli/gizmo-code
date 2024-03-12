@@ -354,7 +354,22 @@ from global_disk import *
 # plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/test_boundary_cond/inner_bndry_inflow_01_radius/output/', phil=False, vmax=9e-3)
 
 #adding_viscosity - no_in_bndry_cond_low_visc
-plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/no_in_bndry_cond_low_visc/output/', phil=False, vmax=5e-3)
+# plot_velocity_streamlines(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/no_in_bndry_cond_low_visc/output/', phil=False, vmax=5e-3)
+
+#IC
+# plot_velocity_streamlines(snum=0, sdir='/', use_fname=True, fname='./ICs/keplerian_ic_2d_rho_temp_gradient_mass_0_01.hdf5', phil=False, vmax=5e-3)
+
+#adding_viscosity - inflow_low_visc
+# plot_velocity_streamlines(snum=370, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/inflow_low_visc/output/', phil=False, vmax=5e-3)
+# plot_velocity_streamlines(snum=500, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/inflow_low_visc/output/', phil=False, vmax=5e-3)
+# plot_velocity_streamlines(snum=500, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/inner_inflow_both_outer_half_pressgrad_low_visc/output/', phil=False, vmax=5e-3)
+# plot_velocity_streamlines(snum=500, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/inner_inflow_outer_outflow_half_pressgrad_low_visc/output/', phil=False, vmax=5e-3)
+# plot_velocity_streamlines(snum=500, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/inner_inflow_outer_confining_low_visc/output/', phil=False, vmax=5e-3)
+
+#inner_inflow_outer_both_low_visc_vary_prtcl_mass
+plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/inner_inflow_outer_both_low_visc_vary_prtcl_mass/output/', phil=False, vmax=5e-3)
+plot_velocity_streamlines(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/inner_inflow_outer_both_low_visc_vary_prtcl_mass/output/', phil=False, vmax=5e-3)
+plot_velocity_streamlines(snum=500, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/inner_inflow_outer_both_low_visc_vary_prtcl_mass/output/', phil=False, vmax=5e-3)
 
 #adding_viscosity - test_2
 # plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_2/', phil=False)

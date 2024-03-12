@@ -26,7 +26,7 @@ def plot_velocity_streamlines(snum=0, sdir='./output/',
 	vx = np.array(P['Velocities'][:, 0])
 	vy = np.array(P['Velocities'][:, 1])
 	vz = np.array(P['Velocities'][:, 2])
-	# print(len(Pc))
+	print(len(Pc))
 	# exit()
 	#TEMPORARY
 	# ok = np.where(xx>2.95)

@@ -641,7 +641,8 @@ def omega_kep(r):
     return r**(-3./2.)
 
 def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamma=7/5, internal_energy=9.e-5,
-                                p=0., r_in=0.1, r_out=2., rho_target=1., m_target_gas=2e-4, include_dust=False):
+                                p=0., r_in=0.1, r_out=2., rho_target=1., m_target_gas=2e-4, 
+                                vary_particle_mass=False, num_particle_r_in = 500, include_dust=False):
     #For testing
     all_dr=np.zeros(0); all_rho=np.zeros(0); all_N_1D=np.zeros(0); all_r=np.zeros(0);
 
@@ -665,6 +666,13 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     dr_factor=dr_factor #for 10% of scale height
     # c_s = np.sqrt((gamma-1)*internal_energy) #sound_speed (will be in loop when using TEMP GRADIENT)
 
+    if(vary_particle_mass == True):
+        #m_particle = m_target_gas_0 * r**(5/4) / ln(r)
+        n_0 = num_particle_r_in*np.log(r_in+1)
+        print(n_0)
+        m_target_gas_0 = (phi_disk * dr_factor * rho0 * T_0**0.5 / n_0) * np.log(r_in+1)
+        print(m_target_gas_0)
+        # exit()
     #Initialize coord arrays for gas and dust particles (here in polar coords)
     rv_g=np.zeros(0);phiv_g=np.zeros(0);
     rv_d=np.zeros(0);phiv_d=np.zeros(0);
@@ -694,6 +702,11 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
         #Here rho is the surface density of the disk in the radial direction
         rho_cur=rho0*surf_rho_profile(r=r_cur,p=p) #Constant if p=0, otherwise p=-1 or p=-3/2
         dr = dr_factor*c_s/omega_kep(r_cur)
+
+        if(vary_particle_mass==True):
+            m_particle_cur = m_target_gas_0 * r_cur**(5/4) / np.log(r_cur+1)
+            m_target_gas = m_particle_cur
+
         N_1D_cur = np.round(phi_disk*r_cur*rho_cur*dr/m_target_gas)
         if (N_1D_cur<1.0):
             r_cur += dr; iter += 1;
@@ -726,7 +739,7 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     print("rho: ", all_rho)
     print("N_1D: ", all_N_1D[0:500])
     print("length of N_1D: ", len(all_N_1D))
-
+    print("total number of perticles: ", np.sum(all_N_1D))
     Ngas=phiv_g.size
 
     #Convert polar coordinates to cartesian:
@@ -804,7 +817,21 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     plt.ylabel('radial accel')
     plt.legend()
     plt.show()
+
+    p_fit = np.polyfit(all_r, all_N_1D, 1)
+    print(p_fit)
+
+    plt.figure()
+    plt.plot(all_r, all_N_1D, marker='.', label='num particles from IC')
+    # plt.plot(all_r, p_fit[0]*np.log(all_r) + p_fit[1], label='best fit')
+    plt.plot(all_r, num_particle_r_in*np.log(all_r+1), label='log(r)')
+    plt.title("Direct from makeIC")
+    plt.xlabel('r')
+    plt.ylabel('Number of particles')
+    plt.legend()
+    plt.show()
     # exit()
+
     #END TESTING.
 
     if(include_dust):

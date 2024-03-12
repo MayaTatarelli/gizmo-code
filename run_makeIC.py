@@ -30,7 +30,10 @@ from makeIC import *
 # makeIC_keplerian_disk_2d(fname='./ICs/keplerian_ic_2d_rho_temp_gradient_mass_0_01_res_3.hdf5', dr_factor=0.1, gamma=7/5, internal_energy=9.e-5, p=-1.0, r_in=0.2, r_out=2., rho_target=4.42e-3, m_target_gas=3.536e-08)
 
 #Testing moving inner boundary to 0.1 instead of 0.2
-makeIC_keplerian_disk_2d(fname='./ICs/keplerian_ic_2d_rho_temp_gradient_mass_0_01_inner0_1.hdf5', dr_factor=0.1, gamma=7/5, internal_energy=9.e-5, p=-1.0, r_in=0.1, r_out=2., rho_target=8.38e-3, m_target_gas=1.768e-8)
+# makeIC_keplerian_disk_2d(fname='./ICs/keplerian_ic_2d_rho_temp_gradient_mass_0_01_inner0_1.hdf5', dr_factor=0.1, gamma=7/5, internal_energy=9.e-5, p=-1.0, r_in=0.1, r_out=2., rho_target=8.38e-3, m_target_gas=1.768e-8)
+
+#Testing varying particle mass
+makeIC_keplerian_disk_2d(fname='./ICs/keplerian_ic_2d_rho_temp_gradient_mass_0_01_vary_prtcl_mass.hdf5', dr_factor=0.1, gamma=7/5, internal_energy=9.e-5, p=-1.0, r_in=0.2, r_out=2., rho_target=4.42e-3, m_target_gas=1.768e-8, vary_particle_mass=True, num_particle_r_in=2000)
 
 # makeIC_keplerian_disk_2d(fname='./ICs/keplerian_ic_2d_rho_temp_gradient_mass_0_01_test_1.hdf5', dr_factor=0.1, gamma=7/5, internal_energy=9.e-5, p=-1.0, r_in=0.2, r_out=2., rho_target=4.42e-3, m_target_gas=1.4144e-07)
 # makeIC_keplerian_disk_2d(fname='./ICs/keplerian_ic_2d_rho_temp_gradient_mass_0_01_test_2.hdf5', dr_factor=0.1, gamma=7/5, internal_energy=9.e-5, p=-1.0, r_in=0.2, r_out=2., rho_target=4.42e-3, m_target_gas=7.072e-08)

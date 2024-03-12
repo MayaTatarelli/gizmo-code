@@ -118,8 +118,26 @@ def plot_radial_profiles(snum=0, r_in=0.2, rho_target=4.42e-3, runs=np.array(['.
 
 #Adding viscosity
 
-plot_radial_profiles(snum=200, r_in=0.2, rho_target=4.42e-3, 
-	runs=np.array(['adding_viscosity/no_in_bndry_cond_low_visc/output/']), fig_dir=np.array(['no_in_bndry_cond_low_visc/']), titles=np.array(['No inner bndry cond - low viscosity (0.2 inner radius)']), bndry_in=np.array([0]))
+# plot_radial_profiles(snum=200, r_in=0.2, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_viscosity/no_in_bndry_cond_low_visc/output/']), fig_dir=np.array(['no_in_bndry_cond_low_visc/']), titles=np.array(['No inner bndry cond - low viscosity (0.2 inner radius)']), bndry_in=np.array([0]))
+
+# plot_radial_profiles(snum=10, r_in=0.2, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_viscosity/inflow_low_visc/output/']), fig_dir=np.array(['inflow_low_visc/']), titles=np.array(['Inner inflow - low viscosity (0.2 inner radius)']), bndry_in=np.array([0]))
+
+# plot_radial_profiles(snum=10, r_in=0.2, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_viscosity/inner_inflow_no_outer_confining_low_visc/output/']), fig_dir=np.array(['inner_inflow_no_outer_confining_low_visc/']), titles=np.array(['Inner inflow, no outer confining - low viscosity (0.2 inner radius)']), bndry_in=np.array([0]))
+
+
+# plot_radial_profiles(snum=500, r_in=0.2, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_viscosity/inner_inflow_outer_confining_low_visc/output/']), fig_dir=np.array(['inner_inflow_outer_confining_low_visc/']), titles=np.array(['Inner inflow, only outer confining - low viscosity (0.2 inner radius)']), bndry_in=np.array([0]))
+
+#inner_inflow_outer_both_low_visc_vary_prtcl_mass
+plot_radial_profiles(snum=500, r_in=0.2, rho_target=4.42e-3, 
+	runs=np.array(['adding_viscosity/inner_inflow_outer_both_low_visc_vary_prtcl_mass/output/']), fig_dir=np.array(['../test_vary_particle_mass/inner_inflow_outer_both_low_visc_vary_prtcl_mass/']), titles=np.array(['Vary particle mass (Inner inflow-both outer-low viscosity-0.2 inner radius)']), bndry_in=np.array([0]))
+
+# plot_radial_profiles(snum=500, r_in=0.2, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_viscosity/inner_inflow_both_outer_half_pressgrad_low_visc/output/', 'adding_viscosity/inner_inflow_outer_outflow_half_pressgrad_low_visc/output/']), fig_dir=np.array(['inner_inflow_both_outer_half_pressgrad_low_visc/', 'inner_inflow_outer_outflow_half_pressgrad_low_visc/']),
+# 	titles=np.array(['Inner inflow, both outer bndry cond (0.5*outer press grad) - low viscosity (0.2 inner radius)', 'Inner inflow, Outer outflow (0.5*outer press grad) - low viscosity (0.2 inner radius)']), bndry_in=np.array([0,0]))
 
 #Removing energy entropy switch
 # plot_radial_profiles(snum=200, r_in=0.2, rho_target=4.42e-3, 
