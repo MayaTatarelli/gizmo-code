@@ -117,7 +117,7 @@ void run(void)
         compute_hydro_densities_and_forces();	/* densities, gradients, & hydro-accels for synchronous particles */
         
         //Adding damping for inner boundary condition here so that it is after hydro density and forces are computed.
-        //Modify through GracAccel here (not in PEBBLE_ACCRETION_TEST_CASE in analytic_gravity.h file)
+        //Modify through GracAccel variable here (not in PEBBLE_ACCRETION_TEST_CASE in analytic_gravity.h file)
         //MayaT -- Feb 20 2024
         
         double inner_boundary = 0.05*boxSize_X;
@@ -135,9 +135,7 @@ void run(void)
                     else {bracket_term = M_PI_2*abs(P[i].Pos[0] - outer_boundary);}
 
                     double vel_phi_initial = -(P[i].Pos[0]-boxHalf_X) * BOX_SHEARING_Q*BOX_SHEARING_OMEGA_BOX_CENTER;
-                    if(P[i].Type==0){
-                        vel_phi_initial -= All.Pressure_Gradient_Accel / (2. * BOX_SHEARING_OMEGA_BOX_CENTER);
-                    }
+                    vel_phi_initial -= All.Pressure_Gradient_Accel / (2. * BOX_SHEARING_OMEGA_BOX_CENTER);
 
                     double TotalAccel_x = (0.-P[i].Vel[0])*pow(sin(bracket_term),2);
                     double TotalAccel_y = (vel_phi_initial-P[i].Vel[1])*pow(sin(bracket_term),2);
