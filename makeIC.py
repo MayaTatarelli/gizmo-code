@@ -677,6 +677,7 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     rv_g=np.zeros(0);phiv_g=np.zeros(0);
     rv_d=np.zeros(0);phiv_d=np.zeros(0);
     internal_energy_g = np.zeros(0);
+    m_target_gas_array = np.zeros(0);
 
     print("dr factor: ", dr_factor)
     print("Gamma: ", gamma)
@@ -731,6 +732,9 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
         #--ONLY INCLUDE ONCE USING TEMP GRADIENT
         internal_energy=internal_energy_cur+np.zeros(phi.size)
         internal_energy_g = np.append(internal_energy_g, internal_energy)
+
+        mass_gas_cur_array = m_target_gas+np.zeros(phi.size)
+        m_target_gas_array = np.append(m_target_gas_array, mass_gas_cur_array)
 
         r_cur += dr; iter += 1;
 
@@ -882,7 +886,8 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     p.create_dataset("Coordinates",data=q)
     p.create_dataset("Velocities",data=vels)
     p.create_dataset("ParticleIDs",data=np.arange(1,Ngas+1))
-    p.create_dataset("Masses",data=(0.*xv_g+m_target_gas))
+    # p.create_dataset("Masses",data=(0.*xv_g+m_target_gas))
+    p.create_dataset("Masses",data=m_target_gas_array)
     # p.create_dataset("InternalEnergy",data=(0.*xv_g+internal_energy))
     #Use this once including TEMP GRADIENT
     p.create_dataset("InternalEnergy",data=internal_energy_g)
@@ -1073,7 +1078,7 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
     #pylab.axis([0.,1.,0.,1.])
     pylab.plot(xv_g,yv_g,marker='.',color='black',linestyle='',rasterized=True);
 
-    exit()
+    # exit()
     file = h5py.File(fname,'w')
     npart = np.array([Ngas,0,0,0,0,0]) # we have gas and particles we will set for type 3 here, zero for all others
     h = file.create_group("Header");
