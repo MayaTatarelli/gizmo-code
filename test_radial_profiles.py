@@ -158,8 +158,21 @@ def plot_radial_profiles(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=n
 # 	runs=np.array(['adding_viscosity/inner_inflow_outer_both_low_visc_vary_prtcl_mass_2/output/']), fig_dir=np.array(['../test_vary_particle_mass/inner_inflow_outer_both_low_visc_vary_prtcl_mass_2/']), titles=np.array(['Vary particle mass (Inner inflow-both outer-low viscosity-0.2 inner radius)']), bndry_in=np.array([0]))
 
 #outer_both_low_visc_vary_prtcl_mass_large_r_out
+# plot_radial_profiles(snum=1000, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_viscosity/outer_both_low_visc_vary_prtcl_mass_large_r_out/output/']), fig_dir=np.array(['../test_vary_particle_mass/outer_both_low_visc_vary_prtcl_mass_large_r_out/']), titles=np.array(['Vary particle mass (Inner inflow-both outer-low viscosity-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
+
+#inner_inflow_outer_press_grad_high_visc_min
+# plot_radial_profiles(snum=500, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_viscosity/inner_inflow_outer_press_grad_high_visc_min/output/']), fig_dir=np.array(['../test_vary_particle_mass/inner_inflow_outer_press_grad_high_visc_min/']), titles=np.array(['Vary particle mass (Inner inflow-both outer-low viscosity-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
+
+#outer_both_low_visc_vary_prtcl_mass_large_r_outflow
+
 plot_radial_profiles(snum=500, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
-	runs=np.array(['adding_viscosity/outer_both_low_visc_vary_prtcl_mass_large_r_out/output/']), fig_dir=np.array(['../test_vary_particle_mass/outer_both_low_visc_vary_prtcl_mass_large_r_out/']), titles=np.array(['Vary particle mass (Inner inflow-both outer-low viscosity-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
+	runs=np.array(['adding_viscosity/outer_both_med_visc_vary_prtcl_mass_large_r_outflow_2/output/']), fig_dir=np.array(['../test_vary_particle_mass/outer_both_med_visc_vary_prtcl_mass_large_r_outflow_2/']), titles=np.array(['Vary particle mass (Inner inflow(0.22)-outer outflow(10)-med viscosity-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
+
+
+# plot_radial_profiles(snum=1000, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_viscosity/outer_both_low_visc_vary_prtcl_mass_large_r_outflow/output/']), fig_dir=np.array(['../test_vary_particle_mass/outer_both_low_visc_vary_prtcl_mass_large_r_outflow/']), titles=np.array(['Vary particle mass (Inner inflow(0.22)-outer outflow(10)-low viscosity-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
 
 # plot_radial_profiles(snum=500, r_in=0.2, rho_target=4.42e-3, 
 # 	runs=np.array(['adding_viscosity/inner_inflow_both_outer_half_pressgrad_low_visc/output/', 'adding_viscosity/inner_inflow_outer_outflow_half_pressgrad_low_visc/output/']), fig_dir=np.array(['inner_inflow_both_outer_half_pressgrad_low_visc/', 'inner_inflow_outer_outflow_half_pressgrad_low_visc/']),

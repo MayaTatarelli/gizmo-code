@@ -83,4 +83,5 @@ from makeIC import *
 #For z = 4 on top and 4 on bottom (z=8 total)
 # makeIC_disk_stratified_no_dust(DIMS=3, Nbase=8e5, Ngrains_Ngas=1, fname='./ICs/stratbox_disk_3d_z8.hdf5', Lbox_xy=6., Lbox_z=8., rho_target=1.)
 
-makeIC_disk_stratified_no_dust(DIMS=3, Nbase=2e6, Ngrains_Ngas=1, fname='./ICs/stratbox_disk_3d_z8_xy12.hdf5', Lbox_xy=12., Lbox_z=8., rho_target=1.)
+# makeIC_disk_stratified_no_dust(DIMS=3, Nbase=2e6, Ngrains_Ngas=1, fname='./ICs/stratbox_disk_3d_z8_xy12.hdf5', Lbox_xy=12., Lbox_z=8., rho_target=1.)
+makeIC_disk_stratified_no_dust(DIMS=3, Nbase=2e6, Ngrains_Ngas=1, fname='./ICs/stratbox_disk_3d_z8_xy16.hdf5', Lbox_xy=16., Lbox_z=8., rho_target=1.)
