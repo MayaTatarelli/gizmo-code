@@ -641,7 +641,7 @@ def omega_kep(r):
     return r**(-3./2.)
 
 def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamma=7/5, internal_energy=9.e-5,
-                                p=0., r_in=0.1, r_out=2., rho_target=1., m_target_gas=2e-4, 
+                                p=0., r_in=0.1, r_out=2., width_ghost_in=0.0, width_ghost_out=0.0, rho_target=1., m_target_gas=2e-4, 
                                 vary_particle_mass=False, num_particle_r_in = 500, include_dust=False):
     #For testing
     all_dr=np.zeros(0); all_rho=np.zeros(0); all_N_1D=np.zeros(0); all_r=np.zeros(0);
@@ -679,6 +679,8 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     internal_energy_g = np.zeros(0);
     m_target_gas_array = np.zeros(0);
 
+    Nghost_in=0; Nghost_out=0;
+
     print("dr factor: ", dr_factor)
     print("Gamma: ", gamma)
     print("Internal energy: ", internal_energy)
@@ -689,8 +691,8 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     print("Target density: ", rho_target)
     print("Particle mass: ", m_target_gas)
 
-    r_cur=1.0*r_in; iter=0; dr=0.;
-    while(r_cur <= r_out):
+    r_cur=1.0*r_in-width_ghost_in; iter=0; dr=0.;
+    while(r_cur <= r_out+width_ghost_out):
         #--ONLY INCLUDE ONCE USING TEMP GRADIENT
         T_cur = T_0*r_cur**-0.5
         c_s = T_cur**0.5
@@ -703,6 +705,12 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
         #Here rho is the surface density of the disk in the radial direction
         rho_cur=rho0*surf_rho_profile(r=r_cur,p=p) #Constant if p=0, otherwise p=-1 or p=-3/2
         dr = dr_factor*c_s/omega_kep(r_cur)
+        print('LOOK HERE: ', dr)
+
+
+        # #Check if dr < 0.0027: This is for trying to spread the particles rings out more at the inner radius.
+        # if (dr < 0.0027):
+        #     dr = 0.0027; print('dr < 0.027, iter: ', iter);
 
         if(vary_particle_mass==True):
             m_particle_cur = m_target_gas_0 * r_cur**(5/4) / np.log(r_cur+1)
@@ -728,6 +736,12 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
         phi=1.0*phi_cur; r=r_cur+np.zeros(phi.size);
         phiv_g = np.append(phiv_g,phi)
         rv_g = np.append(rv_g,r)
+
+        #determine number of ghost particles
+        if(r_cur<r_in):
+            Nghost_in+=phi.size;
+        if(r_cur>r_out):
+            Nghost_out+=phi.size;
 
         #--ONLY INCLUDE ONCE USING TEMP GRADIENT
         internal_energy=internal_energy_cur+np.zeros(phi.size)
@@ -885,7 +899,8 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     vels = np.zeros((Ngas,3)); vels[:,0]=kep_velocity_x; vels[:,1]=kep_velocity_y; vels[:,2]=kep_velocity_z;
     p.create_dataset("Coordinates",data=q)
     p.create_dataset("Velocities",data=vels)
-    p.create_dataset("ParticleIDs",data=np.arange(1,Ngas+1))
+    particle_IDs = np.append(np.append(np.zeros(Nghost_in),np.arange(1,Ngas-Nghost_in-Nghost_out+1)), np.zeros(Nghost_out))
+    p.create_dataset("ParticleIDs",data=particle_IDs)
     # p.create_dataset("Masses",data=(0.*xv_g+m_target_gas))
     p.create_dataset("Masses",data=m_target_gas_array)
     # p.create_dataset("InternalEnergy",data=(0.*xv_g+internal_energy))
@@ -996,8 +1011,8 @@ def makeIC_stratified(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
     p.create_dataset("Masses",data=(0.*xv_d+m_target_gas/(1.*Ngrains_Ngas)))
     file.close()
 
-def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
-        fname='stratbox_2d_N100.hdf5', Lbox_xy=1., Lbox_z=20., rho_target=1.):
+def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, dustgas_massratio=0.01,
+        fname='stratbox_2d_N100.hdf5', Lbox_xy=1., Lbox_z=20., rho_target=1., include_dust=False):
 
     #For testing purposes:
     N_1D_all = []
@@ -1008,6 +1023,8 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
     z_low_all = []
 
     xv_g=np.zeros(0);yv_g=np.zeros(0);zv_g=np.zeros(0);
+    xd=np.zeros(0);yd=np.zeros(0);zd=np.zeros(0);
+
     z0=1.e-10; iter=0; dz=0.; shift=0.;
     while(z0 < Lbox_z/2.): #here dividing box z length by two to get density porfile for just one side of midplane, then just copy for other half (above/below)
         print(iter,z0,dz)
@@ -1031,6 +1048,7 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
         #x0+=0.5*(0.5-x0[-1]);
         if(DIMS==3):
             x, y = np.meshgrid(x0,x0, sparse=False, indexing='xy'); x=x.flatten(); y=y.flatten();
+            print(np.max(x), np.max(y))
         else:
             x=x0; y=0.*x;
 
@@ -1054,8 +1072,36 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
         yv_g = np.append(yv_g,y)
         zv_g = np.append(zv_g,z_lower) #fix z for lower
 
+        #dust
+        if(include_dust):
+            z_full_d=z0+dz/2.+np.zeros(x0.size);
+            z_upper_d = z_full_d + (Lbox_z/2.); #for upper disk
+            z_lower_d = (Lbox_z/2.) - z_full_d; #for lower disk
+            z_lower_d[(z_lower_d < 0.)] = 1.e-10 #maybe do this a faster way because we know this is only a problem for the last iteration
+        
+            yd = np.append(yd, x0) #upper disk
+            zd = np.append(zd, z_upper_d)
+            yd = np.append(yd, x0) #lower disk
+            zd = np.append(zd, z_lower_d)
+
         z0 += dz; iter += 1;
         shift += dz/2.;
+    
+    Ngrains = 0;
+    if(include_dust):
+        #dust needs to be xv_d = 1.0 (or use above value)
+        #yv_d = 0-1, zv_d = 0-Lbox_z 
+        #-> uniform distribution, start by trying separation of 0.1 in z direction and 0.0035 in y direction
+        #need to determine this from proper dust mass ratio of a disk
+
+        #this is being removed because it is being done in the while loop instead to have uniform gas-dust ratio
+        # y0 = np.arange(0., 1., 1./N_1D_all[0])
+        # z0 = np.arange(0., Lbox_z, 0.1)
+        # yd, zd = np.meshgrid(y0,z0, sparse=False, indexing='xy'); yd=yd.flatten(); zd=zd.flatten();
+
+        xd_max_coord = 1.0
+        xd = xd_max_coord + 0.0*yd
+        Ngrains = xd.size
 
     print("##################Checking lower plane coords:################## ");
     #print(z_lower[0], z[0], dz);
@@ -1076,11 +1122,11 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
 
     pylab.close('all')
     #pylab.axis([0.,1.,0.,1.])
-    pylab.plot(xv_g,yv_g,marker='.',color='black',linestyle='',rasterized=True);
+    # pylab.plot(xv_g,yv_g,marker='.',color='black',linestyle='',rasterized=True);
 
     # exit()
     file = h5py.File(fname,'w')
-    npart = np.array([Ngas,0,0,0,0,0]) # we have gas and particles we will set for type 3 here, zero for all others
+    npart = np.array([Ngas,0,0,Ngrains,0,0]) # we have gas and particles we will set for type 3 here, zero for all others
     h = file.create_group("Header");
     h.attrs['NumPart_ThisFile'] = npart; # npart set as above - this in general should be the same as NumPart_Total, it only differs
     h.attrs['NumPart_Total'] = npart; # npart set as above
@@ -1116,15 +1162,45 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, Ngrains_Ngas=1,
     print(yv_g); print(q[:,1]);
     print(zv_g); print(q[:,2]);
 
+    print(np.min(q[:,0])); print(np.min(q[:,1])); print(np.min(q[:,2]));
+
     p.create_dataset("Coordinates",data=q)
     p.create_dataset("Velocities",data=np.zeros((Ngas,3)))
     p.create_dataset("ParticleIDs",data=np.arange(1,Ngas+1))
     p.create_dataset("Masses",data=(0.*xv_g+m_target_gas))
     p.create_dataset("InternalEnergy",data=(0.*xv_g+1.))
 
+    if(include_dust):
+
+        p = file.create_group("PartType3")
+        q=np.zeros((Ngrains,3));
+        q[:,0]=xd * (1 + (np.random.random(size=len(xd))-.5)*1e-3); 
+        q[:,1]=yd * (1 + (np.random.random(size=len(yd))-.5)*1e-3); 
+        q[:,2]=zd * (1 + (np.random.random(size=len(zd))-.5)*1e-3);
+
+        print(xd); print(q[:,0]);
+        print(yd); print(q[:,1]);
+        print(zd); print(q[:,2]);
+
+        p.create_dataset("Coordinates",data=q)
+        p.create_dataset("Velocities",data=np.zeros((Ngrains,3)))
+        p.create_dataset("ParticleIDs",data=np.arange(Ngas+1,Ngrains+Ngas+1))
+        p.create_dataset("Masses",data=(0.*xd + dustgas_massratio*m_target_gas))
+
     print(len(np.arange(1,Ngas+1))); print(counter); print(len(q));
     file.close()
+
+    #plot dust:
+    if(include_dust):
+        print("xd: ", xd[0:500])
+        plt.figure()
+        plt.plot(yd,zd, marker='.', linestyle='None')
+        plt.xlabel("y")
+        plt.ylabel("z")
+        plt.show()
+    
     exit()
+
     #Save csv file of N_1D and z0:
     N_1D_all = np.asarray(N_1D_all); z0_all = np.asarray(z0_all); z_up_all=np.asarray(z_up_all); z_low_all=np.asarray(z_low_all);
     np.savetxt("density_IC_disk.csv", N_1D_all, delimiter=",")
