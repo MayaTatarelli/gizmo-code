@@ -7,7 +7,7 @@ from radprof_concentration import load_v
 from global_disk import *
 
 #For testing new Keplerian IC:
-# plot_velocity_streamlines(use_fname=True, fname='./ICs/keplerian_ic_2d_new_dr.hdf5', phil=False)
+plot_velocity_streamlines(use_fname=True, fname='./ICs/keplerian_ic_2d_vary_prtcl_mass_large_inner_spacing.hdf5', phil=False, vmax=5e-3)
 # plot_velocity_streamlines(snum=6, sdir='/Users/mayascomputer/Codes/gizmo-public/runs/2d_keplerian/keplerian_ic_2d_new_dr/output/', phil=False)
 
 # plot_velocity_streamlines(use_fname=True, fname='./ICs/keplerian_ic_2d_new_dr_002.hdf5', phil=False)
@@ -393,7 +393,11 @@ from global_disk import *
 # plot_velocity_streamlines(snum=494, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/outer_both_med_visc_vary_prtcl_mass_large_r_outflow/output/', phil=False, vmax=5e-3)
 
 #outer_both_med_visc_vary_prtcl_mass_large_r_outflow_2
-plot_velocity_streamlines(snum=500, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/outer_both_med_visc_vary_prtcl_mass_large_r_outflow_2/output/', phil=False, vmax=5e-3)
+# plot_velocity_streamlines(snum=500, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/outer_both_med_visc_vary_prtcl_mass_large_r_outflow_2/output/', phil=False, vmax=5e-3)
+
+#outer_both_low_visc_vary_prtcl_mass_large_r_out_confine
+plot_velocity_streamlines(snum=183, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/outer_both_low_visc_vary_prtcl_mass_large_r_out_confine/output/', phil=False, vmax=5e-3)
+
 #adding_viscosity - test_2
 # plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_2/', phil=False)
 # plot_velocity_streamlines(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_2/', phil=False)

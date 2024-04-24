@@ -19,6 +19,9 @@ def plot_density(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=np.array(
 		# all_r = np.array([0,1,2,3])
 		# density = np.array([1,1,2,3])
 		# density_theoretical = np.array([1,1,2,3])	
+		index = np.nanargmax(density)
+		print(all_r[index])
+		exit()
 
 		plt.figure()
 		plt.plot(all_r, density/density_theoretical, marker='.', linestyle='None', label='Actual/Theoretical')
@@ -45,7 +48,7 @@ def plot_velocity(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=np.array
 		plt.axhline(y=0, linestyle='--',color='orange', label='Theor')
 		plt.xlabel('Radius', size=11)
 		plt.ylabel("Radial velocity", size=11)
-		# plt.xlim([0.2, 0.35])
+		plt.xlim([0.4, 1.1])
 		plt.title(titles[i])
 		plt.legend()
 		plt.savefig('/Users/mayatatarelli/Desktop/Maya_Masters/Research/Fall2023/test_boundary_cond_results_2/'+fig_dir[i]+'vel_radial_'+str(snum)+'.pdf')
@@ -57,7 +60,7 @@ def plot_velocity(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=np.array
 		plt.plot(all_r, all_vel_phi/v_phi_theoretical, marker='.', linestyle='None', label='Actual/Theoretical')
 		plt.xlabel('Radius', size=11)
 		plt.ylabel("Azimuthal velocity", size=11)
-		# plt.xlim([0.2, 0.35])
+		plt.xlim([0.4, 1.1])
 		plt.title(titles[i])
 		plt.legend()
 		plt.savefig('/Users/mayatatarelli/Desktop/Maya_Masters/Research/Fall2023/test_boundary_cond_results_2/'+fig_dir[i]+'vel_phi_'+str(snum)+'.pdf')
@@ -87,10 +90,11 @@ def plot_radial_profiles(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=n
 # 										val_to_plot='histogram', ptype='PartType0', r_in=0.2,
 # 										dr_factor=0.1, p=-1.0, rho_target=4.42e-3, temp_p=-0.5, plot_all=False)
 # exit()
+
 #Damping
 
-# plot_velocity(snum=200, r_in=0.2, rho_target=4.42e-3, 
-# 	runs=np.array(['damping_boundaries/damping_in_run_loop/output/']), fig_dir=np.array(['damping_in_run_loop/']), titles=np.array(['Damping at inner bndry']), bndry_in=np.array([0.227]))
+# plot_velocity(snum=1000, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_viscosity/outer_both_low_visc_vary_prtcl_mass_large_r_outflow/output/']), fig_dir=np.array(['../test_vary_particle_mass/outer_both_low_visc_vary_prtcl_mass_large_r_outflow/']), titles=np.array(['']), bndry_in=np.array([0]))
 
 # plot_radial_profiles(snum=200, r_in=0.2, rho_target=4.42e-3, 
 # 	runs=np.array(['damping_boundaries/damping_in_run_loop/output/']), fig_dir=np.array(['damping_in_run_loop/']), titles=np.array(['Damping at inner bndry']), bndry_in=np.array([0.227]))
@@ -167,8 +171,8 @@ def plot_radial_profiles(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=n
 
 #outer_both_low_visc_vary_prtcl_mass_large_r_outflow
 
-plot_radial_profiles(snum=500, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
-	runs=np.array(['adding_viscosity/outer_both_med_visc_vary_prtcl_mass_large_r_outflow_2/output/']), fig_dir=np.array(['../test_vary_particle_mass/outer_both_med_visc_vary_prtcl_mass_large_r_outflow_2/']), titles=np.array(['Vary particle mass (Inner inflow(0.22)-outer outflow(10)-med viscosity-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
+plot_radial_profiles(snum=1000, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
+	runs=np.array(['adding_viscosity/outer_both_low_visc_vary_prtcl_mass_large_r_outflow/output/']), fig_dir=np.array(['../test_vary_particle_mass/outer_both_low_visc_vary_prtcl_mass_large_r_outflow/']), titles=np.array(['Vary particle mass (Inner inflow(0.22)-outer confine(10)-low viscosity-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
 
 
 # plot_radial_profiles(snum=1000, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
