@@ -490,7 +490,10 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
             if (zmed_set > -1.e9): coord0 = zmed_set
             dzz = np.abs(frozen_coord - coord0);
             #dzz[(dzz > 0.5 * zmx)] = zmx - dzz[(dzz > 0.5 * zmx)] #DO I REMOVE?
-            ok = np.where(dzz < width)
+            if ('SmoothingLength' in P.keys()):
+                    ok = np.where(dzz < 0.5 * P['SmoothingLength'][:])
+            else:
+                ok = np.where(dzz < 0.05) #used to be < width
 
             xx = xx[ok];
             yy = yy[ok];
@@ -503,8 +506,12 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
                 if (zmed_set > -1.e9): coord0_d = zmed_set
                 dzz_d = np.abs(frozen_coord_d - coord0_d);
                 #dzz[(dzz > 0.5 * zmx)] = zmx - dzz[(dzz > 0.5 * zmx)] #DO I REMOVE?
-                ok_d = np.where(dzz_d < width)
-                
+                if ('SmoothingLength' in P_d.keys()):
+                        print('Using SmoothingLength')
+                        ok_d = np.where(dzz_d < 0.5 * P_d['SmoothingLength'][:])
+                else:
+                    ok_d = np.where(dzz_d < 0.05) #used to be < width
+
                 xx_d = xx_d[ok_d];
                 yy_d = yy_d[ok_d];
                 zz_d = zz_d[ok_d];
@@ -579,14 +586,18 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
             if plot_zx:
                 xg, zg, vxgrid, vzgrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
                 ax.streamplot(xg*boxL_xy-(boxL_xy/2), zg*boxL_z-(boxL_z/2), vxgrid, vzgrid,linewidth=1.0, color=str_color)
-                ax.plot()
+                if include_dust:
+                    ax.plot(x_d-(boxL_xy/2), z_d-(boxL_z/2), marker='.', markersize=4, linestyle='None', color='c')
             elif plot_zy:
                 yg, zg, vygrid, vzgrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
                 ax.streamplot(yg*boxL_xy-(boxL_xy/2), zg*boxL_z-(boxL_z/2), vygrid, vzgrid,linewidth=1.0, color=str_color)
+                if include_dust:
+                    ax.plot(y_d-(boxL_xy/2), z_d-(boxL_z/2), marker='.', markersize=4, linestyle='None', color='c')
             else:
                 xg, yg, vxgrid, vygrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
                 ax.streamplot(xg*boxL_xy-(boxL_xy/2), yg*boxL_xy-(boxL_xy/2), vxgrid, vygrid,linewidth=1.0, color=str_color)
-
+                if include_dust:
+                    ax.plot(x_d-(boxL_xy/2), y_d-(boxL_xy/2), marker='.', markersize=4, linestyle='None', color='c')
             # ax.streamplot(xg*6, yg*6, vxgrid, vygrid,linewidth=1.0)
 
             ax.set_xlim([-boxL_xy/2,boxL_xy/2])
