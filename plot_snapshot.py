@@ -413,21 +413,31 @@ def plotpts_w_gas(snum=0, sdir='./output', ptype='PartType3', boxL_xy=6, boxL_z=
 
 
 def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
-                  vmin=0, vmax=0, forsavedfigure=False, gas_val_toplot='rho', ptype_im='PartType0',
+                  vmin=0, vmax=0, forsavedfigure=False, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
                   zmed_set=-1.e10, boxL_xy=6, boxL_z=2, cmap='terrain', imdir='./images/', xz=0, yz=0, 
                   plot_zx=False, plot_zy=False, xlabel='$x/H$', ylabel='$y/H$', str_color=None):
+    #For plotting:
     pylab.close('all');
-    #plot.figure(1, figsize=(21., 7.))
     fig, ax = plot.subplots()
+
+    #load file
     P_File = load_snap(sdir, snum);
-    # print('Time == ', P_File['Header'].attrs['Time'])
+
+    #Gas particles:
     P = P_File[ptype]
+    Pc = np.array(P['Coordinates']);
+
+    #Dust particles
+    if(include_dust):
+        P_d = P_File['PartType3']
+        Pc_d = np.array(P_d['Coordinates']);
+
+    # print('Time == ', P_File['Header'].attrs['Time'])
     # print('Dust-to-Gas Mass Ratio = ',
     #       np.sum(P_File['PartType3']['Masses'][:]) / np.sum(P_File['PartType0']['Masses'][:]))
     # a = P['GrainSize'][:]
     # print('Grain Size: min=', a.min(), ' max=', a.max())
-    Pc = np.array(P['Coordinates']);
-
+    
     # vx = np.array(P['Velocities'][:, 0])
     # vy = np.array(P['Velocities'][:, 1])
     # vz = np.array(P['Velocities'][:, 2])
@@ -455,14 +465,25 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
             xx = Pc[:, xplotc];
             yy = Pc[:, yplotc];
             zz = Pc[:, depth_c];
+            if(include_dust):
+                xx_d = Pc_d[:, xplotc];
+                yy_d = Pc_d[:, yplotc];
+                zz_d = Pc_d[:, depth_c];
+                
 
             #First if to freeze correct coordinate axis
             if plot_zx:
                 frozen_coord = np.copy(yy)
+                if include_dust:
+                    frozen_coord_d = np.copy(yy_d)
             elif plot_zy:
                 frozen_coord = np.copy(xx)
+                if include_dust:
+                    frozen_coord_d = np.copy(xx_d)
             else:
                 frozen_coord = np.copy(zz)
+                if include_dust:
+                    frozen_coord_d = np.copy(zz_d)
 
             zmx = np.max(frozen_coord) - np.min(frozen_coord);
             coord0 = np.median(frozen_coord);
@@ -475,8 +496,19 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
             yy = yy[ok];
             zz = zz[ok];
 
-           
 
+            if include_dust:
+                zmx_d = np.max(frozen_coord_d) - np.min(frozen_coord_d);
+                coord0_d = np.median(frozen_coord_d);
+                if (zmed_set > -1.e9): coord0_d = zmed_set
+                dzz_d = np.abs(frozen_coord_d - coord0_d);
+                #dzz[(dzz > 0.5 * zmx)] = zmx - dzz[(dzz > 0.5 * zmx)] #DO I REMOVE?
+                ok_d = np.where(dzz_d < width)
+                
+                xx_d = xx_d[ok_d];
+                yy_d = yy_d[ok_d];
+                zz_d = zz_d[ok_d];
+               
             #######GOOD################################
             # z = Pc[:, depth_c];
             # zmx = np.max(z) - np.min(z);
@@ -496,12 +528,22 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
             yy = Pc[:, 1]
             z0 = 0
 
+            if include_dust:
+                xx_d = Pc_d[:, 0]
+                yy_d = Pc_d[:, 1]
+                z0_d = 0
+
         #x = 1.0 * (xx / dmax[0] + 0.);
         #y = 1.0 * (yy / dmax[1] + 0.);
 
         x = np.copy(xx)
         y = np.copy(yy)
         z = np.copy(zz)
+
+        if include_dust:
+            x_d = np.copy(xx_d)
+            y_d = np.copy(yy_d)
+            z_d = np.copy(zz_d)
 
         #pdb.set_trace()
         # np.savetxt("x.txt",x)
@@ -514,10 +556,13 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
         #exit()
 
         #pylab.subplot(1, 3, subplot)
+        #Note: I don't think this really gets used so not doing a dust equivalent (for now -- April 26 2024)
         ok_r = (np.random.rand(x.size) < cut_dust)
         print('oK_R = ', ok_r)
         print(x[ok_r])
         print('HERE coord0 = ', coord0)
+
+        #this is only for gas (plotting gas density background, not dust)
         gas_rho_image(ax, snum=snum, sdir=sdir, boxL_xy=boxL_xy, boxL_z=boxL_z, xmax=1., xz=xz, yz=yz, gas_val_toplot=gas_val_toplot, zmed_set=coord0,
                       vmin=vmin, vmax=vmax, quiet=quiet, cmap=cmap, ptype=ptype_im, plot_zx=plot_zx, plot_zy=plot_zy)
 
@@ -532,14 +577,14 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
             #xg, yg, vxgrid, vygrid = load_v(P_File, part='PartType0', xz=0, ngrid=1024,return_coords=True)
 
             if plot_zx:
-                xg, zg, vxgrid, vzgrid = load_v_at_coord(P_File, part='PartType0', xz=0, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
+                xg, zg, vxgrid, vzgrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
                 ax.streamplot(xg*boxL_xy-(boxL_xy/2), zg*boxL_z-(boxL_z/2), vxgrid, vzgrid,linewidth=1.0, color=str_color)
-
+                ax.plot()
             elif plot_zy:
-                yg, zg, vygrid, vzgrid = load_v_at_coord(P_File, part='PartType0', xz=0, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
+                yg, zg, vygrid, vzgrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
                 ax.streamplot(yg*boxL_xy-(boxL_xy/2), zg*boxL_z-(boxL_z/2), vygrid, vzgrid,linewidth=1.0, color=str_color)
             else:
-                xg, yg, vxgrid, vygrid = load_v_at_coord(P_File, part='PartType0', xz=0, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
+                xg, yg, vxgrid, vygrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
                 ax.streamplot(xg*boxL_xy-(boxL_xy/2), yg*boxL_xy-(boxL_xy/2), vxgrid, vygrid,linewidth=1.0, color=str_color)
 
             # ax.streamplot(xg*6, yg*6, vxgrid, vygrid,linewidth=1.0)
@@ -583,10 +628,13 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
         if (snum >= 10): ext = '00' + str(snum)
         if (snum >= 100): ext = '0' + str(snum)
         if (snum >= 1000): ext = str(snum)
-        print(ext)
+        
         #pylab.savefig(imdir + 'im_' + ext + '.png', dpi=150, bbox_inches='tight', pad_inches=0)
         #pylab.savefig(imdir + 'im_mass_0_5_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0)
-        pylab.savefig(imdir + 'im_density_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0.075)
+        if include_dust:
+            pylab.savefig(imdir + 'im_density_dust_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0.075)
+        else:
+            pylab.savefig(imdir + 'im_density_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0.075)
 
     P_File.close()
     pylab.close()
