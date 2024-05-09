@@ -167,6 +167,71 @@ def plt_Pprof_maya(i, outputdir, profdir, ngrid=200, Bump_wd=1, Bump_amp=1., Box
     pl.close()
     P_File.close()
 
+def load_P_at_coord(P_File, part='PartType0', zmed_set=-1.e10, ngrid=1024, return_coords=False, plot_zx=False, plot_zy=False):
+    P = P_File[part]
+
+    press = P['Density'][:] * P['InternalEnergy'][:]*(1.001-1.)
+    density = P['Density'][:]
+
+    xa, ya, za = 0, 1, 2
+
+    xx = P['Coordinates'][:,xa]
+    yy = P['Coordinates'][:,ya]
+    zz = P['Coordinates'][:,za]
+
+    if plot_zx:
+        frozen_coord = np.copy(yy)
+    elif plot_zy:
+        frozen_coord = np.copy(xx) 
+    else:
+        frozen_coord = np.copy(zz)
+
+    zmx = np.max(frozen_coord) - np.min(frozen_coord);
+    zzmed = np.median(frozen_coord);
+    if (zmed_set > -1.e9): zzmed = zmed_set;
+    dzz = np.abs(frozen_coord - zzmed);
+    #dzz[(dzz > 0.5 * zmx)] = zmx - dzz[(dzz > 0.5 * zmx)] #Temporarily removed for testing
+    if ('SmoothingLength' in P.keys()):
+        ok = np.where(dzz < 0.5 * P['SmoothingLength'][:])
+    else:
+        ok = np.where(dzz < 0.05)
+
+    x = 1.0 * (xx / xx.max())
+    y = 1.0 * (yy / yy.max())
+    z = 1.0 * (zz / zz.max())
+
+    #Needs some cleaning up for plotting other than xy:
+    if plot_zx:
+        xg, zg = np.meshgrid(np.linspace(0, 1, ngrid), np.linspace(0, 1, ngrid))      
+        pressgrid = interpolate.griddata((x[ok], z[ok]), press[ok], (xg, zg), method='linear')
+        if(return_coords):
+            return [xg, zg, pressgrid]
+        else:
+            return pressgrid
+    elif plot_zy:
+        yg, zg = np.meshgrid(np.linspace(0, 1, ngrid), np.linspace(0, 1, ngrid))      
+        pressgrid = interpolate.griddata((y[ok], z[ok]), press[ok], (yg, zg), method='linear')
+        if(return_coords):
+            return [yg, zg, pressgrid]
+        else:
+            return pressgrid
+    else:
+        xg, yg = np.meshgrid(np.linspace(0, 1, ngrid), np.linspace(0, 1, ngrid))      
+        pressgrid = interpolate.griddata((x[ok], y[ok]), press[ok], (xg, yg), method='linear')
+        densitygrid = interpolate.griddata((x[ok], y[ok]), density[ok], (xg, yg), method='linear')
+        #maybe make it a weighted mean later according to density
+        masked_pressgrid = np.ma.masked_array(pressgrid, np.isnan(pressgrid))
+        masked_densitygrid = np.ma.masked_array(densitygrid, np.isnan(densitygrid))
+        avg_press = np.ma.average(masked_pressgrid, axis=1, weights=masked_densitygrid)
+        press = avg_press.filled(np.nan)
+
+        press = np.nanmean(pressgrid, axis=1)
+        if(return_coords):
+            x = np.linspace(0, 1, ngrid)
+            return [x, press]
+        else:
+            return press
+    
 def plt_Pprof_dust(i, outputdir, profdir, ngrid=200):
     P_File = h5py.File(outputdir+'snapshot_%03i.hdf5'%i,'r')
 

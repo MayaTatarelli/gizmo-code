@@ -277,7 +277,10 @@ def gas_rho_image(ax, snum=3, sdir='./output', vmin=0., vmax=0., boxL_xy=6, boxL
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     cbar = pylab.colorbar(im, cax=cax)
-    cbar.set_label(label="log $\\Sigma_g$", size=13, rotation=90, labelpad=10)
+    if(gas_val_toplot == 'p'):
+        cbar.set_label(label="P", size=13, rotation=90, labelpad=10)
+    else:
+        cbar.set_label(label="log $\\Sigma_g$", size=13, rotation=90, labelpad=10)
     cbar.ax.tick_params(labelsize=10)
 
     #cbar.set_label(r'$\log\rho$', rotation=270)
@@ -427,6 +430,8 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
     P = P_File[ptype]
     Pc = np.array(P['Coordinates']);
 
+    density = np.array(P['Density']);
+
     #Dust particles
     if(include_dust):
         P_d = P_File['PartType3']
@@ -499,6 +504,8 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
             yy = yy[ok];
             zz = zz[ok];
 
+            # print(np.min(density[ok]), np.max(density[ok]))
+            # exit()
 
             if include_dust:
                 zmx_d = np.max(frozen_coord_d) - np.min(frozen_coord_d);
@@ -596,6 +603,10 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
             else:
                 xg, yg, vxgrid, vygrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
                 ax.streamplot(xg*boxL_xy-(boxL_xy/2), yg*boxL_xy-(boxL_xy/2), vxgrid, vygrid,linewidth=1.0, color=str_color)
+                # x_press, press = load_P_at_coord(P_File, part=ptype, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
+                # plot.figure()
+                # plot.plot(x_press*boxL_xy-(boxL_xy/2), press, color='k')
+                # plot.show()
                 if include_dust:
                     ax.plot(x_d-(boxL_xy/2), y_d-(boxL_xy/2), marker='.', markersize=4, linestyle='None', color='c')
             # ax.streamplot(xg*6, yg*6, vxgrid, vygrid,linewidth=1.0)
@@ -624,12 +635,17 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
     ax.set_ylabel(ylabel, fontsize=13)
     #ax.set_yticklabels(fontsize=10)
 
-    if plot_zx:
-        ax.set_title('Density Profile of Plane $y/H$ = %1.2f at Time = %i'%(coord0-(boxL_xy/2), snum), fontsize=12)
-    elif plot_zy:
-        ax.set_title('Density Profile of Plane $x/H$ = %1.2f at Time = %i'%(coord0-(boxL_xy/2), snum), fontsize=12)
+    if(gas_val_toplot == 'p'):
+        profile_type = "Pressure"
     else:
-        ax.set_title('Density Profile of Plane $z/H$ = %1.2f at Time = %i'%(coord0-(boxL_z/2.0), snum), fontsize=12)
+        profile_type = "Density"
+
+    if plot_zx:
+        ax.set_title('%s Profile of Plane $y/H$ = %1.2f at Time = %i' % (profile_type, coord0-(boxL_xy/2), snum), fontsize=12)
+    elif plot_zy:
+        ax.set_title('%s Profile of Plane $x/H$ = %1.2f at Time = %i' % (profile_type, coord0-(boxL_xy/2), snum), fontsize=12)
+    else:
+        ax.set_title('%s Profile of Plane $z/H$ = %1.2f at Time = %i' % (profile_type, coord0-(boxL_z/2.0), snum), fontsize=12)
 
     #ax.set_title('Time = %i'%P_File['Header'].attrs['Time'])
 
@@ -643,9 +659,9 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
         #pylab.savefig(imdir + 'im_' + ext + '.png', dpi=150, bbox_inches='tight', pad_inches=0)
         #pylab.savefig(imdir + 'im_mass_0_5_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0)
         if include_dust:
-            pylab.savefig(imdir + 'im_density_dust_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0.075)
+            pylab.savefig(imdir + 'im_' + profile_type + '_dust_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0.075)
         else:
-            pylab.savefig(imdir + 'im_density_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0.075)
+            pylab.savefig(imdir + 'im_' + profile_type +'_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0.075)
 
     P_File.close()
     pylab.close()
