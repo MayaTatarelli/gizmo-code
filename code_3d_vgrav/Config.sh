@@ -8,7 +8,7 @@ EOS_ENFORCE_ADIABAT=(1.0) # enforce EOS even in shocks/viscosity (cool back to i
 # (options below here are unlikely to change, though of course possible to do so)
 BOX_PERIODIC # box is periodic in dimensions not otherwise constrained
 BOX_OUTFLOW_Z
-BOX_OUTFLOW_X=-1
+# BOX_OUTFLOW_X=-1
 #HYDRO_MESHLESS_FINITE_VOLUME # default to MFV hydro (allow mass fluxes)
 HYDRO_MESHLESS_FINITE_MASS
 SELFGRAVITY_OFF # no self-gravity
