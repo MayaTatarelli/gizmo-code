@@ -707,11 +707,18 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
         dr = dr_factor*c_s/omega_kep(r_cur)
         print('LOOK HERE: ', dr)
 
-
-        # #Check if dr < 0.0027: This is for trying to spread the particles rings out more at the inner radius.
+        #Check if dr < 0.0027: This is for trying to spread the particles rings out more at the inner radius.
+        
         # if (dr < 0.0027):
-        #     dr = 0.0027; print('dr < 0.027, iter: ', iter);
-
+        #     dr = 0.0027; print('dr < 0.0027, iter: ', iter);                
+        #     if(vary_particle_mass==True):
+        #         #the 1.85 was determined a by just seeing the difference bw expected vs output, so a little random
+        #         #need to figure out exactly where its coming from
+        #         m_particle_cur = m_target_gas_0 / 1.85 / np.log(r_cur+1)
+        #         m_target_gas = m_particle_cur
+        # elif(vary_particle_mass==True):
+        #     m_particle_cur = m_target_gas_0 * r_cur**(5/4) / np.log(r_cur+1)
+        #     m_target_gas = m_particle_cur
         if(vary_particle_mass==True):
             m_particle_cur = m_target_gas_0 * r_cur**(5/4) / np.log(r_cur+1)
             m_target_gas = m_particle_cur
@@ -761,8 +768,8 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     Ngas=phiv_g.size
 
     #Convert polar coordinates to cartesian:
-    xv_g = rv_g*np.cos(phiv_g)+r_out
-    yv_g = rv_g*np.sin(phiv_g)+r_out
+    xv_g = rv_g*np.cos(phiv_g)+r_out+width_ghost_out
+    yv_g = rv_g*np.sin(phiv_g)+r_out+width_ghost_out
 
     #TEMPORARILY MAKING COORDS THE SAME AS PHIL'S
     # xv_g = rv_g*np.cos(phiv_g)+4.
@@ -780,8 +787,8 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
         rv_d = rv_g[-1] + 0.01 + np.zeros(phiv_d.size)
         Ngrains = phiv_d.size
         #Convert polar coordinates to cartesian:
-        xv_d = rv_d*np.cos(phiv_d)+r_out
-        yv_d = rv_d*np.sin(phiv_d)+r_out
+        xv_d = rv_d*np.cos(phiv_d)+r_out+width_ghost_out
+        yv_d = rv_d*np.sin(phiv_d)+r_out+width_ghost_out
         zv_d=0.*yv_d
 
     #Velocity components with keplerian angular velocity
@@ -800,13 +807,26 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     kep_velocity_y = np.sqrt(omega_kep(rv_g)**2 * rv_g**2 + (p-7/4)*T_0/rv_g**0.5) * np.cos(phiv_g)
     kep_velocity_z = 0.*kep_velocity_y
 
+    #Put ghost particles with keplerian velocity since they will not feel any forces: -- actually don't do this
+    # kep_velocity_x[0:Nghost_in] = -omega_kep(rv_g[0:Nghost_in]) * rv_g[0:Nghost_in] * np.sin(phiv_g[0:Nghost_in])
+    # kep_velocity_y[0:Nghost_in] = omega_kep(rv_g[0:Nghost_in]) * rv_g[0:Nghost_in] * np.cos(phiv_g[0:Nghost_in])
+
+    # kep_velocity_x[Ngas-Nghost_out:] = -omega_kep(rv_g[Ngas-Nghost_out:]) * rv_g[Ngas-Nghost_out:] * np.sin(phiv_g[Ngas-Nghost_out:])
+    # kep_velocity_y[Ngas-Nghost_out:] = omega_kep(rv_g[Ngas-Nghost_out:]) * rv_g[Ngas-Nghost_out:] * np.cos(phiv_g[Ngas-Nghost_out:])
+
+    #Give ghost particles v=0:
+    # kep_velocity_x[0:Nghost_in] = 0.0
+    # kep_velocity_y[0:Nghost_in] = 0.0
+    # kep_velocity_x[Ngas-Nghost_out:] = 0.0
+    # kep_velocity_y[Ngas-Nghost_out:] = 0.0
+
     kep_velocity_mag = np.sqrt(kep_velocity_x**2 + kep_velocity_y**2)
 
     #FOR TESTING:
     v_phi_theoretical = np.sqrt(omega_kep(all_r)**2 * all_r**2 + (p-7/4)*T_0/all_r**0.5)
 
     centrifugal_theoretical = v_phi_theoretical*v_phi_theoretical/all_r
-    phi_dot = ((xv_g-r_out)*kep_velocity_y - (yv_g-r_out)*kep_velocity_x) / ((xv_g-r_out)**2 + (yv_g-r_out)**2)
+    phi_dot = ((xv_g-(r_out+width_ghost_out))*kep_velocity_y - (yv_g-(r_out+width_ghost_out))*kep_velocity_x) / ((xv_g-(r_out+width_ghost_out))**2 + (yv_g-(r_out+width_ghost_out))**2)
 
     phi_dot_by_radius = np.zeros(0)
 
@@ -839,6 +859,7 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     p_fit = np.polyfit(all_r, all_N_1D, 1)
     print(p_fit)
 
+    print(num_particle_r_in*np.log(all_r+1)/all_N_1D)
     plt.figure()
     plt.plot(all_r, all_N_1D, marker='.', label='num particles from IC')
     # plt.plot(all_r, p_fit[0]*np.log(all_r) + p_fit[1], label='best fit')
@@ -906,7 +927,10 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     # p.create_dataset("InternalEnergy",data=(0.*xv_g+internal_energy))
     #Use this once including TEMP GRADIENT
     p.create_dataset("InternalEnergy",data=internal_energy_g)
-
+    print(particle_IDs[Nghost_in-10:Nghost_in+500])
+    print(" Nghost in and out: ", Nghost_in, Nghost_out)
+    print("Ngas no ghost: ", Ngas-Nghost_in-Nghost_out)
+    print("Ngas: ", Ngas,len(particle_IDs))
 
     if(include_dust):
         p = file.create_group("PartType3")
@@ -1174,10 +1198,23 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, dustgas_massratio=0.01,
 
         p = file.create_group("PartType3")
         q=np.zeros((Ngrains,3));
-        q[:,0]=xd * (1 + (np.random.random(size=len(xd))-.5)*1e-3); 
-        q[:,1]=yd * (1 + (np.random.random(size=len(yd))-.5)*1e-3); 
+
+        x_temp = xd * (1 + (np.random.random(size=len(xd))-.5)*1e-3) * Lbox_xy;
+        
+        #to ensure no particles are at x > 1.0 -- doesn't work well when I run it with this IC
+        # ok = np.where(x_temp > 1.0)
+        # print("Checking if any dust particles are at x>1 before: ", ok)
+        # max_off = np.max(x_temp[ok]-1.0)
+        # x_temp -= max_off
+
+        q[:,0]=x_temp
+        q[:,1]=yd * (1 + (np.random.random(size=len(yd))-.5)*1e-3) * Lbox_xy;
         q[:,2]=zd * (1 + (np.random.random(size=len(zd))-.5)*1e-3);
 
+        print("Checking if any dust particles are at x>1 after: ", np.where(q[:,0] > 1.0*Lbox_xy))
+        print(np.min(q[:,0]), np.max(q[:,0]))
+        print(np.min(q[:,1]), np.max(q[:,1]))
+        print(np.min(q[:,2]), np.max(q[:,2]))
         print(xd); print(q[:,0]);
         print(yd); print(q[:,1]);
         print(zd); print(q[:,2]);
@@ -1192,9 +1229,9 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, dustgas_massratio=0.01,
 
     #plot dust:
     if(include_dust):
-        print("xd: ", xd[0:500])
+        print("xd: ", q[:,0][0:500])
         plt.figure()
-        plt.plot(yd,zd, marker='.', linestyle='None')
+        plt.plot(q[:,1],q[:,2], marker='.', linestyle='None')
         plt.xlabel("y")
         plt.ylabel("z")
         plt.show()

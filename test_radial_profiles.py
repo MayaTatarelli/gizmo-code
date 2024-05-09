@@ -8,39 +8,45 @@ titles = np.array(['Pressure gradient and confining at boundaries (large inner b
 bndry_in = np.array([0.5, 0.227, 0.2, 0.2, 0.227])
 
 #Density profile
-def plot_density(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=np.array(['./run/']), fig_dir=np.array(['./run/']), titles=np.array(['run']), bndry_in=np.array([0.0])):
+def plot_density(snum=0, use_fname=False, r_in=0.2, r_out=2.0, width_ghost_in=0.0, width_ghost_out=0.0, rho_target=4.42e-3, runs=np.array(['./run/']), fig_dir=np.array(['./run/']), titles=np.array(['run']), bndry_in=np.array([0.0])):
 	for i in range(len(runs)):
 
 		all_r, num_particles_at_r, density, rho_volume, density_theoretical = get_value_profile(snum=snum,
 										sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/'+runs[i],
-										val_to_plot='rho', ptype='PartType0', r_in=r_in, r_out=r_out,
+										use_fname=use_fname, fname = runs[i],
+										val_to_plot='rho', ptype='PartType0', r_in=r_in, r_out=r_out, width_ghost_in=width_ghost_in, width_ghost_out=width_ghost_out,
 										dr_factor=0.1, p=-1.0, rho_target=rho_target, temp_p=-0.5, plot_all=False)
 
 		# all_r = np.array([0,1,2,3])
 		# density = np.array([1,1,2,3])
 		# density_theoretical = np.array([1,1,2,3])	
-		index = np.nanargmax(density)
-		print(all_r[index])
-		exit()
+		# index = np.nanargmax(density)
+		# print(all_r[index])
+		# exit()
 
 		plt.figure()
 		plt.plot(all_r, density/density_theoretical, marker='.', linestyle='None', label='Actual/Theoretical')
 		plt.axvline(x=bndry_in[i], linestyle='--',color='orange', label='Inner bndry forcing limit')
 		plt.xlabel('Radius', size=11)
 		plt.ylabel("$\\Sigma$", size=13)
-		plt.xlim([r_in, r_out])
+		plt.xlim([r_in-width_ghost_in, r_out+width_ghost_out])
 		plt.title(titles[i])
 		plt.legend()
-		plt.savefig('/Users/mayatatarelli/Desktop/Maya_Masters/Research/Fall2023/test_boundary_cond_results_2/'+fig_dir[i]+'surf_density_'+str(snum)+'.pdf')
+
+		if(use_fname==False):
+			plt.savefig('/Users/mayatatarelli/Desktop/Maya_Masters/Research/Fall2023/test_boundary_cond_results_2/'+fig_dir[i]+'surf_density_'+str(snum)+'.pdf')
+		else:
+			plt.savefig('/Users/mayatatarelli/Desktop/Maya_Masters/Research/Fall2023/test_boundary_cond_results_2/'+fig_dir[i]+'surf_density_'+'IC'+'.pdf')
+
 		# plt.show()
 		# exit()
 
 #Velocity Profile
-def plot_velocity(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=np.array(['./run/']), fig_dir=np.array(['./run/']), titles=np.array(['run']), bndry_in=np.array([0.0])):
+def plot_velocity(snum=0, r_in=0.2, r_out=2.0, width_ghost_in=0.0, width_ghost_out=0.0, rho_target=4.42e-3, runs=np.array(['./run/']), fig_dir=np.array(['./run/']), titles=np.array(['run']), bndry_in=np.array([0.0])):
 	for i in range(len(runs)):
 		all_r, num_particles_at_r, all_vel_radial, all_vel_phi, v_phi_theoretical = get_value_profile(snum=snum,
 										sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/'+runs[i],
-										val_to_plot='vel_both', ptype='PartType0', r_in=r_in, r_out=r_out,
+										val_to_plot='vel_both', ptype='PartType0', r_in=r_in, r_out=r_out, width_ghost_in=width_ghost_in, width_ghost_out=width_ghost_out,
 										dr_factor=0.1, p=-1.0, rho_target=rho_target, temp_p=-0.5, plot_all=False)
 
 		plt.figure()
@@ -48,7 +54,7 @@ def plot_velocity(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=np.array
 		plt.axhline(y=0, linestyle='--',color='orange', label='Theor')
 		plt.xlabel('Radius', size=11)
 		plt.ylabel("Radial velocity", size=11)
-		plt.xlim([0.4, 1.1])
+		# plt.xlim([0.4, 1.1])
 		plt.title(titles[i])
 		plt.legend()
 		plt.savefig('/Users/mayatatarelli/Desktop/Maya_Masters/Research/Fall2023/test_boundary_cond_results_2/'+fig_dir[i]+'vel_radial_'+str(snum)+'.pdf')
@@ -60,7 +66,7 @@ def plot_velocity(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=np.array
 		plt.plot(all_r, all_vel_phi/v_phi_theoretical, marker='.', linestyle='None', label='Actual/Theoretical')
 		plt.xlabel('Radius', size=11)
 		plt.ylabel("Azimuthal velocity", size=11)
-		plt.xlim([0.4, 1.1])
+		# plt.xlim([0.4, 1.1])
 		plt.title(titles[i])
 		plt.legend()
 		plt.savefig('/Users/mayatatarelli/Desktop/Maya_Masters/Research/Fall2023/test_boundary_cond_results_2/'+fig_dir[i]+'vel_phi_'+str(snum)+'.pdf')
@@ -68,18 +74,18 @@ def plot_velocity(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=np.array
 		# exit()
 
 #Acceleration profile
-def plot_radial_accel(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=np.array(['./run/']), fig_dir=np.array(['./run/']), titles=np.array(['run']), bndry_in=np.array([0.0])):
+def plot_radial_accel(snum=0, r_in=0.2, r_out=2.0, width_ghost_in=0.0, width_ghost_out=0.0, rho_target=4.42e-3, runs=np.array(['./run/']), fig_dir=np.array(['./run/']), titles=np.array(['run']), bndry_in=np.array([0.0])):
 	for i in range(len(runs)):
 		calculate_radial_accel(snum=snum, 
 							sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/'+runs[i],
 							use_fname=False, fname='./ICs/keplerian_ic_2d_rho_temp_gradient.hdf5',
-							ptype='PartType0', r_in=r_in, r_out=r_out, p=-1.0, temp_p=-0.5, rho_target=rho_target, gamma = 7./5.,
+							ptype='PartType0', r_in=r_in, r_out=r_out, width_ghost_in=width_ghost_in, width_ghost_out=width_ghost_out, p=-1.0, temp_p=-0.5, rho_target=rho_target, gamma = 7./5.,
 							plot_title=titles[i],
 							output_plot_dir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Fall2023/test_boundary_cond_results_2/'+fig_dir[i]+'radial_accel_'+str(snum)+'.pdf')
 
-def plot_radial_profiles(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=np.array(['./run/']), fig_dir=np.array(['./run/']), titles=np.array(['run']), bndry_in=np.array([0.0])):
-	plot_density(snum, r_in, r_out, rho_target, runs, fig_dir, titles, bndry_in)
-	plot_radial_accel(snum, r_in, r_out, rho_target, runs, fig_dir, titles, bndry_in)
+def plot_radial_profiles(snum=0, r_in=0.2, r_out=2.0, width_ghost_in=0.0, width_ghost_out=0.0, rho_target=4.42e-3, runs=np.array(['./run/']), fig_dir=np.array(['./run/']), titles=np.array(['run']), bndry_in=np.array([0.0]), use_fname=False):
+	plot_density(snum, use_fname, r_in, r_out, width_ghost_in, width_ghost_out, rho_target, runs, fig_dir, titles, bndry_in)
+	plot_radial_accel(snum, r_in, r_out, width_ghost_in, width_ghost_out, rho_target, runs, fig_dir, titles, bndry_in)
 
 #Testing varying particle mass mixing (using histogram)
 # get_value_profile(snum=500, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/inner_inflow_outer_both_low_visc_vary_prtcl_mass_2/output/',
@@ -91,6 +97,21 @@ def plot_radial_profiles(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=n
 # 										dr_factor=0.1, p=-1.0, rho_target=4.42e-3, temp_p=-0.5, plot_all=False)
 # exit()
 
+#adding_ghost_particles
+#test_1
+# plot_velocity(snum=1, r_in=0.1, r_out=5.0, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_ghost_particles/test_2/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_2/']), titles=np.array(['']), bndry_in=np.array([0]))
+
+#test_4
+# plot_velocity(snum=1, r_in=0.1, r_out=5.0, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_ghost_particles/test_4/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_4/']), titles=np.array(['']), bndry_in=np.array([0]))
+
+# plot_velocity(snum=881, r_in=0.1, r_out=5.0, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_ghost_particles/test_4/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_4/']), titles=np.array(['']), bndry_in=np.array([0]))
+
+# plot_density(snum=0, use_fname=True, r_in=0.2, r_out=4.0, rho_target=4.42e-3,
+# 	runs=np.array(['/Users/mayatatarelli/Codes/gizmo-code/ICs/keplerian_ic_2d_vary_prtcl_mass_ghost_particles_fix.hdf5']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_4/']), titles=np.array(['']), bndry_in=np.array([0]))
+# exit()
 #Damping
 
 # plot_velocity(snum=1000, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
@@ -171,9 +192,28 @@ def plot_radial_profiles(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, runs=n
 
 #outer_both_low_visc_vary_prtcl_mass_large_r_outflow
 
-plot_radial_profiles(snum=1000, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
-	runs=np.array(['adding_viscosity/outer_both_low_visc_vary_prtcl_mass_large_r_outflow/output/']), fig_dir=np.array(['../test_vary_particle_mass/outer_both_low_visc_vary_prtcl_mass_large_r_outflow/']), titles=np.array(['Vary particle mass (Inner inflow(0.22)-outer confine(10)-low viscosity-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
+# plot_radial_profiles(snum=1000, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_viscosity/outer_both_low_visc_vary_prtcl_mass_large_r_outflow/output/']), fig_dir=np.array(['../test_vary_particle_mass/outer_both_low_visc_vary_prtcl_mass_large_r_outflow/']), titles=np.array(['Vary particle mass (Inner inflow(0.22)-outer confine(10)-low viscosity-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
 
+#outer_outflow_low_visc_vary_pmass_large_in_spacing
+# plot_radial_profiles(snum=100, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_viscosity/outer_outflow_low_visc_vary_pmass_large_in_spacing/output/']), fig_dir=np.array(['../test_vary_particle_mass/outer_outflow_low_visc_vary_pmass_large_in_spacing/']), titles=np.array(['Vary pmass, large inner spacing (In_inflow(0.22)- Out_outflow(10)-low visc-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
+
+# plot_radial_profiles(snum=1000, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_viscosity/outer_outflow_low_visc_vary_pmass_large_in_spacing/output/']), fig_dir=np.array(['../test_vary_particle_mass/outer_outflow_low_visc_vary_pmass_large_in_spacing/']), titles=np.array(['Vary pmass, large inner spacing (In_inflow(0.22)- Out_outflow(10)-low visc-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
+
+#adding_ghost_particles
+# plot_radial_profiles(snum=380, r_in=0.2, r_out=4.0, width_ghost_in=0.1, width_ghost_out=1.0, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_ghost_particles/test_5_0vel/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_5_0vel/']), titles=np.array(['Ghost particles - 0 vel (In_inflow(0.22)-Out_outflow(5)-low visc-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
+
+plot_radial_profiles(snum=0, r_in=0.2, r_out=4.0, width_ghost_in=0.1, width_ghost_out=1.0, rho_target=4.42e-3, 
+	runs=np.array(['adding_ghost_particles/test_4/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_4/']), titles=np.array(['Ghost particles (In_inflow(0.22)-Out_outflow(5)-low visc-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
+
+# plot_radial_profiles(snum=1, r_in=0.2, r_out=4.0, width_ghost_in=0.1, width_ghost_out=1.0, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_ghost_particles/test_4/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_4/']), titles=np.array(['Ghost particles (In_inflow(0.22)-Out_outflow(5)-low visc-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
+
+# plot_radial_profiles(snum=122, r_in=0.2, r_out=4.0, width_ghost_in=0.1, width_ghost_out=1.0, rho_target=4.42e-3, 
+# 	runs=np.array(['adding_ghost_particles/test_4/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_4/']), titles=np.array(['Ghost particles (In_inflow(0.22)-Out_outflow(5)-low visc-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
 
 # plot_radial_profiles(snum=1000, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
 # 	runs=np.array(['adding_viscosity/outer_both_low_visc_vary_prtcl_mass_large_r_outflow/output/']), fig_dir=np.array(['../test_vary_particle_mass/outer_both_low_visc_vary_prtcl_mass_large_r_outflow/']), titles=np.array(['Vary particle mass (Inner inflow(0.22)-outer outflow(10)-low viscosity-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
