@@ -10,6 +10,7 @@ import math
 
 def plot_velocity_streamlines(snum=0, sdir='./output/', 
 								use_fname=False, fname='./ICs/keplerian_ics.hdf5',
+								plot_ghost=False,
 								ptype='PartType0', phil=True, vmax=5e-3):
 	if (use_fname == True):
 		print("Using filename for initial conditions file\n")
@@ -21,6 +22,7 @@ def plot_velocity_streamlines(snum=0, sdir='./output/',
 
 	P = P_File[ptype]
 	Pc = np.array(P['Coordinates'])
+	PIDs = np.array(P['ParticleIDs'])
 	xx = Pc[:, 0]#-2.
 	yy = Pc[:, 1]#-2.
 	vx = np.array(P['Velocities'][:, 0])
@@ -41,6 +43,18 @@ def plot_velocity_streamlines(snum=0, sdir='./output/',
 		density = np.array(P['Density'])
 		# density = density[ok]
 
+	if(plot_ghost == True):
+		ok = np.where(PIDs==0)
+		Pc = Pc[ok]
+		PIDs = PIDs[ok]
+		xx = xx[ok]
+		yy = yy[ok]
+		vx = vx[ok]
+		vy = vy[ok]
+		vz = vz[ok]
+		massP = massP[ok]
+		density = density[ok]
+		
 	x = 1.0 * (xx / xx.max())
 	y = 1.0 * (yy / yy.max())
 
@@ -512,7 +526,7 @@ def get_radial_force_balance(snum=0, sdir='./output/',
 	# plt.show()
 
 def calculate_radial_accel(snum=0, sdir='./output/', use_fname=False, fname='./ICs/keplerian_ic_2d_rho_temp_gradient.hdf5',
-						ptype='PartType0', r_in=0.2, r_out=2.0, p=-1.0, temp_p=-0.5, rho_target=20.0, gamma = 7./5.,
+						ptype='PartType0', r_in=0.2, r_out=2.0, width_ghost_in=0.0, width_ghost_out=0.0, p=-1.0, temp_p=-0.5, rho_target=20.0, gamma = 7./5.,
 						plot_title='test',
 						output_plot_dir='/Users/mayascomputer/Codes/gizmo_code/images_plots/keplerian_disk_tests/'):
 	if (use_fname == True):
@@ -524,8 +538,8 @@ def calculate_radial_accel(snum=0, sdir='./output/', use_fname=False, fname='./I
 
 	P = P_File[ptype]
 	Pc = np.array(P['Coordinates'])
-	x = Pc[:, 0] - r_out
-	y = Pc[:, 1] - r_out
+	x = Pc[:, 0] - r_out - width_ghost_out
+	y = Pc[:, 1] - r_out - width_ghost_out
 	internal_energyP = P['InternalEnergy'][:]
 	vx = np.array(P['Velocities'][:, 0])
 	vy = np.array(P['Velocities'][:, 1])
@@ -538,6 +552,7 @@ def calculate_radial_accel(snum=0, sdir='./output/', use_fname=False, fname='./I
 	if (use_fname == True):
 		all_r, num_P_at_r, density, rho_volume, density_theoretical = get_value_profile(use_fname=True, fname=fname,
 																		val_to_plot='rho', ptype='PartType0', r_in=r_in, r_out=r_out,
+																		width_ghost_in=width_ghost_in, width_ghost_out=width_ghost_out,
 																		p=p, rho_target=rho_target, temp_p=temp_p,
 																		plot_all=False)
 		densitiesP = np.zeros(0)
@@ -585,8 +600,8 @@ def calculate_radial_accel(snum=0, sdir='./output/', use_fname=False, fname='./I
 	centrifugal_accel_by_r = np.zeros(0)
 	all_r = np.zeros(0)
 
-	r_cur=1.0*r_in; iter=0; dr=0;
-	while(r_cur <= r_out):
+	r_cur=1.0*r_in-width_ghost_in; iter=0; dr=0;
+	while(r_cur <= r_out+width_ghost_out):
 		T_cur = T_0*r_cur**temp_p
 		c_s = T_cur**0.5
 		if(temp_p==0.0):
@@ -860,7 +875,7 @@ def get_phi(x,y):
 
 def get_value_profile(snum=0, sdir='./output/', 
 						use_fname=False, fname='./ICs/keplerian_ics.hdf5',
-						val_to_plot='rho', ptype='PartType0', r_in=0.2, r_out=2.0,
+						val_to_plot='rho', ptype='PartType0', r_in=0.2, r_out=2.0, width_ghost_in=0.0, width_ghost_out=0.0,
 						dr_factor=0.1, p=0.0, rho_target=1.0, temp_p=-0.5, plot_all=False):
 	if (use_fname == True):
 		print("Using filename for initial conditions file\n")
@@ -871,8 +886,8 @@ def get_value_profile(snum=0, sdir='./output/',
 
 	P = P_File[ptype]
 	Pc = np.array(P['Coordinates'])
-	x = Pc[:, 0] - r_out
-	y = Pc[:, 1] - r_out
+	x = Pc[:, 0] - r_out - width_ghost_out
+	y = Pc[:, 1] - r_out - width_ghost_out
 	massP = P['Masses'][0]
 	massP_array = P['Masses']
 
@@ -901,6 +916,7 @@ def get_value_profile(snum=0, sdir='./output/',
 	T_0 = T_ref*r_ref**(-temp_p)
 
 	num_particles_at_r = np.zeros(0)
+	mass_particles_at_r = np.zeros(0)
 	all_r = np.zeros(0)
 	all_dr = np.zeros(0)
 	all_densities = np.zeros(0)
@@ -920,8 +936,8 @@ def get_value_profile(snum=0, sdir='./output/',
 		# r[i] = math.floor(r[i]*mult)/mult
 	print("r_in: ", r_in); print("r_out: ", r_out);
 	# exit()
-	r_cur=1.0*r_in; iter=0; dr=0;
-	while(r_cur <= r_out):
+	r_cur=1.0*r_in - width_ghost_in; iter=0; dr=0;
+	while(r_cur <= r_out+width_ghost_out):
 		T_cur = T_0*r_cur**temp_p
 		c_s = T_cur**0.5
 		if(temp_p==0.0):
@@ -949,7 +965,10 @@ def get_value_profile(snum=0, sdir='./output/',
 		# print('Current radius: ', r[ok])
 		numP_cur = len(ok[0])
 		print(numP_cur)
+		massP_cur = np.sum(massP_array[ok])/len(massP_array[ok])
+
 		num_particles_at_r = np.append(num_particles_at_r, numP_cur)
+		mass_particles_at_r = np.append(mass_particles_at_r, massP_cur)
 
 		#Temperature
 		internal_energy_cur = np.sum(internal_energyP[ok])/len(internal_energyP[ok])
@@ -977,7 +996,7 @@ def get_value_profile(snum=0, sdir='./output/',
 	
 	print("ITER: ", iter)
 
-	density_by_numP = num_particles_at_r*massP/(2*np.pi*all_r*all_dr)
+	density_by_numP = num_particles_at_r*mass_particles_at_r/(2*np.pi*all_r*all_dr)
 
 	if(use_fname == True): #case for IC file
 		density = density_by_numP
