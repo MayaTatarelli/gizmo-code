@@ -602,7 +602,7 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
                     ax.plot(y_d-(boxL_xy/2), z_d-(boxL_z/2), marker='.', markersize=4, linestyle='None', color='c')
             else:
                 xg, yg, vxgrid, vygrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
-                vygrid = 0.*vygrid
+                # vygrid = 0.*vygrid
                 ax.streamplot(xg*boxL_xy-(boxL_xy/2), yg*boxL_xy-(boxL_xy/2), vxgrid, vygrid, linewidth=1.0, color=str_color)
                 # x_press, press = load_P_at_coord(P_File, part=ptype, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
                 # plot.figure()

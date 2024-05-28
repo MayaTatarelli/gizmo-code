@@ -30,6 +30,7 @@ def plot_velocity_streamlines(snum=0, sdir='./output/',
 	vz = np.array(P['Velocities'][:, 2])
 	massP = np.array(P['Masses'])
 	print(len(Pc))
+
 	# exit()
 	#TEMPORARY
 	# ok = np.where(xx>2.95)
@@ -62,10 +63,11 @@ def plot_velocity_streamlines(snum=0, sdir='./output/',
 	print(np.min(y), np.max(y))
 	# exit()
 
-	ngrid=2048
-	xg, yg = np.meshgrid(np.linspace(np.min(x), 1, ngrid), np.linspace(np.min(y), 1, ngrid))
-	vxgrid = interpolate.griddata((x, y), vx, (xg, yg), method='linear')
-	vygrid = interpolate.griddata((x, y), vy, (xg, yg), method='linear')
+	# For Interpolation
+	# ngrid=2048
+	# xg, yg = np.meshgrid(np.linspace(np.min(x), 1, ngrid), np.linspace(np.min(y), 1, ngrid))
+	# vxgrid = interpolate.griddata((x, y), vx, (xg, yg), method='linear')
+	# vygrid = interpolate.griddata((x, y), vy, (xg, yg), method='linear')
 
 	#Plot velocity streamlines
 	# xg, yg, vxgrid, vygrid = load_v(P_File, part='PartType0', xz=0, ngrid=2048,return_coords=True)
@@ -86,19 +88,24 @@ def plot_velocity_streamlines(snum=0, sdir='./output/',
 	# 	val = 4
 	# 	ax.set_xlim([0,4])
 	# 	ax.set_ylim([0,4])
-	cmap='hot'
+
+	cmap='Spectral_r' #'PuBu'
 	# dg = interpolate.griddata((x, y), density, (xg, yg), method='linear')#, fill_value=np.median(density));
 	# im = ax.imshow(dg, interpolation='bicubic', cmap=cmap, extent=(np.min(x), 1, np.min(y), 1,), zorder=1);
 
-	im =ax.scatter(xx, yy, marker='.', vmin=0., vmax=vmax, c=density, cmap=cmap, zorder=3)
+	ok = np.where(PIDs != 0)
+	im =ax.scatter(xx[ok], yy[ok], marker='.', vmin=0., vmax=vmax, c=density[ok], cmap=cmap, zorder=3)
 	# im =ax.scatter(xx, yy, marker='.', vmin=0., c=massP, cmap=cmap, zorder=3)
 
+	val = 10
 	# ax.streamplot(xg, yg, vxgrid, vygrid,linewidth=1.0, density = 4., zorder=3)
 	# ax.plot(x,y, marker = '.', markersize=1, linestyle='None')
 
 	# ax.streamplot((xg*val), (yg*val), vxgrid, vygrid,linewidth=1.0, density = 4., zorder=3)
 	# ax.plot(xx,yy, marker = '.', markersize=1, linestyle='None')
-	
+	# plt.show()
+	# exit()
+
 	divider = make_axes_locatable(ax)
 	cax = divider.append_axes("right", size="5%", pad=0.05)
 	cbar = pylab.colorbar(im, cax=cax)

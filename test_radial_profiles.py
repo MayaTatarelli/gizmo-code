@@ -109,8 +109,8 @@ def plot_radial_profiles(snum=0, r_in=0.2, r_out=2.0, width_ghost_in=0.0, width_
 # plot_velocity(snum=881, r_in=0.1, r_out=5.0, rho_target=4.42e-3, 
 # 	runs=np.array(['adding_ghost_particles/test_4/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_4/']), titles=np.array(['']), bndry_in=np.array([0]))
 
-# plot_density(snum=0, use_fname=True, r_in=0.2, r_out=4.0, rho_target=4.42e-3,
-# 	runs=np.array(['/Users/mayatatarelli/Codes/gizmo-code/ICs/keplerian_ic_2d_vary_prtcl_mass_ghost_particles_fix.hdf5']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_4/']), titles=np.array(['']), bndry_in=np.array([0]))
+# plot_density(snum=0, use_fname=True, r_in=0.2, r_out=4.0, width_ghost_in=0.1, width_ghost_out=1.0, rho_target=4.42e-3,
+# 	runs=np.array(['/Users/mayatatarelli/Codes/gizmo-code/ICs/keplerian_ic_2d_vary_prtcl_mass_ghost_particles_fix.hdf5']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_6_circOrbitPos/']), titles=np.array(['']), bndry_in=np.array([0]))
 # exit()
 #Damping
 
@@ -206,8 +206,8 @@ def plot_radial_profiles(snum=0, r_in=0.2, r_out=2.0, width_ghost_in=0.0, width_
 # plot_radial_profiles(snum=380, r_in=0.2, r_out=4.0, width_ghost_in=0.1, width_ghost_out=1.0, rho_target=4.42e-3, 
 # 	runs=np.array(['adding_ghost_particles/test_5_0vel/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_5_0vel/']), titles=np.array(['Ghost particles - 0 vel (In_inflow(0.22)-Out_outflow(5)-low visc-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
 
-plot_radial_profiles(snum=0, r_in=0.2, r_out=4.0, width_ghost_in=0.1, width_ghost_out=1.0, rho_target=4.42e-3, 
-	runs=np.array(['adding_ghost_particles/test_4/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_4/']), titles=np.array(['Ghost particles (In_inflow(0.22)-Out_outflow(5)-low visc-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
+plot_radial_profiles(snum=751, r_in=0.2, r_out=4.0, width_ghost_in=0.1, width_ghost_out=1.0, rho_target=4.42e-3, 
+	runs=np.array(['adding_ghost_particles/test_6_circOrbitPos/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_6_circOrbitPos/']), titles=np.array(['Ghost particles (In_inflow(0.22)-Out_outflow(5)-low visc-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
 
 # plot_radial_profiles(snum=1, r_in=0.2, r_out=4.0, width_ghost_in=0.1, width_ghost_out=1.0, rho_target=4.42e-3, 
 # 	runs=np.array(['adding_ghost_particles/test_4/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_4/']), titles=np.array(['Ghost particles (In_inflow(0.22)-Out_outflow(5)-low visc-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))

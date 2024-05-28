@@ -405,7 +405,9 @@ from global_disk import *
 # plot_velocity_streamlines(snum=122, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_ghost_particles/test_4/output/', plot_ghost=True, phil=False, vmax=7e-3)
 # plot_velocity_streamlines(snum=881, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_ghost_particles/test_4/output/', plot_ghost=True, phil=False, vmax=7e-3)
 
-plot_velocity_streamlines(snum=380, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_ghost_particles/test_5_0vel/output/', plot_ghost=False, phil=False, vmax=7e-3)
+plot_velocity_streamlines(snum=583, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_ghost_particles/test_6_circOrbitPos/output/', plot_ghost=False, phil=False, vmax=4e-3)
+# plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_ghost_particles/test_6_circOrbitPos/output/', plot_ghost=True, phil=False, vmax=7e-3)
+plot_velocity_streamlines(snum=583, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_ghost_particles/test_6_circOrbitPos/output/', plot_ghost=True, phil=False, vmax=7e-3)
 
 #adding_viscosity - test_2
 # plot_velocity_streamlines(snum=0, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_viscosity/test_2/', phil=False)
