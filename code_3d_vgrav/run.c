@@ -127,7 +127,6 @@ void run(void)
 
         /*For manual periodic -- MayaT May 28 2024*/
         int num_particles_per_box[num_boxes];
-        
         int init_array_length = 100; //TODO: determine reasonable starting length for the arrays
         int length_of_array_per_box[num_boxes];
 
