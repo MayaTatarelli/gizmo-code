@@ -125,6 +125,20 @@ void run(void)
         printf("\n Inner Boundary = %g\n", inner_boundary);
         printf("\n Outer Boundary = %g\n", outer_boundary);
 
+        /*For manual periodic -- MayaT May 28 2024*/
+        int num_particles_per_box[num_boxes];
+        
+        int init_array_length = 100; //TODO: determine reasonable starting length for the arrays
+        int length_of_array_per_box[num_boxes];
+
+        //Initialize jagged array
+        for(int i=0; i<num_boxes; i++)
+        {
+            edge_particles_array[i] = malloc(init_array_length * sizeof(particle_data));
+            num_particles_per_box[i] = 0;
+            length_of_array_per_box[i] = init_array_length;
+        }
+
         int i; for(i = FirstActiveParticle; i >= 0; i = NextActiveParticle[i])
         {
             if(P[i].Type==0){
@@ -144,9 +158,36 @@ void run(void)
                     P[i].GravAccel[0] = TotalAccel_x - SphP[i].HydroAccel[0];
                     P[i].GravAccel[1] = TotalAccel_y - SphP[i].HydroAccel[1];
                     P[i].GravAccel[2] = TotalAccel_z - SphP[i].HydroAccel[2];
+
+                    /*Adding manual periodic term*/
+                    
+                    //Check which box the current particle should be in
+                    int box_i = int(P[i].Pos[2] / h);
+                    if(box_i >= num_boxes){
+                        box_i--;
+                    }
+                    //Add particles to correct box (first check that there is enough space left)
+                    if(num_particles_per_box[i] < length_of_array_per_box[i]){
+                        edge_particles_array[box_i][num_particles_per_box[box_i]] = P[i];
+                        num_particles_per_box[box_i]++;
+                    }
+                    else {
+                        //allocate more memory to array at box_i index
+                        //add particles to jagged array
+                        //update num_particles_per_box[box_i]
+                        //update length_of_array_per_box[box_i]
+                    }
+
+                    //Once particles are portioned into box, move particles accordingly in predict.c
+                    //by calculating density within box and then calculating the density it should be
+                    //and moving enough particles
+                    //TODO: free memory of arrays (malloc) after particles are moved
+                    //free(edge_particles_array[i]) loop through all of edge_particles_array
                 }
             }
         }
+
+        //Fill array of arrays of particles
 
         do_second_halfstep_kick();	/* this does the half-step kick at the end of the timestep */
         
