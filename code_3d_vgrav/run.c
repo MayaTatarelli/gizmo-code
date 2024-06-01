@@ -126,14 +126,20 @@ void run(void)
         printf("\n Outer Boundary = %g\n", outer_boundary);
 
         /*For manual periodic -- MayaT May 28 2024*/
+
+        //Determine number of boxes - using smoothing length
+        double h = 0.0; //TODO: get smoothing length
+        int num_boxes = ceil(boxSize_Z / h);
+        particle_data* edge_particles_array[num_boxes];
+
         int num_particles_per_box[num_boxes];
-        int init_array_length = 100; //TODO: determine reasonable starting length for the arrays
         int length_of_array_per_box[num_boxes];
+        int init_array_length = 100; //TODO: determine reasonable starting length for the arrays
 
         //Initialize jagged array
         for(int i=0; i<num_boxes; i++)
         {
-            edge_particles_array[i] = malloc(init_array_length * sizeof(particle_data));
+            edge_particles_array[i] = malloc(init_array_length * sizeof(particle_data)); //TODO: sizeof(struct particle_data)?
             num_particles_per_box[i] = 0;
             length_of_array_per_box[i] = init_array_length;
         }
@@ -176,17 +182,71 @@ void run(void)
                         //update num_particles_per_box[box_i]
                         //update length_of_array_per_box[box_i]
                     }
-
-                    //Once particles are portioned into box, move particles accordingly in predict.c
-                    //by calculating density within box and then calculating the density it should be
-                    //and moving enough particles
-                    //TODO: free memory of arrays (malloc) after particles are moved
-                    //free(edge_particles_array[i]) loop through all of edge_particles_array
                 }
             }
         }
 
-        //Fill array of arrays of particles
+        //Once particles are portioned into box, move particles accordingly in predict.c
+        //by calculating density within box and then calculating the density it should be
+        //and moving enough particles
+        //TODO: free memory of arrays (malloc) after particles are moved
+        //free(edge_particles_array[i]) loop through all of edge_particles_array -- myfree()?
+
+        //Calculate avg density in each box
+        double density_per_box[num_boxes]; //maybe this has to be MyFloat
+        for (int i=0; i<num_boxes; i++){
+            double density_sum = 0.0; //maybe this has to be MyFloat
+            for(int j=0; j<num_particles_per_box[i];j++){
+                density_sum += edge_particles_array[i][j].Gas_Density;
+            }
+            density_per_box[i] = density_sum / num_particles_per_box[i];
+
+            //Check compared to correct density
+            double correct_density_per_box[num_boxes]; //TODO: fill this in
+            if (density_per_box[i]>correct_density[i]) //TODO: place holder for correct density array
+            {
+                //Calculate num particles to move
+                double volume_per_box = inner_boundary * boxSize_Y * h;
+                int delta_numP_per_box[num_boxes];
+                double massP = edge_particles_array[0][0].Mass;
+                double delta_density; 
+                for(int i=0; i<num_boxes; i++){
+                    delta_density = density_per_box[i] - correct_density_per_box[i];
+                    delta_numP_per_box[i] = int(delta_density * volume_per_box / massP);
+                }
+
+                //randomly choose that num of particles
+                int lower=0; int upper=num_boxes-1;
+                int range = upper - lower + 1;
+
+                int *used = (int *)calloc(range, sizeof(int));
+                int generated_count = 0;
+                int count = delta_numP_per_box[i];
+
+                int particles_to_move[count];
+
+                while (generated_count < count) {
+                    int num = (rand() % range) + lower;
+                    if (!used[num - lower]) {
+                        used[num - lower] = 1;
+                        particles_to_move[generated_count++] = num;
+                    }
+                }
+
+                free(used);
+
+                //move them to other side (keep x and y the same) -- change Pos but anything else?
+                for(int j=0; j<count; j++){
+                    int index = particles_to_move[j];
+                    edge_particles_array[i][index].Pos[0] = 
+                    //P[i].Pos[j] += boxsize[j];
+                    //check line 346 to 369 in predict.c to modify everything correctly.
+                }
+            }
+        }
+        //Include srand(time(NULL)); -- DONE in main()
+        //Free array memory space!!!
+        //free(edge_particles_array[i]) loop through all of edge_particles_array -- myfree()?
 
         do_second_halfstep_kick();	/* this does the half-step kick at the end of the timestep */
         

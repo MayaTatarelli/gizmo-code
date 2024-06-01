@@ -255,15 +255,7 @@ void drift_particle(int i, integertime time1)
             P[i].Pos[j]=box_upper[j]*(1-((double)P[i].ID)*1.e-9);
         }
     }
-#endif
-
-    /*Add manual periodic code here*/
-    //Calculate average density from particles in each box
-    //Pre - Calculate correct density
-    //determine number of particles to move
-    //randomly select from each box
-    //move to other side of box, keeping same y and z values
-    
+#endif    
     P[i].Ti_current = time1;
 }
 

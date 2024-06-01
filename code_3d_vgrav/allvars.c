@@ -293,15 +293,6 @@ struct global_data_all_processes All;
 struct particle_data *P,	/*!< holds particle data on local processor */
  *DomainPartBuf;		/*!< buffer for particle data used in domain decomposition */
 
-
-/*Variables added by MayaT -- May 28 2024*/
-//Determine number of boxes - using smoothing length
-double h = 0.0; //TODO: get smoothing length
-int num_boxes = ceil(boxSize_Z / h);
-particle_data* edge_particles_array[num_boxes];
-/*********************************************************/
-
-
 /* the following struture holds data that is stored for each SPH particle in addition to the collisionless
  * variables.
  */

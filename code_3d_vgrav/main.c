@@ -33,6 +33,8 @@ int main(int argc, char **argv)
 {
   int i;
 
+  srand(time(NULL)); //MayaT -- May 30 2024
+
 #ifdef IMPOSE_PINNING
   get_core_set();
 #endif
