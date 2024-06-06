@@ -109,13 +109,16 @@ def plot_velocity_streamlines(snum=0, sdir='./output/',
 	divider = make_axes_locatable(ax)
 	cax = divider.append_axes("right", size="5%", pad=0.05)
 	cbar = pylab.colorbar(im, cax=cax)
-	cbar.set_label(label="$\\Sigma_g$", size=16, rotation=270, labelpad=14)
+	cbar.set_label(label="$\\Sigma_g$", size=16, rotation=270, labelpad=20)
 	cbar.ax.tick_params(labelsize=10)
-	ax.set_xlabel("x")
-	ax.set_ylabel("y")
-	ax.set_title("Snapshot "+str(snum))
-	# plt.savefig('/Users/mayascomputer/Desktop/Maya_Masters/Research/Group_Presentation/2D_global_disk_plots/disk_uniform_density_'+str(snum)+'.pdf', dpi=150, bbox_inches='tight', pad_inches=0)
-	plt.show()
+	ax.set_yticks(np.arange(1, 10, 1))
+	ax.set_xticks(np.arange(1, 10, 1))
+	# ax.set_xlabel("x")
+	# ax.set_ylabel("y")
+	# ax.set_title("Snapshot "+str(snum))
+	ax.set_aspect('equal', adjustable='box')
+	plt.savefig('/Users/mayatatarelli/Desktop/disk_image_'+str(snum)+'.pdf', dpi=150, bbox_inches='tight', pad_inches=0, transparent=True)
+	# plt.show()
 
 def plot_gas_density(snum=0, sdir='./output/', 
 								use_fname=False, fname='./ICs/keplerian_ics.hdf5',

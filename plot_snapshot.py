@@ -278,10 +278,10 @@ def gas_rho_image(ax, snum=3, sdir='./output', vmin=0., vmax=0., boxL_xy=6, boxL
     cax = divider.append_axes("right", size="5%", pad=0.05)
     cbar = pylab.colorbar(im, cax=cax)
     if(gas_val_toplot == 'p'):
-        cbar.set_label(label="P", size=13, rotation=90, labelpad=10)
+        cbar.set_label(label="P", size=15, rotation=90, labelpad=10)
     else:
-        cbar.set_label(label="log $\\Sigma_g$", size=13, rotation=90, labelpad=10)
-    cbar.ax.tick_params(labelsize=10)
+        cbar.set_label(label="log $\\Sigma_g$", size=15, rotation=90, labelpad=3)
+    cbar.ax.tick_params(labelsize=12)
 
     #cbar.set_label(r'$\log\rho$', rotation=270)
 
@@ -612,6 +612,8 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
                     ax.plot(x_d-(boxL_xy/2), y_d-(boxL_xy/2), marker='.', markersize=4, linestyle='None', color='c')
             # ax.streamplot(xg*6, yg*6, vxgrid, vygrid,linewidth=1.0)
 
+            # ax.text(-5.5, 5.2, 'Velocity Streamlines', color='#1f77b4', fontweight='bold')
+
             ax.set_xlim([-boxL_xy/2,boxL_xy/2])
             if (plot_zx | plot_zy):
                 ax.set_ylim([-boxL_z/2,boxL_z/2])
@@ -631,23 +633,24 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
         #frame1.axes.get_xaxis().set_ticks([])  # no ticks
         #frame1.axes.get_yaxis().set_ticks([])  # no ticks
 
-    ax.set_xlabel(xlabel, fontsize=13)
-    #ax.set_xticklabels(fontsize=10)
-    ax.set_ylabel(ylabel, fontsize=13)
-    #ax.set_yticklabels(fontsize=10)
+    ax.set_xlabel(xlabel, fontsize=15, labelpad=0.5)
+    # ax.set_xticklabels(fontsize=12)
+    ax.set_ylabel(ylabel, fontsize=15, labelpad=-10)
+    # ax.set_yticklabels(fontsize=12)
+    ax.tick_params(labelsize=12)
 
     if(gas_val_toplot == 'p'):
         profile_type = "Pressure"
     else:
         profile_type = "Density"
 
-    if plot_zx:
-        ax.set_title('%s Profile of Plane $y/H$ = %1.2f at Time = %i' % (profile_type, coord0-(boxL_xy/2), snum), fontsize=12)
-    elif plot_zy:
-        ax.set_title('%s Profile of Plane $x/H$ = %1.2f at Time = %i' % (profile_type, coord0-(boxL_xy/2), snum), fontsize=12)
-    else:
-        ax.set_title('%s Profile of Plane $z/H$ = %1.2f at Time = %i' % (profile_type, coord0-(boxL_z/2.0), snum), fontsize=12)
-
+    # if plot_zx:
+    #     ax.set_title('%s Profile of Plane $y/H$ = %1.2f at Time = %i' % (profile_type, coord0-(boxL_xy/2), snum), fontsize=14)
+    # elif plot_zy:
+    #     ax.set_title('%s Profile of Plane $x/H$ = %1.2f at Time = %i' % (profile_type, coord0-(boxL_xy/2), snum), fontsize=14)
+    # else:
+    #     ax.set_title('%s Profile of Plane $z/H$ = %1.2f at Time = %i' % (profile_type, coord0-(boxL_z/2.0), snum), fontsize=14)
+        # ax.set_title('%s Profile & Velocity Streamlines (2D Slice)' % (profile_type), fontsize=12)
     #ax.set_title('Time = %i'%P_File['Header'].attrs['Time'])
 
     if (forsavedfigure == True):
@@ -660,9 +663,9 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
         #pylab.savefig(imdir + 'im_' + ext + '.png', dpi=150, bbox_inches='tight', pad_inches=0)
         #pylab.savefig(imdir + 'im_mass_0_5_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0)
         if include_dust:
-            pylab.savefig(imdir + 'im_' + profile_type + '_dust_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0.075)
+            pylab.savefig(imdir + 'im_' + profile_type + '_dust_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0.08, transparent=True)
         else:
-            pylab.savefig(imdir + 'im_' + profile_type +'_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0.075)
+            pylab.savefig(imdir + 'im_' + profile_type +'_' + ext + '.pdf', dpi=150, bbox_inches='tight', pad_inches=0.08, transparent=True)
 
     P_File.close()
     pylab.close()
