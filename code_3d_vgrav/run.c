@@ -238,9 +238,13 @@ void run(void)
                 //move them to other side (keep x and y the same) -- change Pos but anything else?
                 for(int j=0; j<count; j++){
                     int index = particles_to_move[j];
-                    edge_particles_array[i][index].Pos[0] = 
-                    //P[i].Pos[j] += boxsize[j];
                     //check line 346 to 369 in predict.c to modify everything correctly.
+                    edge_particles_array[i][index].Pos[0] += boxSize_X-inner_boundary; //map by adding 11.4
+                    
+                    //fix these
+                    P[i].Vel[BOX_SHEARING_PHI_COORDINATE] -= Shearing_Box_Vel_Offset;
+                    SphP[i].VelPred[BOX_SHEARING_PHI_COORDINATE] -= Shearing_Box_Vel_Offset;
+                    P[i].Pos[BOX_SHEARING_PHI_COORDINATE] -= Shearing_Box_Pos_Offset;
                 }
             }
         }

@@ -335,7 +335,7 @@ void do_box_wrapping(void)
             if(P[i].Pos[j] < 0.08*boxSize_X) {if(All.Time>0) {if(j==0) {if(P[i].Type != 0) {P[i].Mass = 0;}}}} // outflow boundary through 'x < 0' axis //
 #endif            
 
-            while(P[i].Pos[j] < 0)
+            while(P[i].Pos[j] < 0) //Particles that moved beyond inner radius
             {
 #ifdef PEBBLE_ACCRETION_TESTPROBLEM
                 if(All.Time>0) {if(j==0) {if(P[i].Type != 0) {P[i].Mass = 0;}}} // outflow boundary through 'x < 0' axis //
@@ -360,7 +360,7 @@ void do_box_wrapping(void)
 #endif
             }
             
-            while(P[i].Pos[j] >= boxsize[j])
+            while(P[i].Pos[j] >= boxsize[j]) //Particles that moved beyond outer radius
             {
 #ifdef PEBBLE_ACCRETION_TESTPROBLEM
                 if(All.Time>0) {if(j==0) {if(P[i].Type != 0) {P[i].Mass = 0;}}} // outflow boundary through 'x < 0' axis //
