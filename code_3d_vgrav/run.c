@@ -128,9 +128,10 @@ void run(void)
         /*For manual periodic -- MayaT May 28 2024*/
 
         //Determine number of boxes - using smoothing length
+        /*
         double h = 0.0; //TODO: get smoothing length
         int num_boxes = ceil(boxSize_Z / h);
-        particle_data* edge_particles_array[num_boxes];
+        int* edge_particles_array[num_boxes]; //OLD: particle_data* edge_particles_array[num_boxes];
 
         int num_particles_per_box[num_boxes];
         int length_of_array_per_box[num_boxes];
@@ -139,10 +140,11 @@ void run(void)
         //Initialize jagged array
         for(int i=0; i<num_boxes; i++)
         {
-            edge_particles_array[i] = malloc(init_array_length * sizeof(particle_data)); //TODO: sizeof(struct particle_data)?
+            edge_particles_array[i] = malloc(init_array_length * sizeof(int)); //TODO: sizeof(struct particle_data)?
             num_particles_per_box[i] = 0;
             length_of_array_per_box[i] = init_array_length;
         }
+        */
 
         int i; for(i = FirstActiveParticle; i >= 0; i = NextActiveParticle[i])
         {
@@ -166,6 +168,7 @@ void run(void)
 
                     /*Adding manual periodic term*/
                     
+                    /*
                     //Check which box the current particle should be in
                     int box_i = int(P[i].Pos[2] / h);
                     if(box_i >= num_boxes){
@@ -173,7 +176,7 @@ void run(void)
                     }
                     //Add particles to correct box (first check that there is enough space left)
                     if(num_particles_per_box[i] < length_of_array_per_box[i]){
-                        edge_particles_array[box_i][num_particles_per_box[box_i]] = P[i];
+                        edge_particles_array[box_i][num_particles_per_box[box_i]] = i;
                         num_particles_per_box[box_i]++;
                     }
                     else {
@@ -182,6 +185,7 @@ void run(void)
                         //update num_particles_per_box[box_i]
                         //update length_of_array_per_box[box_i]
                     }
+                    */
                 }
             }
         }
@@ -191,13 +195,14 @@ void run(void)
         //and moving enough particles
         //TODO: free memory of arrays (malloc) after particles are moved
         //free(edge_particles_array[i]) loop through all of edge_particles_array -- myfree()?
-
+        /*
         //Calculate avg density in each box
         double density_per_box[num_boxes]; //maybe this has to be MyFloat
-        for (int i=0; i<num_boxes; i++){
+        for (int i=0; i<num_boxes; i++)
+        {
             double density_sum = 0.0; //maybe this has to be MyFloat
             for(int j=0; j<num_particles_per_box[i];j++){
-                density_sum += edge_particles_array[i][j].Gas_Density;
+                density_sum += P[edge_particles_array[i][j]].Gas_Density;
             }
             density_per_box[i] = density_sum / num_particles_per_box[i];
 
@@ -208,7 +213,7 @@ void run(void)
                 //Calculate num particles to move
                 double volume_per_box = inner_boundary * boxSize_Y * h;
                 int delta_numP_per_box[num_boxes];
-                double massP = edge_particles_array[0][0].Mass;
+                double massP = P[edge_particles_array[0][0]].Mass;
                 double delta_density; 
                 for(int i=0; i<num_boxes; i++){
                     delta_density = density_per_box[i] - correct_density_per_box[i];
@@ -239,18 +244,23 @@ void run(void)
                 for(int j=0; j<count; j++){
                     int index = particles_to_move[j];
                     //check line 346 to 369 in predict.c to modify everything correctly.
-                    edge_particles_array[i][index].Pos[0] += boxSize_X-inner_boundary; //map by adding 11.4
+                    P[edge_particles_array[i][index]].Pos[0] += boxSize_X-inner_boundary; //map by adding 11.4 instead of full box length
                     
-                    //fix these
-                    P[i].Vel[BOX_SHEARING_PHI_COORDINATE] -= Shearing_Box_Vel_Offset;
-                    SphP[i].VelPred[BOX_SHEARING_PHI_COORDINATE] -= Shearing_Box_Vel_Offset;
-                    P[i].Pos[BOX_SHEARING_PHI_COORDINATE] -= Shearing_Box_Pos_Offset;
+                    P[edge_particles_array[i][index]].Vel[BOX_SHEARING_PHI_COORDINATE] -= Shearing_Box_Vel_Offset;
+                    P[edge_particles_array[i][index]].Pos[BOX_SHEARING_PHI_COORDINATE] -= Shearing_Box_Pos_Offset;
+
+                    //fix these                    
+                    SphP[edge_particles_array[i][index]].VelPred[BOX_SHEARING_PHI_COORDINATE] -= Shearing_Box_Vel_Offset;  
                 }
             }
         }
         //Include srand(time(NULL)); -- DONE in main()
         //Free array memory space!!!
-        //free(edge_particles_array[i]) loop through all of edge_particles_array -- myfree()?
+        for (int i=0; i<num_boxes; i++){
+            free(edge_particles_array[i]) //loop through all of edge_particles_array -- myfree()?
+        }
+        */
+        //End Manual Periodic
 
         do_second_halfstep_kick();	/* this does the half-step kick at the end of the timestep */
         

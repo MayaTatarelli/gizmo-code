@@ -326,6 +326,25 @@ void do_box_wrapping(void)
     boxsize[1] = boxSize_Y;
     boxsize[2] = boxSize_Z;
     
+    /*For manual periodic -- MayaT June 11 2024*/
+    double inner_boundary = 0.05*boxSize_X;
+    //Determine number of boxes - using smoothing length
+    double h = 0.0; //TODO: get smoothing length
+    int num_boxes = ceil(boxSize_Z / h);
+    int* edge_particles_array[num_boxes]; //OLD: particle_data* edge_particles_array[num_boxes];
+
+    int num_particles_per_box[num_boxes];
+    int length_of_array_per_box[num_boxes];
+    int init_array_length = 100; //TODO: determine reasonable starting length for the arrays
+
+    //Initialize jagged array
+    for(int i=0; i<num_boxes; i++)
+    {
+        edge_particles_array[i] = malloc(init_array_length * sizeof(int)); //TODO: sizeof(struct particle_data)?
+        num_particles_per_box[i] = 0;
+        length_of_array_per_box[i] = init_array_length;
+    }
+
     for(i = 0; i < NumPart; i++)
     {
         for(j = 0; j < 3; j++)
@@ -385,7 +404,96 @@ void do_box_wrapping(void)
 #endif
             }
         }
+        if (P[i].Type==0 && P[i].Pos[0]<=inner_boundary){
+
+            /*Adding manual periodic term*/
+            
+            //Check which box the current particle should be in
+            int box_i = int(P[i].Pos[2] / h);
+            if(box_i >= num_boxes){
+                box_i--;
+            }
+            //Add particles to correct box (first check that there is enough space left)
+            if(num_particles_per_box[i] < length_of_array_per_box[i]){
+                edge_particles_array[box_i][num_particles_per_box[box_i]] = i;
+                num_particles_per_box[box_i]++;
+            }
+            else {
+                //allocate more memory to array at box_i index
+                //add particles to jagged array
+                //update num_particles_per_box[box_i]
+                //update length_of_array_per_box[box_i]
+            }
+        }
     }
+    //Calculate avg density in each box
+    double density_per_box[num_boxes]; //maybe this has to be MyFloat
+    for (int i=0; i<num_boxes; i++)
+    {
+        double density_sum = 0.0; //maybe this has to be MyFloat
+        for(int j=0; j<num_particles_per_box[i];j++){
+            density_sum += P[edge_particles_array[i][j]].Gas_Density;
+        }
+        density_per_box[i] = density_sum / num_particles_per_box[i];
+
+        //Check compared to correct density
+        double correct_density_per_box[num_boxes]; //TODO: fill this in
+        if (density_per_box[i]>correct_density[i]) //TODO: place holder for correct density array
+        {
+            //Calculate num particles to move
+            double volume_per_box = inner_boundary * boxSize_Y * h;
+            int delta_numP_per_box[num_boxes];
+            double massP = P[edge_particles_array[0][0]].Mass;
+            double delta_density; 
+            for(int i=0; i<num_boxes; i++){
+                delta_density = density_per_box[i] - correct_density_per_box[i];
+                delta_numP_per_box[i] = int(delta_density * volume_per_box / massP);
+            }
+
+            //randomly choose that num of particles
+            int lower=0; int upper=num_boxes-1;
+            int range = upper - lower + 1;
+
+            int *used = (int *)calloc(range, sizeof(int));
+            int generated_count = 0;
+            int count = delta_numP_per_box[i];
+
+            if(count>num_particles_per_box[i]){
+                count=num_particles_per_box[i];
+            }
+
+            int particles_to_move[count];
+
+            while (generated_count < count) {
+                int num = (rand() % range) + lower;
+                if (!used[num - lower]) {
+                    used[num - lower] = 1;
+                    particles_to_move[generated_count++] = num;
+                }
+            }
+
+            free(used);
+
+            //move them to other side (keep x and y the same) -- change Pos but anything else?
+            for(int j=0; j<count; j++){
+                int index = particles_to_move[j];
+                //check line 346 to 369 in predict.c to modify everything correctly.
+                P[edge_particles_array[i][index]].Pos[0] += boxSize_X-inner_boundary; //map by adding 11.4 instead of full box length
+                
+                P[edge_particles_array[i][index]].Vel[BOX_SHEARING_PHI_COORDINATE] -= Shearing_Box_Vel_Offset;
+                P[edge_particles_array[i][index]].Pos[BOX_SHEARING_PHI_COORDINATE] -= Shearing_Box_Pos_Offset;
+
+                //fix these                    
+                SphP[edge_particles_array[i][index]].VelPred[BOX_SHEARING_PHI_COORDINATE] -= Shearing_Box_Vel_Offset;  
+            }
+        }
+    }
+    //Include srand(time(NULL)); -- DONE in main()
+    //Free array memory space!!!
+    for (int i=0; i<num_boxes; i++){
+        free(edge_particles_array[i]) //loop through all of edge_particles_array -- myfree()?
+    }
+    //End Manual Periodic
 }
 #endif
 
