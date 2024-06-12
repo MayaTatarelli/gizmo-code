@@ -409,7 +409,7 @@ void do_box_wrapping(void)
             /*Adding manual periodic term*/
             
             //Check which box the current particle should be in
-            int box_i = int(P[i].Pos[2] / h);
+            int box_i = P[i].Pos[2] / h;
             if(box_i >= num_boxes){
                 box_i--;
             }
@@ -447,7 +447,7 @@ void do_box_wrapping(void)
             double delta_density; 
             for(int i=0; i<num_boxes; i++){
                 delta_density = density_per_box[i] - correct_density_per_box[i];
-                delta_numP_per_box[i] = int(delta_density * volume_per_box / massP);
+                delta_numP_per_box[i] = delta_density * volume_per_box / massP;
             }
 
             //randomly choose that num of particles
@@ -491,7 +491,7 @@ void do_box_wrapping(void)
     //Include srand(time(NULL)); -- DONE in main()
     //Free array memory space!!!
     for (int i=0; i<num_boxes; i++){
-        free(edge_particles_array[i]) //loop through all of edge_particles_array -- myfree()?
+        free(edge_particles_array[i]); //loop through all of edge_particles_array -- myfree()?
     }
     //End Manual Periodic
 }
