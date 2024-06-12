@@ -31,6 +31,17 @@ def plot_density(snum=0, use_fname=False, r_in=0.2, r_out=2.0, width_ghost_in=0.
 		plt.xlabel('Radius', size=11)
 		plt.ylabel("$\\Sigma$", size=13)
 		# plt.xlim([r_in-width_ghost_in, r_out+width_ghost_out])
+		plt.title(titles[i])
+		plt.legend()
+		plt.savefig('/Users/mayatatarelli/Desktop/Maya_Masters/Research/Fall2023/test_boundary_cond_results_2/'+fig_dir[i]+'surf_density_'+str(snum)+'.pdf')
+
+		plt.figure()
+		plt.plot(all_r, density/density_theoretical, marker='.', linestyle='None', label='Actual/Theoretical')
+		plt.xscale('log')
+		plt.axvline(x=bndry_in[i], linestyle='--',color='orange', label='Inner bndry forcing limit')
+		plt.xlabel('Radius', size=11)
+		plt.ylabel("$\\Sigma$", size=13)
+		# plt.xlim([r_in-width_ghost_in, r_out+width_ghost_out])
 		plt.xlim([0.25, 5.0])
 		plt.ylim([0.0, 2.0])
 		plt.title(titles[i])
@@ -114,7 +125,13 @@ def plot_radial_profiles(snum=0, r_in=0.2, r_out=2.0, width_ghost_in=0.0, width_
 
 # plot_density(snum=0, use_fname=True, r_in=0.2, r_out=4.0, width_ghost_in=0.1, width_ghost_out=1.0, rho_target=4.42e-3,
 # 	runs=np.array(['/Users/mayatatarelli/Codes/gizmo-code/ICs/keplerian_ic_2d_vary_prtcl_mass_ghost_particles_fix.hdf5']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_6_circOrbitPos/']), titles=np.array(['']), bndry_in=np.array([0]))
-# exit()
+
+#test_7
+plot_velocity(snum=221, r_in=0.2, r_out=4.0, width_ghost_in=0.1, width_ghost_out=1.0, rho_target=4.42e-3,
+	runs=np.array(['adding_ghost_particles/test_7/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_7/']), titles=np.array(['']), bndry_in=np.array([0]))
+
+exit()
+
 #Damping
 
 # plot_velocity(snum=1000, r_in=0.2, r_out=4.0, rho_target=4.42e-3, 
@@ -214,7 +231,7 @@ def plot_radial_profiles(snum=0, r_in=0.2, r_out=2.0, width_ghost_in=0.0, width_
 # 	runs=np.array(['adding_ghost_particles/test_6_circOrbitPos/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_6_circOrbitPos/']), titles=np.array(['Ghost particles (In_inflow(0.22)-Out_outflow(5)-low visc-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
 
 #test_7
-plot_radial_profiles(snum=221, r_in=0.2, r_out=4.0, width_ghost_in=0.1, width_ghost_out=1.0, rho_target=4.42e-3, 
+plot_radial_profiles(snum=356, r_in=0.2, r_out=4.0, width_ghost_in=0.1, width_ghost_out=1.0, rho_target=4.42e-3, 
 	runs=np.array(['adding_ghost_particles/test_7/output/']), fig_dir=np.array(['../../Winter2024/2d_keplerian_disk/adding_ghost_particles/test_7/']), titles=np.array(['Ghost particles (In_inflow(0.1)-Out_outflow(5)-low visc-r_in=0.2, r_out=4.0)']), bndry_in=np.array([0]))
 
 # plot_radial_profiles(snum=1, r_in=0.2, r_out=4.0, width_ghost_in=0.1, width_ghost_out=1.0, rho_target=4.42e-3, 

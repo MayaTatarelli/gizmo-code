@@ -93,7 +93,11 @@ def plot_velocity_streamlines(snum=0, sdir='./output/',
 	# dg = interpolate.griddata((x, y), density, (xg, yg), method='linear')#, fill_value=np.median(density));
 	# im = ax.imshow(dg, interpolation='bicubic', cmap=cmap, extent=(np.min(x), 1, np.min(y), 1,), zorder=1);
 
-	ok = np.where(PIDs != 0)
+	if(plot_ghost == False):
+		ok = np.where(PIDs != 0)
+	else:
+		ok = np.where(PIDs == 0)
+
 	im =ax.scatter(xx[ok], yy[ok], marker='.', vmin=0., vmax=vmax, c=density[ok], cmap=cmap, zorder=3)
 	# im =ax.scatter(xx, yy, marker='.', vmin=0., c=massP, cmap=cmap, zorder=3)
 
@@ -115,10 +119,10 @@ def plot_velocity_streamlines(snum=0, sdir='./output/',
 	ax.set_xticks(np.arange(1, 10, 1))
 	# ax.set_xlabel("x")
 	# ax.set_ylabel("y")
-	# ax.set_title("Snapshot "+str(snum))
+	ax.set_title("Snapshot "+str(snum))
 	ax.set_aspect('equal', adjustable='box')
-	plt.savefig('/Users/mayatatarelli/Desktop/disk_image_'+str(snum)+'.pdf', dpi=150, bbox_inches='tight', pad_inches=0, transparent=True)
-	# plt.show()
+	# plt.savefig('/Users/mayatatarelli/Desktop/disk_image_'+str(snum)+'.pdf', dpi=150, bbox_inches='tight', pad_inches=0, transparent=True)
+	plt.show()
 
 def plot_gas_density(snum=0, sdir='./output/', 
 								use_fname=False, fname='./ICs/keplerian_ics.hdf5',
