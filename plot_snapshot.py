@@ -237,6 +237,7 @@ def gas_rho_image(ax, snum=3, sdir='./output', vmin=0., vmax=0., boxL_xy=6, boxL
         P_File.close();
         return;
 
+    #The first two never get called, only the final else statement
     if xz == 1:
         print("here 1#######################################################")
         dg = interpolate.griddata((x, z), u, (xg, yg), method='linear', fill_value=np.median(u));
@@ -436,6 +437,8 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
     if(include_dust):
         P_d = P_File['PartType3']
         Pc_d = np.array(P_d['Coordinates']);
+        P_mass_d = np.array(P_d['Masses'])
+        # density_dust = np.array(P_d['Density'])
 
     # print('Time == ', P_File['Header'].attrs['Time'])
     # print('Dust-to-Gas Mass Ratio = ',
@@ -559,6 +562,36 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
             y_d = np.copy(yy_d)
             z_d = np.copy(zz_d)
 
+            num_dust_P = len(P_mass_d)
+            dust_surf_density_avg = num_dust_P*P_mass_d[0] / ((boxL_xy-min(x_d))*boxL_xy)
+            print("Average dust surface density at z = " + str(coord0_d - (boxL_z/2)) + ": " + str(np.log10(dust_surf_density_avg)))
+            # log_density_dust = np.log10(density_dust[ok_d])
+            # yg, xg = np.mgrid[0:1:2048j, 0:1:2048j]
+
+            # if (vmax == 0): vmax = np.max(log_density_dust)
+            # if (vmin == 0): vmin = np.min(log_density_dust)
+    
+            # if (plot_zx):
+            #     dg = interpolate.griddata((x_d, z_d), log_density_dust, (xg, zg), method='linear', fill_value=np.median(log_density_dust));
+            #     im_dust = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-boxL_xy/2, boxL_xy/2, -boxL_z/2., boxL_z/2.),
+            #                zorder=1);
+            # elif (plot_zy):
+            #     dg = interpolate.griddata((y_d, z_d), log_density_dust, (yg, zg), method='linear', fill_value=np.median(log_density_dust));
+            #     im_dust = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-boxL_xy/2, boxL_xy/2, -boxL_z/2., boxL_z/2.),
+            #                zorder=1);
+            # else:
+            #     dg = interpolate.griddata((x_d, y_d), log_density_dust, (xg, yg), method='linear', fill_value=np.median(log_density_dust));
+
+            #     #For boxL=6
+            #     im_dust = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-boxL_xy/2, boxL_xy/2, -boxL_xy/2, boxL_xy/2),
+            #                zorder=1);
+
+            # divider = make_axes_locatable(ax)
+            # cax = divider.append_axes("right", size="5%", pad=0.05)
+            # cbar = pylab.colorbar(im_dust, cax=cax)
+            # cbar.set_label(label="log $\\Sigma_g$", size=15, rotation=90, labelpad=3)
+            # cbar.ax.tick_params(labelsize=12)
+
         #pdb.set_trace()
         # np.savetxt("x.txt",x)
         # np.savetxt("y.txt",y)
@@ -609,7 +642,7 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
                 # plot.plot(x_press*boxL_xy-(boxL_xy/2), press, color='k')
                 # plot.show()
                 if include_dust:
-                    ax.plot(x_d-(boxL_xy/2), y_d-(boxL_xy/2), marker='.', markersize=4, linestyle='None', color='c')
+                    ax.plot(x_d-(boxL_xy/2), y_d-(boxL_xy/2), marker='.', markersize=0.05, linestyle='None', color='c')
             # ax.streamplot(xg*6, yg*6, vxgrid, vygrid,linewidth=1.0)
 
             # ax.text(-5.5, 5.2, 'Velocity Streamlines', color='#1f77b4', fontweight='bold')

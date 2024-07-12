@@ -98,7 +98,8 @@ def plot_velocity_streamlines(snum=0, sdir='./output/',
 	else:
 		ok = np.where(PIDs == 0)
 
-	im =ax.scatter(xx[ok], yy[ok], marker='.', vmin=0., vmax=vmax, c=density[ok], cmap=cmap, zorder=3)
+	im =ax.scatter(xx[ok], yy[ok], marker='.', c=np.log10(density[ok]), cmap=cmap, zorder=3)
+	# im =ax.scatter(xx[ok], yy[ok], marker='.', vmin=0., vmax=vmax, c=density[ok], cmap=cmap, zorder=3)
 	# im =ax.scatter(xx, yy, marker='.', vmin=0., c=massP, cmap=cmap, zorder=3)
 
 	val = 10
