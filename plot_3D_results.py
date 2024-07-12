@@ -176,19 +176,19 @@ from plot_snapshot import *
 #                   plot_zx=False, plot_zy=True, xlabel='$y/H$', ylabel='$z/H$', str_color=None)
 
 #STEADY STATE
-plotpts_w_gas_no_dust(snum=26, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+plotpts_w_gas_no_dust(snum=3, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test_2/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
                   vmin=0, vmax=0, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
-                  zmed_set=4.0, boxL_xy=12, boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test/z_1_', xz=0, yz=0, 
+                  zmed_set=4.0, boxL_xy=12, boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test_2/z_1_', xz=0, yz=0, 
                   plot_zx=False, plot_zy=False, xlabel='$x/H$', ylabel='$y/H$', str_color=None)
 
-plotpts_w_gas_no_dust(snum=26, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+plotpts_w_gas_no_dust(snum=3, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test_2/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
                   vmin=0, vmax=0, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
-                  zmed_set=6.0, boxL_xy=12,  boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test/y_1_', xz=0, yz=0, 
+                  zmed_set=6.0, boxL_xy=12,  boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test_2/y_1_', xz=0, yz=0, 
                   plot_zx=True, plot_zy=False, xlabel='$x/H$', ylabel='$z/H$', str_color=None)
 
-plotpts_w_gas_no_dust(snum=26, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+plotpts_w_gas_no_dust(snum=3, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test_2/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
                   vmin=0, vmax=0, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
-                  zmed_set=6.0, boxL_xy=12, boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test/x_1_', xz=0, yz=0, 
+                  zmed_set=6.0, boxL_xy=12, boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test_2/x_1_', xz=0, yz=0, 
                   plot_zx=False, plot_zy=True, xlabel='$y/H$', ylabel='$z/H$', str_color=None)
 
 exit()
