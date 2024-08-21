@@ -344,26 +344,29 @@ def load_v_at_coord(P_File, part='PartType3', xz=0, zmed_set=-1.e10, ngrid=1024,
             xg, zg = np.meshgrid(np.linspace(0, 1, ngrid), np.linspace(0, 1, ngrid))      
             vxgrid = interpolate.griddata((x[ok], z[ok]), vx[ok], (xg, zg), method='linear')
             vzgrid = interpolate.griddata((x[ok], z[ok]), vz[ok], (xg, zg), method='linear')
+            vygrid = interpolate.griddata((x[ok], z[ok]), vy[ok], (xg, zg), method='linear')
             if(return_coords):
-                return [xg, zg, vxgrid, vzgrid]
+                return [xg, zg, vxgrid, vzgrid, vygrid]
             else:
-                return vxgrid, vzgrid
+                return vxgrid, vzgrid, vygrid
         elif plot_zy:
             yg, zg = np.meshgrid(np.linspace(0, 1, ngrid), np.linspace(0, 1, ngrid))      
             vygrid = interpolate.griddata((y[ok], z[ok]), vy[ok], (yg, zg), method='linear')
             vzgrid = interpolate.griddata((y[ok], z[ok]), vz[ok], (yg, zg), method='linear')
+            vxgrid = interpolate.griddata((y[ok], z[ok]), vx[ok], (yg, zg), method='linear')
             if(return_coords):
-                return [yg, zg, vygrid, vzgrid]
+                return [yg, zg, vygrid, vzgrid, vxgrid]
             else:
-                return vygrid, vzgrid
+                return vygrid, vzgrid, vxgrid
         else:
             xg, yg = np.meshgrid(np.linspace(0, 1, ngrid), np.linspace(0, 1, ngrid))      
             vxgrid = interpolate.griddata((x[ok], y[ok]), vx[ok], (xg, yg), method='linear')
             vygrid = interpolate.griddata((x[ok], y[ok]), vy[ok], (xg, yg), method='linear')
+            vzgrid = interpolate.griddata((x[ok], y[ok]), vz[ok], (xg, yg), method='linear')
             if(return_coords):
-                return [xg, yg, vxgrid, vygrid]
+                return [xg, yg, vxgrid, vygrid, vzgrid]
             else:
-                return vxgrid, vygrid
+                return vxgrid, vygrid, vzgrid
        
     # if xz == 0:
     #     xg, yg = np.meshgrid(np.linspace(0, 1, ngrid), np.linspace(0, 1, ngrid))      

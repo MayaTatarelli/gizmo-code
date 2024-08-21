@@ -411,7 +411,7 @@ from global_disk import *
 # plot_velocity_streamlines(snum=583, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_ghost_particles/test_6_circOrbitPos/output/', plot_ghost=True, phil=False, vmax=7e-3)
 
 #test_7
-plot_velocity_streamlines(snum=356, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_ghost_particles/test_7/output/', plot_ghost=True, phil=False, vmax=7e-3)
+# plot_velocity_streamlines(snum=356, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_ghost_particles/test_7/output/', plot_ghost=True, phil=False, vmax=7e-3)
 plot_velocity_streamlines(snum=356, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/2d_keplerian_test_runs/adding_ghost_particles/test_7/output/', plot_ghost=False, phil=False, vmax=7e-3)
 
 #adding_viscosity - test_2

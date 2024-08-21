@@ -35,6 +35,6 @@ def plot_viscosity(snum=0, r_in=0.2, r_out=2.0, rho_target=4.42e-3, nu = 3.305e-
 		plt.title(titles[i])
 		plt.legend()
 		plt.show()
-		plt.savefig('/Users/mayatatarelli/Desktop/Maya_Masters/Research/Fall2023/test_boundary_cond_results_2/'+fig_dir[i]+'viscosity_'+str(snum)+'.pdf')
+		# plt.savefig('/Users/mayatatarelli/Desktop/Maya_Masters/Research/Fall2023/test_boundary_cond_results_2/'+fig_dir[i]+'viscosity_'+str(snum)+'.pdf')
 
 plot_viscosity(snum=500, r_in=0.2, r_out=4.0, rho_target=4.42e-3, nu = 3.305e-8, runs=np.array(['adding_viscosity/outer_both_low_visc_vary_prtcl_mass_large_r_out_r_in/output/']), fig_dir=np.array(['../test_vary_particle_mass/outer_both_low_visc_vary_prtcl_mass_large_r_out_r_in/']), titles=np.array(['Low Viscosity ($\\nu$ = 3.305e-8)']))

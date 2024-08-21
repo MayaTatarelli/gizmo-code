@@ -542,6 +542,7 @@ def get_radial_force_balance(snum=0, sdir='./output/',
 
 def calculate_radial_accel(snum=0, sdir='./output/', use_fname=False, fname='./ICs/keplerian_ic_2d_rho_temp_gradient.hdf5',
 						ptype='PartType0', r_in=0.2, r_out=2.0, width_ghost_in=0.0, width_ghost_out=0.0, p=-1.0, temp_p=-0.5, rho_target=20.0, gamma = 7./5.,
+						save_plot=True,
 						plot_title='test',
 						output_plot_dir='/Users/mayascomputer/Codes/gizmo_code/images_plots/keplerian_disk_tests/'):
 	if (use_fname == True):
@@ -649,6 +650,9 @@ def calculate_radial_accel(snum=0, sdir='./output/', use_fname=False, fname='./I
 	#Theoretical accelerations
 	theoretical_press_grad_accel = -(0.05**2) * (-11/4) * (all_r)**-1.5
 	theoretical_centrifugal_accel = -grav_accel_by_r - theoretical_press_grad_accel
+
+	if(save_plot==False):
+		return all_r, pressure_grad_accel_by_r, theoretical_press_grad_accel, centrifugal_accel_by_r, theoretical_centrifugal_accel, net_radial_accel
 
 	#Plot individual accelerations vs r
 	if (use_fname == True):

@@ -78,7 +78,7 @@ def load_snap(sdir,snum,snapshot_name='snapshot',extension='.hdf5',four_char=0):
 
 def gas_rho_image(ax, snum=3, sdir='./output', vmin=0., vmax=0., boxL_xy=6, boxL_z=2, ptype='PartType0',
                   cmap='terrain', xmax=1., xz=0, yz=0, gas_val_toplot='rho', rhocut=-2.5, save='dummy',
-                  zmed_set=-1.e10, quiet=False, zdir='z', zs=0., plot_zx=False, plot_zy=False):
+                  zmed_set=-1.e10, quiet=False, zdir='z', zs=0., plot_zx=False, plot_zy=False, return_density=False):
     P_File = load_snap(sdir, snum);
     P = P_File[ptype]
     Pc = np.array(P['Coordinates'])
@@ -171,7 +171,10 @@ def gas_rho_image(ax, snum=3, sdir='./output', vmin=0., vmax=0., boxL_xy=6, boxL
 
     v0 = P['Velocities']
     if (ptype == 'PartType0'):
-        u = np.log10(P['Density'][:])
+        if(return_density):
+            u = P['Density'][:]
+        else:    
+            u = np.log10(P['Density'][:])
         u0 = P['InternalEnergy'][:]
         if (quiet == False):
             print('particle number = ', u.size)
@@ -253,18 +256,26 @@ def gas_rho_image(ax, snum=3, sdir='./output', vmin=0., vmax=0., boxL_xy=6, boxL
         #print("Min/Max/Med Density: ", np.min(u[ok]), np.max(u[ok]), np.median(u[ok]))
         if (plot_zx):
             dg = interpolate.griddata((x[ok], z[ok]), u[ok], (xg, zg), method='linear', fill_value=np.median(u[ok]));
-            im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-boxL_xy/2, boxL_xy/2, -boxL_z/2., boxL_z/2.),
-                       zorder=1);
+            if(return_density):
+                return dg
+            else:
+                im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-boxL_xy/2, boxL_xy/2, -boxL_z/2., boxL_z/2.),
+                           zorder=1);
         elif (plot_zy):
             dg = interpolate.griddata((y[ok], z[ok]), u[ok], (yg, zg), method='linear', fill_value=np.median(u[ok]));
-            im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-boxL_xy/2, boxL_xy/2, -boxL_z/2., boxL_z/2.),
-                       zorder=1);
+            if(return_density):
+                return dg
+            else:
+                im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-boxL_xy/2, boxL_xy/2, -boxL_z/2., boxL_z/2.),
+                           zorder=1);
         else:
             dg = interpolate.griddata((x[ok], y[ok]), u[ok], (xg, yg), method='linear', fill_value=np.median(u[ok]));
 
-            #For boxL=6
-            im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-boxL_xy/2, boxL_xy/2, -boxL_xy/2, boxL_xy/2),
-                       zorder=1);
+            if(return_density):
+                return dg
+            else:            
+                im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-boxL_xy/2, boxL_xy/2, -boxL_xy/2, boxL_xy/2),
+                           zorder=1);
             #For boxL=10
             # im = ax.imshow(dg, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-5, 5, -5, 5),
             #            zorder=1);
@@ -419,7 +430,7 @@ def plotpts_w_gas(snum=0, sdir='./output', ptype='PartType3', boxL_xy=6, boxL_z=
 def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
                   vmin=0, vmax=0, forsavedfigure=False, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
                   zmed_set=-1.e10, boxL_xy=6, boxL_z=2, cmap='terrain', imdir='./images/', xz=0, yz=0, 
-                  plot_zx=False, plot_zy=False, xlabel='$x/H$', ylabel='$y/H$', str_color=None):
+                  plot_zx=False, plot_zy=False, xlabel='$x/H$', ylabel='$y/H$', str_color=None, return_gas_flux=False, vel_comp='x'):
     #For plotting:
     pylab.close('all');
     fig, ax = plot.subplots()
@@ -610,8 +621,12 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
         print('HERE coord0 = ', coord0)
 
         #this is only for gas (plotting gas density background, not dust)
-        gas_rho_image(ax, snum=snum, sdir=sdir, boxL_xy=boxL_xy, boxL_z=boxL_z, xmax=1., xz=xz, yz=yz, gas_val_toplot=gas_val_toplot, zmed_set=coord0,
-                      vmin=vmin, vmax=vmax, quiet=quiet, cmap=cmap, ptype=ptype_im, plot_zx=plot_zx, plot_zy=plot_zy)
+        if(return_gas_flux):
+            gas_rho_grid = gas_rho_image(ax, snum=snum, sdir=sdir, boxL_xy=boxL_xy, boxL_z=boxL_z, xmax=1., xz=xz, yz=yz, gas_val_toplot=gas_val_toplot, zmed_set=coord0,
+                      vmin=vmin, vmax=vmax, quiet=quiet, cmap=cmap, ptype=ptype_im, plot_zx=plot_zx, plot_zy=plot_zy, return_density=return_gas_flux)
+        else:
+            gas_rho_image(ax, snum=snum, sdir=sdir, boxL_xy=boxL_xy, boxL_z=boxL_z, xmax=1., xz=xz, yz=yz, gas_val_toplot=gas_val_toplot, zmed_set=coord0,
+                          vmin=vmin, vmax=vmax, quiet=quiet, cmap=cmap, ptype=ptype_im, plot_zx=plot_zx, plot_zy=plot_zy,return_density=return_gas_flux)
 
         if (forsavedfigure == True):
             # this causes "black square"
@@ -623,26 +638,68 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
             #Plot velocity streamlines
             #xg, yg, vxgrid, vygrid = load_v(P_File, part='PartType0', xz=0, ngrid=1024,return_coords=True)
 
-            if plot_zx:
-                xg, zg, vxgrid, vzgrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
-                ax.streamplot(xg*boxL_xy-(boxL_xy/2), zg*boxL_z-(boxL_z/2), vxgrid, vzgrid,linewidth=1.0, color=str_color)
-                if include_dust:
-                    ax.plot(x_d-(boxL_xy/2), z_d-(boxL_z/2), marker='.', markersize=4, linestyle='None', color='c')
-            elif plot_zy:
-                yg, zg, vygrid, vzgrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
-                ax.streamplot(yg*boxL_xy-(boxL_xy/2), zg*boxL_z-(boxL_z/2), vygrid, vzgrid,linewidth=1.0, color=str_color)
-                if include_dust:
-                    ax.plot(y_d-(boxL_xy/2), z_d-(boxL_z/2), marker='.', markersize=4, linestyle='None', color='c')
+            if(return_gas_flux):
+                #fix these to return all three components and also plot image of \rho*v for all 3 vel components (like in gas_rho_image)
+                if plot_zx:
+                    xg, zg, vxgrid, vzgrid, vygrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=2048,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
+                    if(vel_comp=='x'):
+                        vgrid = vxgrid
+                    if(vel_comp=='y'):
+                        vgrid = vygrid
+                    if(vel_comp=='z'):
+                        vgrid = vzgrid
+
+                    fluxgrid = gas_rho_grid*vgrid
+                    if (vmax == 0): vmax = np.nanmax(fluxgrid)
+                    print("vmax: ", vmax)
+                    if (vmin == 0): vmin = np.nanmin(fluxgrid)
+                    print("vmin: ", vmin)
+                    im = ax.imshow(fluxgrid, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-boxL_xy/2, boxL_xy/2, -boxL_z/2., boxL_z/2.),
+                           zorder=1);
+
+                elif plot_zy:
+                    print("ERROR: Not setup to do gasflux in this plane!")
+                    return;
+                else:
+                    xg, yg, vxgrid, vygrid, vzgrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=2048,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
+                    okie = np.where(vygrid<0)
+                    print(len(vygrid[okie]))
+                    if(vel_comp=='x'):
+                        vgrid = vxgrid
+                    if(vel_comp=='y'):
+                        vgrid = vygrid
+                    if(vel_comp=='z'):
+                        vgrid = vzgrid
+
+                    fluxgrid = gas_rho_grid*vgrid
+                    if (vmax == 0): vmax = np.nanmax(fluxgrid)
+                    print("vmax: ", vmax)
+                    if (vmin == 0): vmin = np.nanmin(fluxgrid)
+                    print("vmin: ", vmin)
+                    im = ax.imshow(fluxgrid, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-boxL_xy/2, boxL_xy/2, -boxL_xy/2, boxL_xy/2),
+                           zorder=1);
             else:
-                xg, yg, vxgrid, vygrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
-                # vygrid = 0.*vygrid
-                ax.streamplot(xg*boxL_xy-(boxL_xy/2), yg*boxL_xy-(boxL_xy/2), vxgrid, vygrid, linewidth=1.0, color=str_color)
-                # x_press, press = load_P_at_coord(P_File, part=ptype, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
-                # plot.figure()
-                # plot.plot(x_press*boxL_xy-(boxL_xy/2), press, color='k')
-                # plot.show()
-                if include_dust:
-                    ax.plot(x_d-(boxL_xy/2), y_d-(boxL_xy/2), marker='.', markersize=0.05, linestyle='None', color='c')
+
+                if plot_zx:
+                    xg, zg, vxgrid, vzgrid, vygrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=2048,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
+                    ax.streamplot(xg*boxL_xy-(boxL_xy/2), zg*boxL_z-(boxL_z/2), vxgrid, vzgrid,linewidth=1.0, color=str_color)
+                    if include_dust:
+                        ax.plot(x_d-(boxL_xy/2), z_d-(boxL_z/2), marker='.', markersize=1.0, linestyle='None', color='c')
+                elif plot_zy:
+                    yg, zg, vygrid, vzgrid, vxgrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=2048,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
+                    ax.streamplot(yg*boxL_xy-(boxL_xy/2), zg*boxL_z-(boxL_z/2), vygrid, vzgrid,linewidth=1.0, color=str_color)
+                    if include_dust:
+                        ax.plot(y_d-(boxL_xy/2), z_d-(boxL_z/2), marker='.', markersize=0.05, linestyle='None', color='c')
+                else:
+                    xg, yg, vxgrid, vygrid, vzgrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=2048,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
+                    # vygrid = 0.*vygrid
+                    ax.streamplot(xg*boxL_xy-(boxL_xy/2), yg*boxL_xy-(boxL_xy/2), vxgrid, vygrid, linewidth=1.0, color=str_color)
+                    # x_press, press = load_P_at_coord(P_File, part=ptype, zmed_set=coord0, ngrid=1024,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
+                    # plot.figure()
+                    # plot.plot(x_press*boxL_xy-(boxL_xy/2), press, color='k')
+                    # plot.show()
+                    if include_dust:
+                        ax.plot(x_d-(boxL_xy/2), y_d-(boxL_xy/2), marker='.', markersize=0.05, linestyle='None', color='c')
             # ax.streamplot(xg*6, yg*6, vxgrid, vygrid,linewidth=1.0)
 
             # ax.text(-5.5, 5.2, 'Velocity Streamlines', color='#1f77b4', fontweight='bold')
@@ -672,7 +729,18 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
     # ax.set_yticklabels(fontsize=12)
     ax.tick_params(labelsize=12)
 
-    if(gas_val_toplot == 'p'):
+    if(return_gas_flux):
+        if (vel_comp=='x'): profile_type = "GasFlux_vx"
+        if (vel_comp=='y'): profile_type = "GasFlux_vy"
+        if (vel_comp=='z'): profile_type = "GasFlux_vz"
+
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cbar = pylab.colorbar(im, cax=cax)
+        cbar.set_label(label="Gas Flux", size=15, rotation=90, labelpad=3)
+        cbar.ax.tick_params(labelsize=12)
+
+    elif(gas_val_toplot == 'p'):
         profile_type = "Pressure"
     else:
         profile_type = "Density"

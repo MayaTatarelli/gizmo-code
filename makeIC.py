@@ -7,6 +7,7 @@ import scipy.special
 import pdb
 import matplotlib.pyplot as plt
 import random
+import scipy.integrate as integrate
 
 def makeIC_box(DIMS=2, N_1D=64, fname='gasgrain_2d_64.hdf5', Pressure_Bump_Amplitude=1.0, Pressure_Bump_Width=1., BoxSize=6., forcedEOS=False):
 
@@ -724,6 +725,7 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
             m_target_gas = m_particle_cur
 
         N_1D_cur = np.round(phi_disk*r_cur*rho_cur*dr/m_target_gas)
+        print("LOOK AT THIS: ", N_1D_cur)
         if (N_1D_cur<1.0):
             r_cur += dr; iter += 1;
             continue
@@ -765,6 +767,7 @@ def makeIC_keplerian_disk_2d(fname='keplerian_disk_2d.hdf5', dr_factor=0.1, gamm
     print("N_1D: ", all_N_1D[0:500])
     print("length of N_1D: ", len(all_N_1D))
     print("total number of perticles: ", np.sum(all_N_1D))
+    # exit()
     Ngas=phiv_g.size
 
     #Convert polar coordinates to cartesian:
@@ -1110,7 +1113,7 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, dustgas_massratio=0.01,
 
         z0 += dz; iter += 1;
         shift += dz/2.;
-    
+
     Ngrains = 0;
     if(include_dust):
         #dust needs to be xv_d = 1.0 (or use above value)
@@ -1144,11 +1147,32 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, dustgas_massratio=0.01,
     print(Ngas,m_target_gas, m_target_gas_test)
     print("###########DONE#########")
 
+    #Calculate gas density at midplane
+    density_at_all_z = np.zeros(len(N_1D_all))
+    for i in range(len(N_1D_all)):
+        density_at_all_z[i] = (N_1D_all[i]**2)*m_target_gas / (Lbox_xy*Lbox_xy*dz_all[i])
+
+    density_overall = integrate.trapezoid(density_at_all_z, dz_all)
+    print("Density overall: ", density_overall)
+    
+    density_at_miplane = (N_1D_all[0]**2)*m_target_gas / (Lbox_xy*Lbox_xy*dz_all[0])
+    print("Density at the midplane: ", density_at_miplane)
+
+    #For testing dust-to-gas mass ratio:
+    time = 1200
+    num_Pgas_outer_edge = len(np.where(xv_g*12.0>=(12 - time*12/1200))[0])
+    print("Num gas particles in outer edge: ", num_Pgas_outer_edge)
+    total_gas_mass_outer_edge = num_Pgas_outer_edge*m_target_gas
+
+    total_dust_mass_outer_edge_thr = int(time/4.208)*15606*m_target_gas*dustgas_massratio
+
+    print("dust-to-gas ratio: ", total_dust_mass_outer_edge_thr/total_gas_mass_outer_edge)
+
     pylab.close('all')
     #pylab.axis([0.,1.,0.,1.])
     # pylab.plot(xv_g,yv_g,marker='.',color='black',linestyle='',rasterized=True);
 
-    # exit()
+    exit()
     file = h5py.File(fname,'w')
     npart = np.array([Ngas,0,0,Ngrains,0,0]) # we have gas and particles we will set for type 3 here, zero for all others
     h = file.create_group("Header");
