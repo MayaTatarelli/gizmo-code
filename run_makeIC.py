@@ -96,4 +96,4 @@ from makeIC import *
 # makeIC_disk_stratified_no_dust(DIMS=3, Nbase=2e6, dustgas_massratio=0.01, fname='./ICs/stratbox_disk_dust_3d_z8_xy12.hdf5', Lbox_xy=12., Lbox_z=8., rho_target=1., include_dust=True)
 # makeIC_disk_stratified_no_dust(DIMS=3, Nbase=2e6, dustgas_massratio=0.01, fname='./ICs/stratbox_disk_dust_3d_z8_xy12_2.hdf5', Lbox_xy=12., Lbox_z=8., rho_target=1., include_dust=True)
 
-makeIC_disk_stratified_no_dust(DIMS=3, Nbase=2e6, dustgas_massratio=0.01, fname='./ICs/stratbox_disk_dust_3d_z8_xy12_fix_TODELETE.hdf5', Lbox_xy=12., Lbox_z=8., rho_target=1., include_dust=True)
+makeIC_disk_stratified_no_dust(DIMS=3, Nbase=2e6, dustgas_massratio=0.01, fname='./ICs/stratbox_disk_dust_3d_z8_xy12_fixLboxxy.hdf5', Lbox_xy=12., Lbox_z=8., rho_target=1., include_dust=True)

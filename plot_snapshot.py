@@ -514,9 +514,17 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
             else:
                 ok = np.where(dzz < 0.05) #used to be < width
 
+            # plot.figure()
+            # plot.scatter(xx,zz)
+            # plot.show()
+            # print(len(xx))
+
             xx = xx[ok];
             yy = yy[ok];
             zz = zz[ok];
+
+            # print(len(xx))
+            # exit()
 
             # print(np.min(density[ok]), np.max(density[ok]))
             # exit()
@@ -682,6 +690,11 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
 
                 if plot_zx:
                     xg, zg, vxgrid, vzgrid, vygrid = load_v_at_coord(P_File, part=ptype, xz=0, zmed_set=coord0, ngrid=2048,return_coords=True, plot_zx=plot_zx, plot_zy=plot_zy)
+                    # plot.figure()
+                    # plot.imshow(vxgrid, extent=(-boxL_xy/2, boxL_xy/2, -boxL_z/2., boxL_z/2.))
+                    # plot.show()
+                    non_nan = np.logical_not(np.isnan(vzgrid))
+                    print("Looking for not NaN in vgrid (min/max): ", np.min(xg[non_nan])*boxL_xy-(boxL_xy/2), np.max(xg[non_nan])*boxL_xy-(boxL_xy/2))
                     ax.streamplot(xg*boxL_xy-(boxL_xy/2), zg*boxL_z-(boxL_z/2), vxgrid, vzgrid,linewidth=1.0, color=str_color)
                     if include_dust:
                         ax.plot(x_d-(boxL_xy/2), z_d-(boxL_z/2), marker='.', markersize=1.0, linestyle='None', color='c')

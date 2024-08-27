@@ -176,15 +176,15 @@ from plot_snapshot import *
 #                   plot_zx=False, plot_zy=True, xlabel='$y/H$', ylabel='$z/H$', str_color=None)
 
 #PLOTTING GAS FLUX
-# plotpts_w_gas_no_dust(snum=369, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test_2/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
-#                   vmin=-0.02, vmax=0.02, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
-#                   zmed_set=4.0, boxL_xy=12, boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test_2/gas_flux_testing/xy_H4_', xz=0, yz=0, 
-#                   plot_zx=False, plot_zy=False, xlabel='$x/H$', ylabel='$y/H$', str_color=None, return_gas_flux=True, vel_comp='z')
+plotpts_w_gas_no_dust(snum=300, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+                  vmin=0, vmax=0, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
+                  zmed_set=4.0, boxL_xy=12, boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy/gas_flux_testing/test_xy_H4_', xz=0, yz=0, 
+                  plot_zx=False, plot_zy=False, xlabel='$x/H$', ylabel='$y/H$', str_color=None, return_gas_flux=True, vel_comp='y')
 
-# plotpts_w_gas_no_dust(snum=369, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test_2/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
-#                   vmin=-0.01, vmax=0.01, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
-#                   zmed_set=6.0, boxL_xy=12,  boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test_2/gas_flux_testing/xz_H6_', xz=0, yz=0, 
-#                   plot_zx=True, plot_zy=False, xlabel='$x/H$', ylabel='$z/H$', str_color=None, return_gas_flux=True, vel_comp='x')
+plotpts_w_gas_no_dust(snum=300, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+                  vmin=-0.08, vmax=0.08, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
+                  zmed_set=6.0, boxL_xy=12,  boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy/gas_flux_testing/test_xz_H6_', xz=0, yz=0, 
+                  plot_zx=True, plot_zy=False, xlabel='$x/H$', ylabel='$z/H$', str_color=None, return_gas_flux=True, vel_comp='z')
 
 
 # plotpts_w_gas_no_dust(snum=369, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test_2/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
@@ -206,23 +206,41 @@ from plot_snapshot import *
 #                   vmin=-0.01, vmax=0.01, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
 #                   zmed_set=1.0, boxL_xy=12,  boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_test_2/gas_flux_testing/xz_H1_', xz=0, yz=0, 
 #                   plot_zx=True, plot_zy=False, xlabel='$x/H$', ylabel='$z/H$', str_color=None, return_gas_flux=True, vel_comp='x')
-# exit()
+exit()
 
-#STEADY STATE NO PLANET
-plotpts_w_gas_no_dust(snum=110, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
-                  vmin=0, vmax=0, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
-                  zmed_set=4.0, boxL_xy=12, boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet/z_H4_', xz=0, yz=0, 
+#STEADY STATE NO PLANET WITH LBOXXY FIXED
+plotpts_w_gas_no_dust(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+                  vmin=-3, vmax=1, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
+                  zmed_set=4.0, boxL_xy=12, boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy/z_H4_', xz=0, yz=0, 
                   plot_zx=False, plot_zy=False, xlabel='$x/H$', ylabel='$y/H$', str_color=None)
 
-plotpts_w_gas_no_dust(snum=110, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
-                  vmin=0, vmax=0, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
-                  zmed_set=6.0, boxL_xy=12,  boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet/y_H6_', xz=0, yz=0, 
+plotpts_w_gas_no_dust(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+                  vmin=-3, vmax=1, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
+                  zmed_set=6.0, boxL_xy=12,  boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy/y_H6_', xz=0, yz=0, 
                   plot_zx=True, plot_zy=False, xlabel='$x/H$', ylabel='$z/H$', str_color=None)
 
-plotpts_w_gas_no_dust(snum=110, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
-                  vmin=0, vmax=0, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
-                  zmed_set=6.0, boxL_xy=12, boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet/x_H6_', xz=0, yz=0, 
+plotpts_w_gas_no_dust(snum=200, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+                  vmin=-3, vmax=1, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
+                  zmed_set=6.0, boxL_xy=12, boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy/x_H6_', xz=0, yz=0, 
                   plot_zx=False, plot_zy=True, xlabel='$y/H$', ylabel='$z/H$', str_color=None)
+
+exit()
+
+#STEADY STATE NO PLANET
+# plotpts_w_gas_no_dust(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+#                   vmin=0, vmax=0, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
+#                   zmed_set=4.0, boxL_xy=12, boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet/z_H4_', xz=0, yz=0, 
+#                   plot_zx=False, plot_zy=False, xlabel='$x/H$', ylabel='$y/H$', str_color=None)
+
+plotpts_w_gas_no_dust(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+                  vmin=0, vmax=0, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
+                  zmed_set=6.01, boxL_xy=12,  boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet/y_H6_', xz=0, yz=0, 
+                  plot_zx=True, plot_zy=False, xlabel='$x/H$', ylabel='$z/H$', str_color=None)
+
+# plotpts_w_gas_no_dust(snum=1, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+#                   vmin=0, vmax=0, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
+#                   zmed_set=1.0, boxL_xy=12, boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet/x_H1_', xz=0, yz=0, 
+#                   plot_zx=False, plot_zy=True, xlabel='$y/H$', ylabel='$z/H$', str_color=None)
 
 exit()
 

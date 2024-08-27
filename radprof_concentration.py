@@ -338,10 +338,13 @@ def load_v_at_coord(P_File, part='PartType3', xz=0, zmed_set=-1.e10, ngrid=1024,
     y = 1.0 * (yy / yy.max())
     z = 1.0 * (zz / zz.max())
 
-
     if xz == 0:
         if plot_zx:
-            xg, zg = np.meshgrid(np.linspace(0, 1, ngrid), np.linspace(0, 1, ngrid))      
+            xg, zg = np.meshgrid(np.linspace(0, 1, ngrid), np.linspace(0, 1, ngrid))
+            # print("Actual vz values: ", vz[ok])
+            # pl.figure()
+            # pl.scatter(xx[ok],zz[ok])#, c=vz[ok])
+            # pl.show()
             vxgrid = interpolate.griddata((x[ok], z[ok]), vx[ok], (xg, zg), method='linear')
             vzgrid = interpolate.griddata((x[ok], z[ok]), vz[ok], (xg, zg), method='linear')
             vygrid = interpolate.griddata((x[ok], z[ok]), vy[ok], (xg, zg), method='linear')

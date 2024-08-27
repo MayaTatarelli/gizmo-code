@@ -1172,7 +1172,7 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, dustgas_massratio=0.01,
     #pylab.axis([0.,1.,0.,1.])
     # pylab.plot(xv_g,yv_g,marker='.',color='black',linestyle='',rasterized=True);
 
-    exit()
+    # exit()
     file = h5py.File(fname,'w')
     npart = np.array([Ngas,0,0,Ngrains,0,0]) # we have gas and particles we will set for type 3 here, zero for all others
     h = file.create_group("Header");
@@ -1202,15 +1202,19 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, dustgas_massratio=0.01,
     #n_part_gas = 128**3
     #print(1 + (np.random.random(size=n_part_gas)-.5)*1e-3); exit();
     q=np.zeros((Ngas,3)); 
-    q[:,0]=xv_g * (1 + (np.random.random(size=len(xv_g))-.5)*1e-3); 
-    q[:,1]=yv_g * (1 + (np.random.random(size=len(yv_g))-.5)*1e-3); 
+    q[:,0]=(xv_g * (1 + (np.random.random(size=len(xv_g))-.5)*1e-3))*Lbox_xy; 
+    q[:,1]=(yv_g * (1 + (np.random.random(size=len(yv_g))-.5)*1e-3))*Lbox_xy; 
     q[:,2]=zv_g * (1 + (np.random.random(size=len(zv_g))-.5)*1e-3);
+
+    plt.figure()
+    plt.plot(q[:,1],q[:,2], marker='.', linestyle='None')
+    plt.show()
 
     print(xv_g); print(q[:,0]);
     print(yv_g); print(q[:,1]);
     print(zv_g); print(q[:,2]);
 
-    print(np.min(q[:,0])); print(np.min(q[:,1])); print(np.min(q[:,2]));
+    print(np.min(q[:,0]), np.max(q[:,0])); print(np.min(q[:,1]),  np.max(q[:,1])); print(np.min(q[:,2]),  np.max(q[:,2]));
 
     p.create_dataset("Coordinates",data=q)
     p.create_dataset("Velocities",data=np.zeros((Ngas,3)))
