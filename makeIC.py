@@ -1228,7 +1228,13 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, dustgas_massratio=0.01,
         q=np.zeros((Ngrains,3));
 
         x_temp = xd * (1 + (np.random.random(size=len(xd))-.5)*1e-3) * Lbox_xy;
-        
+        x_temp[np.where(x_temp>12.0)] = 11.999;
+
+        y_temp = yd * (1 + (np.random.random(size=len(yd))-.5)*1e-3) * Lbox_xy;
+        y_temp[np.where(y_temp>12.0)] = 11.999;
+
+        print(len(np.where(x_temp>12.0)[0]))
+
         #to ensure no particles are at x > 1.0 -- doesn't work well when I run it with this IC
         # ok = np.where(x_temp > 1.0)
         # print("Checking if any dust particles are at x>1 before: ", ok)
@@ -1236,7 +1242,8 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, dustgas_massratio=0.01,
         # x_temp -= max_off
 
         q[:,0]=x_temp
-        q[:,1]=yd * (1 + (np.random.random(size=len(yd))-.5)*1e-3) * Lbox_xy;
+        q[:,1]=y_temp
+
         q[:,2]=zd * (1 + (np.random.random(size=len(zd))-.5)*1e-3);
 
         print("Checking if any dust particles are at x>1 after: ", np.where(q[:,0] > 1.0*Lbox_xy))
@@ -1259,9 +1266,9 @@ def makeIC_disk_stratified_no_dust(DIMS=2, Nbase=1.0e4, dustgas_massratio=0.01,
     if(include_dust):
         print("xd: ", q[:,0][0:500])
         plt.figure()
-        plt.plot(q[:,1],q[:,2], marker='.', linestyle='None')
-        plt.xlabel("y")
-        plt.ylabel("z")
+        plt.plot(q[:,0],q[:,1], marker='.', linestyle='None')
+        plt.xlabel("x")
+        plt.ylabel("y")
         plt.show()
     
     exit()
