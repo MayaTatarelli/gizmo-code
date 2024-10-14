@@ -657,13 +657,20 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
                     if(vel_comp=='z'):
                         vgrid = vzgrid
 
-                    fluxgrid = gas_rho_grid*vgrid
+                    print(xg)
+                    print(xg[0])
+                    print(xg[1])
+                    fluxgrid = vgrid #gas_rho_grid*vgrid
                     if (vmax == 0): vmax = np.nanmax(fluxgrid)
                     print("vmax: ", vmax)
                     if (vmin == 0): vmin = np.nanmin(fluxgrid)
                     print("vmin: ", vmin)
+                    print(fluxgrid)
+                    print(fluxgrid[300])
                     im = ax.imshow(fluxgrid, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-boxL_xy/2, boxL_xy/2, -boxL_z/2., boxL_z/2.),
                            zorder=1);
+                    ax.streamplot(xg*boxL_xy-(boxL_xy/2), zg*boxL_z-(boxL_z/2), vgrid*0.0, vgrid,linewidth=1.0, color=str_color)
+                    # im = ax.scatter(xg, zg, c=fluxgrid, marker='.', cmap=cmap, zorder=3);
 
                 elif plot_zy:
                     print("ERROR: Not setup to do gasflux in this plane!")
@@ -686,6 +693,8 @@ def plotpts_w_gas_no_dust(snum=0, sdir='./output', ptype='PartType0', width=0.05
                     print("vmin: ", vmin)
                     im = ax.imshow(fluxgrid, interpolation='bicubic', vmin=vmin, vmax=vmax, cmap=cmap, extent=(-boxL_xy/2, boxL_xy/2, -boxL_xy/2, boxL_xy/2),
                            zorder=1);
+                   
+                    
             else:
 
                 if plot_zx:
