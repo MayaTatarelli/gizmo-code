@@ -234,6 +234,23 @@ from plot_snapshot import *
 
 # exit()
 
+#WITH PLANET
+plotpts_w_gas_no_dust(snum=106, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy_no_BC_add_planet/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+                  vmin=-3, vmax=1, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
+                  zmed_set=4.0, boxL_xy=12,  boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy_no_BC_add_planet/z_H4_', xz=0, yz=0, 
+                  plot_zx=False, plot_zy=False, xlabel='$x/H$', ylabel='$y/H$', str_color=None)
+exit()
+plotpts_w_gas_no_dust(snum=212, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy_no_BC_add_planet/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+                  vmin=0, vmax=0, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
+                  zmed_set=6.0, boxL_xy=12,  boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy_no_BC_add_planet/y_H6_', xz=0, yz=0, 
+                  plot_zx=True, plot_zy=False, xlabel='$x/H$', ylabel='$z/H$', str_color=None)
+
+plotpts_w_gas_no_dust(snum=212, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy_no_BC_add_planet/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
+                  vmin=0, vmax=0, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
+                  zmed_set=6.0, boxL_xy=12,  boxL_z=8, cmap='hot', imdir='/Users/mayatatarelli/Desktop/Maya_Masters/Research/Winter2024/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy_no_BC_add_planet/x_H6_', xz=0, yz=0, 
+                  plot_zx=False, plot_zy=True, xlabel='$y/H$', ylabel='$z/H$', str_color=None)
+
+exit()
 
 plotpts_w_gas_no_dust(snum=559, sdir='/Users/mayatatarelli/Codes/gizmo-code/runs/3d_shearing_box/box_xy_12_z_8_dust_steady_state_no_planet_fixLboxxy_no_BC_2_2res_c/output', ptype='PartType0', width=0.05, cut_dust=1., alpha=0.1, markersize=5.,
                   vmin=0, vmax=0, forsavedfigure=True, gas_val_toplot='rho', ptype_im='PartType0', include_dust=False,
