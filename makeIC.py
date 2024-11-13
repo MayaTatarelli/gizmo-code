@@ -1401,7 +1401,7 @@ def makeIC_disk_stratified_high_res(DIMS=3, N_1D=256, m_gas_0=4e-5, dustgas_mass
     plt.figure()
     plt.plot(z0_all, density)
     plt.show()
-    exit()
+    # exit()
     print("##################Checking lower plane coords:################## ");
     #print(z_lower[0], z[0], dz);
     #print(dz_all);
@@ -1519,6 +1519,273 @@ def makeIC_disk_stratified_high_res(DIMS=3, N_1D=256, m_gas_0=4e-5, dustgas_mass
         q[:,2]=zd * (1 + (np.random.random(size=len(zd))-.5)*1e-3);
 
         print("Checking if any dust particles are at x>1 after: ", np.where(q[:,0] > 1.0*Lbox_xy))
+        print(np.min(q[:,0]), np.max(q[:,0]))
+        print(np.min(q[:,1]), np.max(q[:,1]))
+        print(np.min(q[:,2]), np.max(q[:,2]))
+        print(xd); print(q[:,0]);
+        print(yd); print(q[:,1]);
+        print(zd); print(q[:,2]);
+
+        p.create_dataset("Coordinates",data=q)
+        p.create_dataset("Velocities",data=np.zeros((Ngrains,3)))
+        p.create_dataset("ParticleIDs",data=np.arange(Ngas+1,Ngrains+Ngas+1))
+        p.create_dataset("Masses",data=m_dust_array)
+
+    print(len(np.arange(1,Ngas+1))); print(counter); print(len(q));
+    file.close()
+
+    #plot dust:
+    if(include_dust):
+        print("xd: ", q[:,0][0:500])
+        plt.figure()
+        plt.plot(q[:,0],q[:,1], marker='.', linestyle='None')
+        plt.xlabel("x")
+        plt.ylabel("y")
+        plt.show()
+
+
+
+def makeIC_disk_stratified_v_3(DIMS=3, N_1D_0=256, N_1D_z=128, m_gas_0=4e-5, dustgas_massratio=0.01,
+        fname='stratbox_2d_N100.hdf5', Lbox_x=12., Lbox_y=12., Lbox_z=8., include_dust=False):
+
+    #For testing purposes:
+    N_1D_all = []
+    m_gas_all = []
+    z0_all = []
+    dz_all = []
+    counter = 0.0;
+    z_up_all = []
+    z_low_all = []
+
+    xv_g=np.zeros(0);yv_g=np.zeros(0);zv_g=np.zeros(0);
+    xd=np.zeros(0);yd=np.zeros(0);zd=np.zeros(0);
+
+    m_gas_array=np.zeros(0); m_dust_array=np.zeros(0);
+
+    z0=1.e-10; iter=0; dz=0.; shift=0.;
+    # Nbase = N_1D**3 / (np.exp(-z0**2) * Lbox_xy)
+
+    dz=Lbox_z / N_1D_z
+    # rho_0 = m_gas_0*N_1D**2 / (Lbox_xy**2 * dz)
+
+    while(z0 < Lbox_z/2.): #here dividing box z length by two to get density porfile for just one side of midplane, then just copy for other half (above/below)
+        print(iter,z0,dz)
+        
+        #This was the original approach where the dz spacing changed to account for density gradient
+        # rho=np.exp(-z0**2) #check exponent for disk  
+        # dz=((Lbox_xy**(DIMS-1.)) / (rho*Nbase))**(1./(1.*DIMS)); #Original
+        # m_gas_cur=m_gas_0 * (Lbox_xy/dz)**2 / N_1D**2; print('m_gas: ' + str(m_gas_cur)); counter+=N_1D**2; #Original
+        # x0=np.arange(0.,1.,1./N_1D) + shift;
+
+        #This is the new approach where everything is held constant except for particle mass, which will account for the density gradient alone
+        # m_gas_cur=m_gas_0 * np.exp(-z0**2); print('m_gas: ' + str(m_gas_cur)); counter+=N_1D**2; #Original
+        # x0=np.arange(0.,1.,1./N_1D) + shift;
+
+        #And this is the third version approach where dz and m_gas are kept constant and only N_1D varies to reflect the statification
+        #TODO: check this!!
+        N_1D_cur=int(N_1D_0*np.sqrt(np.exp(-z0**2))); print('N_1D: ' + str(N_1D_cur)); counter+=N_1D_cur**2; #Original
+        x0=np.arange(0.,1.,1./N_1D_cur) + shift;
+
+        #print("Initial x0: ", x0)
+        while(x0.max() > 1.): x0[(x0 > 1.)]-=1.;
+        while(x0.min() < 0.): x0[(x0 < 0.)]+=1.;
+        #print("Final x0: ", x0)
+
+        #Save N_1D at each z0 value to plot later:
+        N_1D_all.append(N_1D_cur)
+        m_gas_all.append(m_gas_0)
+        z0_all.append(z0)
+        dz_all.append(dz)
+
+        #x0+=0.5*(0.5-x0[-1]);
+        if(DIMS==3):
+            x, y = np.meshgrid(x0,x0, sparse=False, indexing='xy'); x=x.flatten(); y=y.flatten();
+            print(np.max(x), np.max(y))
+        else:
+            x=x0; y=0.*x;
+
+        z=z0+dz/2.+np.zeros(x.size); #Original
+        z_upper = z + (Lbox_z/2.); #for upper disk
+        z_lower = (Lbox_z/2.) - z; #for lower disk
+        z_lower[(z_lower < 0.)] = 1.e-10 #maybe do this a faster way because we know this is only a problem for the last iteration
+        
+        z_up_all.append(z_upper[0]); z_low_all.append(z_lower[0]);
+
+        m_gas = m_gas_0+np.zeros(x.size);
+        #print(x.shape,y.shape,z.shape)
+        print(x.shape,y.shape,z_upper.shape,z_lower.shape,m_gas.shape)
+
+        #For upper disk (above midplane)
+        xv_g = np.append(xv_g,x)
+        yv_g = np.append(yv_g,y)
+        zv_g = np.append(zv_g,z_upper) #fix z for upper
+        m_gas_array = np.append(m_gas_array,m_gas)
+
+        #For lower disk (below midplane)
+        xv_g = np.append(xv_g,x)
+        yv_g = np.append(yv_g,y)
+        zv_g = np.append(zv_g,z_lower) #fix z for lower
+        m_gas_array = np.append(m_gas_array,m_gas)
+
+        #dust
+        if(include_dust):
+            m_dust = dustgas_massratio*m_gas_0 + np.zeros(x0.size);
+
+            z_full_d=z0+dz/2.+np.zeros(x0.size);
+            z_upper_d = z_full_d + (Lbox_z/2.); #for upper disk
+            z_lower_d = (Lbox_z/2.) - z_full_d; #for lower disk
+            z_lower_d[(z_lower_d < 0.)] = 1.e-10 #maybe do this a faster way because we know this is only a problem for the last iteration
+        
+            yd = np.append(yd, x0) #upper disk
+            zd = np.append(zd, z_upper_d)
+            m_dust_array = np.append(m_dust_array,m_dust)
+
+            yd = np.append(yd, x0) #lower disk
+            zd = np.append(zd, z_lower_d)
+            m_dust_array = np.append(m_dust_array,m_dust)
+
+        z0 += dz; iter += 1;
+        shift += dz/2.;
+
+    Ngrains = 0;
+    if(include_dust):
+        #dust needs to be xv_d = 1.0 (or use above value)
+        #yv_d = 0-1, zv_d = 0-Lbox_z 
+        #-> uniform distribution, start by trying separation of 0.1 in z direction and 0.0035 in y direction
+        #need to determine this from proper dust mass ratio of a disk
+
+        #this is being removed because it is being done in the while loop instead to have uniform gas-dust ratio
+        # y0 = np.arange(0., 1., 1./N_1D_all[0])
+        # z0 = np.arange(0., Lbox_z, 0.1)
+        # yd, zd = np.meshgrid(y0,z0, sparse=False, indexing='xy'); yd=yd.flatten(); zd=zd.flatten();
+
+        xd_max_coord = 1.0
+        xd = xd_max_coord + 0.0*yd
+        Ngrains = xd.size
+
+    volume=(Lbox_x*Lbox_y)*dz
+    density=m_gas_0*np.array(N_1D_all)**2 / volume
+    plt.figure()
+    plt.plot(z0_all, density)
+    plt.show()
+    # exit()
+    print("##################Checking lower plane coords:################## ");
+    #print(z_lower[0], z[0], dz);
+    #print(dz_all);
+    print(z_up_all); print(z_low_all);
+
+    if(DIMS<3):
+        yv_g=1.*zv_g; zv_g=0.*zv_g;
+        
+    # make a regular 1D grid for particle locations (with N_1D elements and unit length)
+    Ngas=xv_g.size;
+    # m_target_gas = (1.-np.exp(-Lbox_z))*(Lbox_xy**(DIMS-1))*rho_target / (1.*Ngas)
+    # m_target_gas_test = (1.-np.exp(-Lbox_z**2))*(Lbox_xy**(DIMS-1))*rho_target / (1.*Ngas)
+
+    print("###########HERE#########")
+    print(Ngas)
+    print("###########DONE#########")
+
+    #Calculate gas density at midplane
+    # density_at_all_z = np.zeros(len(N_1D_all))
+    # for i in range(len(N_1D_all)):
+    #     density_at_all_z[i] = (N_1D_all[i]**2)*m_gas_all[i] / (Lbox_xy*Lbox_xy*dz_all[i])
+
+    # density_overall = integrate.trapezoid(density_at_all_z, dz_all)
+    # print("Density overall: ", density_overall)
+    
+    density_at_miplane = (N_1D_all[0]**2)*m_gas_all[0] / (Lbox_x*Lbox_y*dz_all[0])
+    print("Density at the midplane: ", density_at_miplane)        
+
+    # #For testing dust-to-gas mass ratio:
+    # time = 1200
+    # num_Pgas_outer_edge = len(np.where(xv_g*12.0>=(12 - time*12/1200))[0])
+    # print("Num gas particles in outer edge: ", num_Pgas_outer_edge)
+    # total_gas_mass_outer_edge = num_Pgas_outer_edge*m_target_gas
+
+    # total_dust_mass_outer_edge_thr = int(time/4.208)*15606*m_target_gas*dustgas_massratio
+
+    # print("dust-to-gas ratio: ", total_dust_mass_outer_edge_thr/total_gas_mass_outer_edge)
+
+    pylab.close('all')
+    #pylab.axis([0.,1.,0.,1.])
+    # pylab.plot(xv_g,yv_g,marker='.',color='black',linestyle='',rasterized=True);
+
+    # exit()
+    file = h5py.File(fname,'w')
+    npart = np.array([Ngas,0,0,Ngrains,0,0]) # we have gas and particles we will set for type 3 here, zero for all others
+    h = file.create_group("Header");
+    h.attrs['NumPart_ThisFile'] = npart; # npart set as above - this in general should be the same as NumPart_Total, it only differs
+    h.attrs['NumPart_Total'] = npart; # npart set as above
+    h.attrs['NumPart_Total_HighWord'] = 0*npart; # this will be set automatically in-code (for GIZMO, at least)
+    h.attrs['MassTable'] = np.zeros(6); # these can be set if all particles will have constant masses for the entire run. however since
+    h.attrs['Time'] = 0.0;  # initial time
+    h.attrs['Redshift'] = 0.0; # initial redshift
+    h.attrs['BoxSize'] = 1.0; # box size
+    h.attrs['NumFilesPerSnapshot'] = 1; # number of files for multi-part snapshots
+    h.attrs['Omega0'] = 1.0; # z=0 Omega_matter
+    h.attrs['OmegaLambda'] = 0.0; # z=0 Omega_Lambda
+    h.attrs['HubbleParam'] = 1.0; # z=0 hubble parameter (small 'h'=H/100 km/s/Mpc)
+    h.attrs['Flag_Sfr'] = 0; # flag indicating whether star formation is on or off
+    h.attrs['Flag_Cooling'] = 0; # flag indicating whether cooling is on or off
+    h.attrs['Flag_StellarAge'] = 0; # flag indicating whether stellar ages are to be saved
+    h.attrs['Flag_Metals'] = 0; # flag indicating whether metallicity are to be saved
+    h.attrs['Flag_Feedback'] = 0; # flag indicating whether some parts of springel-hernquist model are active
+    h.attrs['Flag_DoublePrecision'] = 0; # flag indicating whether ICs are in single/double precision
+    h.attrs['Flag_IC_Info'] = 0; # flag indicating extra options for ICs
+
+    # start with particle type zero. first (assuming we have any gas particles) create the group
+    p = file.create_group("PartType0")
+
+    #q=np.zeros((Ngas,3)); q[:,0]=xv_g; q[:,1]=yv_g; q[:,2]=zv_g; print(xv_g); print(yv_g); print(zv_g);
+    #n_part_gas = 128**3
+    #print(1 + (np.random.random(size=n_part_gas)-.5)*1e-3); exit();
+    q=np.zeros((Ngas,3)); 
+    q[:,0]=(xv_g * (1 + (np.random.random(size=len(xv_g))-.5)*1e-3))*Lbox_x; 
+    q[:,1]=(yv_g * (1 + (np.random.random(size=len(yv_g))-.5)*1e-3))*Lbox_y; 
+    q[:,2]=zv_g * (1 + (np.random.random(size=len(zv_g))-.5)*1e-3);
+
+    plt.figure()
+    plt.plot(q[:,1],q[:,2], marker='.', linestyle='None')
+    plt.show()
+
+    print(xv_g); print(q[:,0]);
+    print(yv_g); print(q[:,1]);
+    print(zv_g); print(q[:,2]);
+
+    print(np.min(q[:,0]), np.max(q[:,0])); print(np.min(q[:,1]),  np.max(q[:,1])); print(np.min(q[:,2]),  np.max(q[:,2]));
+
+    p.create_dataset("Coordinates",data=q)
+    p.create_dataset("Velocities",data=np.zeros((Ngas,3)))
+    p.create_dataset("ParticleIDs",data=np.arange(1,Ngas+1))
+    p.create_dataset("Masses",data=m_gas_array)
+    p.create_dataset("InternalEnergy",data=(0.*xv_g+1.))
+
+    if(include_dust):
+
+        p = file.create_group("PartType3")
+        q=np.zeros((Ngrains,3));
+
+        x_temp = xd * (1 + (np.random.random(size=len(xd))-.5)*1e-3) * Lbox_x;
+        x_temp[np.where(x_temp>12.0)] = 11.999;
+
+        y_temp = yd * (1 + (np.random.random(size=len(yd))-.5)*1e-3) * Lbox_y;
+        y_temp[np.where(y_temp>12.0)] = 11.999;
+
+        print(len(np.where(x_temp>12.0)[0]))
+
+        #to ensure no particles are at x > 1.0 -- doesn't work well when I run it with this IC
+        # ok = np.where(x_temp > 1.0)
+        # print("Checking if any dust particles are at x>1 before: ", ok)
+        # max_off = np.max(x_temp[ok]-1.0)
+        # x_temp -= max_off
+
+        q[:,0]=x_temp
+        q[:,1]=y_temp
+
+        q[:,2]=zd * (1 + (np.random.random(size=len(zd))-.5)*1e-3);
+
+        print("Checking if any dust particles are at x>1 after: ", np.where(q[:,0] > 1.0*Lbox_x))
         print(np.min(q[:,0]), np.max(q[:,0]))
         print(np.min(q[:,1]), np.max(q[:,1]))
         print(np.min(q[:,2]), np.max(q[:,2]))

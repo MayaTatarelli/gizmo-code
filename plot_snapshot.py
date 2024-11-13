@@ -175,6 +175,7 @@ def gas_rho_image(ax, snum=3, sdir='./output', vmin=0., vmax=0., boxL_xy=6, boxL
             u = P['Density'][:]
         else:    
             u = np.log10(P['Density'][:])
+            # u = P['Density'][:]
         u0 = P['InternalEnergy'][:]
         if (quiet == False):
             print('particle number = ', u.size)
@@ -293,6 +294,8 @@ def gas_rho_image(ax, snum=3, sdir='./output', vmin=0., vmax=0., boxL_xy=6, boxL
         cbar.set_label(label="P", size=15, rotation=90, labelpad=10)
     else:
         cbar.set_label(label="log $\\Sigma_g$", size=15, rotation=90, labelpad=3)
+        # cbar.set_label(label="$\\Sigma_g$", size=15, rotation=90, labelpad=3)
+
     cbar.ax.tick_params(labelsize=12)
 
     #cbar.set_label(r'$\log\rho$', rotation=270)
