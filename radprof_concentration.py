@@ -167,7 +167,7 @@ def plt_Pprof_maya(i, outputdir, profdir, ngrid=200, Bump_wd=1, Bump_amp=1., Box
     pl.close()
     P_File.close()
 
-def load_P_at_coord(P_File, part='PartType0', zmed_set=-1.e10, ngrid=1024, return_coords=False, plot_zx=False, plot_zy=False):
+def load_P_at_coord(P_File, part='PartType0', zmed_set=-1.e10, ngrid=1024, return_coords=False, plot_zx=False, plot_zy=False, return_pressgrid=False, return_densitygrid=False):
     P = P_File[part]
 
     press = P['Density'][:] * P['InternalEnergy'][:]*(1.001-1.)
@@ -219,6 +219,19 @@ def load_P_at_coord(P_File, part='PartType0', zmed_set=-1.e10, ngrid=1024, retur
         xg, yg = np.meshgrid(np.linspace(0, 1, ngrid), np.linspace(0, 1, ngrid))      
         pressgrid = interpolate.griddata((x[ok], y[ok]), press[ok], (xg, yg), method='linear')
         densitygrid = interpolate.griddata((x[ok], y[ok]), density[ok], (xg, yg), method='linear')
+        
+        if (return_densitygrid):
+            if(return_coords):
+                return [xg, yg, densitygrid]
+            else:
+                return densitygrid
+
+        if (return_pressgrid):
+            if(return_coords):
+                return [xg, yg, pressgrid]
+            else:
+                return pressgrid
+
         #maybe make it a weighted mean later according to density
         masked_pressgrid = np.ma.masked_array(pressgrid, np.isnan(pressgrid))
         masked_densitygrid = np.ma.masked_array(densitygrid, np.isnan(densitygrid))

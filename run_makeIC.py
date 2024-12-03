@@ -100,4 +100,4 @@ from makeIC import *
 
 # makeIC_disk_stratified_high_res(DIMS=3, N_1D=160, m_gas_0=3e-4, dustgas_massratio=0.01, fname='3d_z8_xy12_high_res_TEST_N1D_160.hdf5', Lbox_xy=12., Lbox_z=8., include_dust=True)
 
-makeIC_disk_stratified_v_3(DIMS=3, N_1D_0=480, N_1D_z=96, m_gas_0=4e-5, dustgas_massratio=0.01, fname='./ICs/3d_z6_x12_y12_v3_N1D_256_TEST.hdf5', Lbox_x=12., Lbox_y=12., Lbox_z=6., include_dust=True)
+makeIC_disk_stratified_v_3(DIMS=3, N_1D_0=480, N_1D_z=96, m_gas_0=4e-5, dustgas_massratio=0.01, fname='./ICs/3d_z6_x12_y12_v3_N1D_480_TEST.hdf5', Lbox_x=12., Lbox_y=12., Lbox_z=6., include_dust=True)
