@@ -1,6 +1,6 @@
 #define PEBBLE_ACCRETION_TESTPROBLEM 
 #define BOX_SPATIAL_DIMENSION 3
-#define BOX_LONG_Z (1./2.)
+#define BOX_LONG_Z (2./3.)
 #define BOX_SHEARING 4
 #define EOS_GAMMA (1.001)
 #define EOS_ENFORCE_ADIABAT (1.0)
